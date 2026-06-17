@@ -62,16 +62,16 @@ Do not pull the NTO submodule on every ordinary skill use. Use this freshness mo
 - If the submodule is dirty, ahead, or diverged, stop and report the state before editing.
 - Use `git submodule update --remote nto-formatting` only when the user explicitly asks to sync to the latest corporate version without making a skill edit.
 
-If a merge conflict occurs while updating or publishing the corporate `nto-formatting` skill, resolve it autonomously when the intended result can be determined from the files, commit history, and the user's current instruction. Validate the corporate skill, commit and push the corporate repo, then commit and push the updated submodule pointer in the personal repo. Stop only when the conflict requires guessing unavailable technical meaning, choosing between incompatible user instructions, exposing confidential data, or using unavailable repository permissions.
+If a merge conflict occurs while updating or publishing the corporate `nto-formatting` skill, resolve it autonomously when the intended result can be determined from the files, commit history, and the user's current instruction. Validate the corporate skill, then commit and push the corporate repo. Commit and push the updated submodule pointer only when the current workspace is a parent repository that actually consumes the corporate repo as a submodule. If the current workspace contains only the standalone corporate repo, no parent pointer exists and no pointer commit is needed. Stop only when the conflict requires guessing unavailable technical meaning, choosing between incompatible user instructions, exposing confidential data, or using unavailable repository permissions.
 
 When `nto-formatting` is materially updated:
 
 1. Work inside the submodule path or a fresh corporate repo clone.
 2. Validate the skill in the corporate repo root.
 3. Commit and push the corporate repo first.
-4. Return to the personal repo, verify that `nto-formatting` points at the new corporate commit.
-5. Commit and push the updated submodule pointer in the personal repo.
-6. Report both commit hashes.
+4. If working inside a parent repo with `nto-formatting` as a submodule, return to that parent repo and verify that `nto-formatting` points at the new corporate commit.
+5. Commit and push the updated submodule pointer only when such a parent repo exists.
+6. Report the corporate commit hash and, when applicable, the parent repo pointer commit hash.
 
 Do not duplicate the corporate NTO skill as ordinary tracked files in the personal repo. On a fresh clone of the personal repo, initialize submodules with `git submodule update --init --recursive`; when updating from the corporate `main` branch, use `git submodule update --remote nto-formatting`.
 

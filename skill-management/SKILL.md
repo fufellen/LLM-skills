@@ -53,6 +53,8 @@ The corporate repo root is the skill folder itself: it must contain `SKILL.md` a
 
 Keep personal-repo details out of the corporate `nto-formatting` skill. The personal repository knows that it consumes the corporate repo as a submodule; the corporate repo should only describe itself as the NTO skill source of truth and may refer generically to downstream mirrors or submodules.
 
+Use corporate skills in-place from the Git checkout where they were cloned. Do not copy corporate skill folders into a system skills directory as independent duplicates. If a system-level skills repository, registry, bootstrap folder, or local Codex configuration needs to expose a corporate skill, store only a lightweight pointer to the checked-out skill path, such as a path entry, manifest entry, symlink, or submodule pointer. Edit, validate, commit, and push the corporate checkout itself.
+
 Do not pull the NTO submodule on every ordinary skill use. Use this freshness model instead:
 
 - For normal NTO drafting or review, use the local submodule checkout as-is.

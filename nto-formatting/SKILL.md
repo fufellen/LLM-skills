@@ -15,6 +15,15 @@ C:\Users\User\Мой диск\Obsidian\Работа\Лидар\НТО\Прави
 
 Treat that note as the local checklist for NTO formatting. If the note is missing, use the fallback rules below and tell the user.
 
+## Repository Synchronization
+
+Keep the user's personal and corporate NTO formatting skill copies synchronized:
+
+- Personal repo: `https://github.com/fufellen/codex-skills`
+- Corporate repo: `https://github.com/ak-tech-electronics/codex-skills`
+
+When this `nto-formatting` skill is materially updated, commit and push the personal repo first, then duplicate the same `nto-formatting` folder to the corporate repo and push it there too. Keep the corporate repo limited to the NTO formatting skill unless the user explicitly asks to add more. Report both commit hashes.
+
 ## Sources
 
 Use these standards as the basis:

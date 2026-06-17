@@ -39,6 +39,17 @@ After materially creating or updating user-owned skills, commit and push the ski
 
 If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
 
+## Corporate NTO Mirror
+
+The `nto-formatting` skill must stay synchronized between the personal and corporate skill repositories:
+
+```text
+https://github.com/fufellen/codex-skills
+https://github.com/ak-tech-electronics/codex-skills
+```
+
+When `nto-formatting` is materially updated, push the update to the personal repo first, then duplicate the same `nto-formatting` folder to the corporate repo and push it there too. Keep the corporate repo limited to `nto-formatting` unless the user explicitly asks to add more. Report both commit hashes.
+
 ## Default Rule
 
 - When creating a new user skill, place it under the Google Drive synced skill folder above unless the user explicitly asks for another location.

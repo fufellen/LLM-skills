@@ -85,6 +85,7 @@ Do not duplicate the corporate NTO skill as ordinary tracked files in the person
 - Treat local non-synced skill folders as temporary bootstrap pointers, cache, or system-managed content, not as the durable home for user preferences.
 - Do not commit or push synced secrets; keep `secrets/` folders and local credential files ignored.
 - If a user gives a durable preference about how skills should be created, updated, named, synced, or used, add it to this skill or the relevant domain skill without waiting for another reminder.
+- When a new or existing skill needs self-learning, reusable lessons, or durable preference persistence, use the `skill-learning` skill instead of copying the full learning policy into every domain skill.
 
 ## Existing Google Drive Skills
 
@@ -106,6 +107,12 @@ C:\Users\User\Мой диск\Obsidian\.codex\skills\knowledge-refactoring
 C:\Users\User\Мой диск\Obsidian\.codex\skills\nto-formatting
 ```
 
+- `skill-learning` currently lives at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\skill-learning
+```
+
 - Presentation workflow rules for scientific/popular-science decks currently live at:
 
 ```text
@@ -117,17 +124,18 @@ C:\Users\User\Мой диск\Obsidian\.codex\skills\scientific-work\references\
 When creating a new skill from scratch:
 
 1. Use the system `skill-creator` guidance.
-2. Initialize the skill in:
+2. Use `skill-learning` when the skill should persist reusable lessons, failure modes, commands, durable user preferences, or self-improvement behavior.
+3. Initialize the skill in:
 
 ```text
 C:\Users\User\Мой диск\Obsidian\.codex\skills
 ```
 
-3. Keep `SKILL.md` concise.
-4. Put detailed workflows in `references/`.
-5. Put deterministic utilities in `scripts/`.
-6. Put templates and reusable media in `assets/`.
-7. Validate the skill with the skill-creator validation script when feasible.
+4. Keep `SKILL.md` concise.
+5. Put detailed workflows in `references/`.
+6. Put deterministic utilities in `scripts/`.
+7. Put templates and reusable media in `assets/`.
+8. Validate the skill with the skill-creator validation script when feasible.
 
 ## Updating Existing Skills
 
@@ -154,5 +162,6 @@ Use this skill for general rules about skill storage and synchronization. Use do
 
 - scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
 - scientific and technical report / NTO formatting: `nto-formatting`;
+- shared self-learning and reusable-lesson policy for skills: `skill-learning`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

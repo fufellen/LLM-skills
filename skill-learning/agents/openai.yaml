@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Learning"
+  short_description: "Reusable lesson rules for Codex skills"
+  default_prompt: "Use $skill-learning to decide what reusable lessons should be persisted while creating or updating a Codex skill."

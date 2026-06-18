@@ -39,9 +39,9 @@ After materially creating or updating user-owned skills, commit and push the ski
 
 If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
 
-## Corporate NTO Submodule
+## Corporate Skills Submodule
 
-The `nto-formatting` skill is corporate-primary and is stored as a Git submodule inside the personal skills repository.
+The corporate skills repository is stored as a Git submodule inside the personal skills repository. Its root is the `nto-formatting` skill, and separately requested corporate skills may live as top-level skill folders inside that same checkout.
 
 ```text
 Corporate source of truth: https://github.com/ak-tech-electronics/codex-skills
@@ -77,6 +77,22 @@ When `nto-formatting` is materially updated:
 
 Do not duplicate the corporate NTO skill as ordinary tracked files in the personal repo. On a fresh clone of the personal repo, initialize submodules with `git submodule update --init --recursive`; when updating from the corporate `main` branch, use `git submodule update --remote nto-formatting`.
 
+## Corporate LTspice Skill
+
+The `ltspice-simulation` skill is corporate-primary and lives inside the corporate checkout at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\nto-formatting\ltspice-simulation
+```
+
+Do not keep an independent top-level duplicate at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\ltspice-simulation
+```
+
+For LTspice skill reads, edits, validation, commits, and pushes, work in the corporate checkout path. After publishing corporate changes, commit and push only the updated submodule pointer in the personal repository.
+
 ## Default Rule
 
 - When creating a new user skill, place it under the Google Drive synced skill folder above unless the user explicitly asks for another location.
@@ -105,6 +121,12 @@ C:\Users\User\Мой диск\Obsidian\.codex\skills\knowledge-refactoring
 
 ```text
 C:\Users\User\Мой диск\Obsidian\.codex\skills\nto-formatting
+```
+
+- `ltspice-simulation` currently lives inside the corporate checkout at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\nto-formatting\ltspice-simulation
 ```
 
 - `skill-learning` currently lives at:
@@ -162,6 +184,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 
 - scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
 - scientific and technical report / NTO formatting: `nto-formatting`;
+- LTspice schematic and netlist simulation workflows: `nto-formatting/ltspice-simulation`;
 - shared self-learning and reusable-lesson policy for skills: `skill-learning`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

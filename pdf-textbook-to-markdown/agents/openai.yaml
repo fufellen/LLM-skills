@@ -1,0 +1,4 @@
+interface:
+  display_name: "PDF Textbook to Markdown"
+  short_description: "Convert textbooks from PDF to Obsidian Markdown"
+  default_prompt: "Use $pdf-textbook-to-markdown to convert this PDF textbook into clean Obsidian Markdown notes."

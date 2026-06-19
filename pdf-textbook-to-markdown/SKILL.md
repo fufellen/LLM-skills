@@ -54,6 +54,12 @@ Use `scripts/extract_pdf_textbook.py` for repeatable local work:
 
 The script prefers PyMuPDF (`pymupdf`) and falls back to `pypdf`/`PyPDF2` for text-only extraction when possible. If dependencies are missing, install the relevant package in the active Python environment instead of rewriting the workflow.
 
-## Learning
+## Self-Improvement And Publishing
 
-When PDF textbook work reveals a durable, reusable lesson, use the `skill-learning` policy. Save only compact domain rules, command patterns, parser improvements, or validation checks; do not store private book text, copyrighted chapter content, credentials, or one-off project facts in the skill.
+When PDF textbook work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact domain rules, command patterns, parser improvements, validation checks, or tooling notes in this skill or `references/pdf-tooling.md`; create `references/pdf-textbook-lessons.md` if lessons start to accumulate. Do not store private book text, copyrighted chapter content, credentials, extracted full chapters, or one-off project facts in the skill.
+
+After materially updating this skill, validate it when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files; never stage `secrets/`, API keys, local credentials, generated logs, extracted textbook text, or copyrighted source material.
+
+Before materially editing this skill, applying self-learning updates, or publishing changes, run a lightweight freshness check like the NTO skill policy: fetch `origin main`, compare local `HEAD` with `origin/main`, fast-forward if local is behind and the relevant working tree is clean, and inspect dirty/ahead/diverged states before continuing. Leave unrelated user changes unstaged; stop and report only when target skill files or repository state make the intended update unsafe to determine.
+
+If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the local changes, remote changes, commit history, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.

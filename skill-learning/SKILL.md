@@ -18,7 +18,9 @@ The Obsidian and corporate skill set repeats these general rules:
 - save only reusable rules, workflows, commands, failure modes, preferences, or validation checks;
 - reject secrets, credentials, personal data, confidential customer content, raw report text, unpublished measurements, and one-off project facts;
 - keep `SKILL.md` concise, move growing details to `references/`, and move repeatable utilities to `scripts/`;
-- validate a changed skill and follow the repository's commit/push rules.
+- validate a changed skill and follow the repository's commit/push rules;
+- publish material self-learning updates by default for user-owned skills unless the user explicitly says not to;
+- resolve semantic merge conflicts autonomously when the intended result can be determined safely.
 
 ## Learning Workflow
 
@@ -31,7 +33,7 @@ The Obsidian and corporate skill set repeats these general rules:
    - skill storage, sync, naming, publishing, or cross-PC behavior: update `skill-management`.
 3. Check safety before saving. Do not persist secrets, credentials, private keys, API tokens, personal data, customer-confidential material, raw report sections, unpublished measurements, or facts whose access policy is unclear.
 4. Keep the saved rule minimal. Prefer a short decision rule, command pattern, checklist item, or reference pointer over a chat transcript or long example.
-5. Validate and publish according to the owning repository's rules. For user-owned skills, follow `skill-management`; for corporate skills, follow the corporate checkout's freshness, validation, commit, push, and downstream-pointer rules.
+5. Before materially editing a skill, applying self-learning updates, or publishing changes, run the owning repository's freshness check. For user-owned skills, follow `skill-management`; for corporate skills, follow the corporate checkout's freshness, validation, commit, push, and downstream-pointer rules. Validate and publish according to those rules. If remote changes or merge conflicts appear, resolve them autonomously when the intended final meaning can be determined from the files, commit history, and current user instruction. Preserve compatible rules, consolidate duplicates, rerun validation, commit, and push. Stop only when resolving would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
 
 ## Domain Skill Pattern
 
@@ -50,6 +52,8 @@ For domains with many operational lessons, point to a lessons file instead:
 
 Before nontrivial work, read `references/<topic>-lessons.md`. Afterward, use the `skill-learning` policy to append compact reusable lessons there.
 ```
+
+For user-owned skills, include the expectation that material self-learning updates are validated, committed, and pushed to the owning repository by default, with autonomous semantic merge-conflict resolution when safe.
 
 ## Update Checklist
 

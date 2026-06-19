@@ -39,6 +39,16 @@ After materially creating or updating user-owned skills, commit and push the ski
 
 If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
 
+Before materially editing a user-owned skill, applying self-learning updates, or publishing changes, run a lightweight freshness check modeled on `nto-formatting`:
+
+1. Fetch remote state with `git fetch origin main`.
+2. Compare local `HEAD` with `origin/main`.
+3. If they match, continue.
+4. If local `HEAD` is behind and the relevant working tree is clean, fast-forward with `git merge --ff-only origin/main`.
+5. If the repository is dirty, ahead, or diverged, inspect and report the state before editing or publishing. Continue autonomously only when dirty changes are unrelated to the target skill and can be left unstaged, or when the intended integration can be determined safely.
+
+If remote changes, divergence, or merge conflicts occur while publishing user-owned skill changes, resolve them autonomously when the intended final meaning can be determined from the files, commit history, and the user's current instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
+
 ## Corporate Skills Submodule
 
 The corporate skills repository is stored as a Git submodule inside the personal skills repository. Its root is the `nto-formatting` skill, and separately requested corporate skills may live as top-level skill folders inside that same checkout.
@@ -102,6 +112,8 @@ For LTspice skill reads, edits, validation, commits, and pushes, work in the cor
 - Do not commit or push synced secrets; keep `secrets/` folders and local credential files ignored.
 - If a user gives a durable preference about how skills should be created, updated, named, synced, or used, add it to this skill or the relevant domain skill without waiting for another reminder.
 - When a new or existing skill needs self-learning, reusable lessons, or durable preference persistence, use the `skill-learning` skill instead of copying the full learning policy into every domain skill.
+- Material self-learning updates to user-owned skills should be validated, committed, and pushed by default unless the user explicitly says not to. Future skill creation should include a compact domain-specific self-improvement section that points to `skill-learning` and this publishing/merge-conflict policy.
+- Future skill creation should include an NTO-style freshness check before material edits, self-learning updates, and publishing.
 
 ## Existing Google Drive Skills
 
@@ -135,6 +147,12 @@ C:\Users\User\Мой диск\Obsidian\.codex\skills\nto-formatting\ltspice-simu
 C:\Users\User\Мой диск\Obsidian\.codex\skills\skill-learning
 ```
 
+- `pdf-textbook-to-markdown` currently lives at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\pdf-textbook-to-markdown
+```
+
 - Presentation workflow rules for scientific/popular-science decks currently live at:
 
 ```text
@@ -158,6 +176,7 @@ C:\Users\User\Мой диск\Obsidian\.codex\skills
 6. Put deterministic utilities in `scripts/`.
 7. Put templates and reusable media in `assets/`.
 8. Validate the skill with the skill-creator validation script when feasible.
+9. Include a compact self-improvement section that says durable lessons should be saved through `skill-learning`, validated, committed, pushed, and semantically merge-resolved when safe.
 
 ## Updating Existing Skills
 

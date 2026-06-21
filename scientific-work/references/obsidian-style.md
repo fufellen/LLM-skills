@@ -17,6 +17,7 @@ Use this reference before creating or editing Obsidian notes.
 ## Links
 
 - Use Obsidian links for local concepts: `[[FCS]]`, `[[CRC_32|CRC-32]]`.
+- When writing formula notation blocks such as `Где:`, check whether explained terms already have notes in the vault and link them in the bullet text; for example use `[[Propagation constant (постоянная распространения, продольное волновое число)|постоянная распространения]]` instead of plain "постоянная распространения".
 - If a term has a common display alias, use `[[Note title|alias]]`.
 - When a new term note was created because of a specific source note, link the term naturally from that source note if the location is obvious.
 - Do not add meta-comments inside notes such as "to avoid duplication"; just link naturally.

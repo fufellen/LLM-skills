@@ -1,6 +1,6 @@
 ---
 name: scientific-work
-description: Work with the user's PhD, scientific research materials, and technical Obsidian notes. Use for научная работа, аспирантура, статьи, обзоры литературы, научные заметки, technical term questions that should become Obsidian notes, плазмоника, SPP, DLSPPW, FEM, COMSOL/CST modeling, integrated photonics, optical antennas, paper translation/analysis, and planning research next steps from the local vault.
+description: Work with the user's general PhD, scientific research materials, and technical Obsidian notes. Use for научная работа, аспирантура, статьи, обзоры литературы, научные заметки, technical term questions that should become Obsidian notes, general modeling workflow, paper translation/analysis, and planning research next steps from the local vault. For specialized plasmonics, nanophotonics, SPP/DLSPP/LR-DLSPP, PCM photonics, EIM/ЭДП, optical antennas, or photonic COMSOL/FEM/CST mode-analysis tasks, use `plasmonics-photonics`.
 ---
 
 # Scientific Work
@@ -27,7 +27,7 @@ If publishing encounters remote changes or merge conflicts, resolve them autonom
 
 ## Core Workflow
 
-1. Determine the task type: scientific explanation, technical term explanation, Obsidian note writing, paper analysis/translation, literature search, research planning, NTO/report formatting, or modeling/COMSOL work. When the user asks about НТО, scientific/technical report formatting, report normal-control checklists, ГОСТ 7.32-2017 structure, captions, headings, or source-list formatting, use the `nto-formatting` skill.
+1. Determine the task type: scientific explanation, technical term explanation, Obsidian note writing, paper analysis/translation, literature search, research planning, NTO/report formatting, or general modeling/COMSOL workflow. When the user asks about specialized plasmonics, nanophotonics, SPP/DLSPP/LR-DLSPP, PCM photonics, EIM/ЭДП, optical antennas, or photonic COMSOL/FEM/CST mode analysis, use the `plasmonics-photonics` skill. When the user asks about НТО, scientific/technical report formatting, report normal-control checklists, ГОСТ 7.32-2017 structure, captions, headings, or source-list formatting, use the `nto-formatting` skill.
 2. Search the relevant local vault area before giving substantive answers: use `PhD` for research tasks, and use the whole Obsidian vault excluding service folders such as `.venv`, `.trash`, and `.git` for general technical/work-note terms.
 3. Prefer existing notes, PDF anchors, model diaries, and project summaries over memory. Do not duplicate explanations that already exist; link or embed them, except for standalone term-note capture described in item 8. When the user asks to remove duplicates, choose canonical notes, or refactor a cluster of notes into linked sources of truth, use the `knowledge-refactoring` skill.
 4. When an answer relies on local notes, explicitly state which notes were used, preferably by note title or path.

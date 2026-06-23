@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plasmonics Photonics"
+  short_description: "Research workflows for plasmonic photonics"
+  default_prompt: "Use $plasmonics-photonics to plan or write source-backed notes for SPP, LR-DLSPP, PCM, EIM, and COMSOL/FEM photonics work."

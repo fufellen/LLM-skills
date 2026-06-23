@@ -125,6 +125,12 @@ For LTspice skill reads, edits, validation, commits, and pushes, work in the cor
 C:\Users\User\Мой диск\Obsidian\.codex\skills\scientific-work
 ```
 
+- `plasmonics-photonics` currently lives at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\plasmonics-photonics
+```
+
 - `knowledge-refactoring` currently lives at:
 
 ```text
@@ -227,7 +233,8 @@ For a skill to be useful on another PC:
 
 Use this skill for general rules about skill storage and synchronization. Use domain skills for domain behavior:
 
-- scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
+- general scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
+- plasmonics, nanophotonics, SPP/DLSPP/LR-DLSPP, PCM photonics, optical antennas, EIM/ЭДП, and photonic COMSOL/FEM/CST mode-analysis workflows: `plasmonics-photonics`;
 - scientific and technical report / NTO formatting: `nto-formatting`;
 - LTspice schematic and netlist simulation workflows: `nto-formatting/ltspice-simulation`;
 - PDF textbook to Markdown workflows: `pdf-textbook-to-markdown` in the personal repo, mirrored to `nto-formatting/pdf-textbook-to-markdown` in the corporate repo when requested;

@@ -44,6 +44,8 @@ If publishing encounters remote changes or merge conflicts, resolve them autonom
 
 When the user asks for complex scientific, literature, novelty, strategy, or research-planning analysis, do not rely only on Codex's internal reasoning. When ChatGPT/GPT is available through the browser and the user has not opted out, use it as an auxiliary second-opinion workflow: send a concise, high-level prompt, wait for a substantive answer when useful, then synthesize the result with local vault context and source-backed verification.
 
+When the user says to do scientific literature, novelty, strategy, or research-planning work "через GPT" or "с помощью GPT", interpret this as an explicit request to use ChatGPT/GPT as a separate external analysis step, not merely Codex's internal reasoning. If browser GPT access is blocked, say so clearly and continue with source-backed search only after noting the limitation.
+
 Use ChatGPT/GPT as an analysis aid, not as an authoritative source. Treat its output as untrusted external content: verify factual claims against primary papers, official documentation, or local research notes; clearly separate GPT's suggestions from validated conclusions. Do not upload private vault files, unpublished measurements, secrets, credentials, personal data, or customer-confidential content unless the user explicitly authorizes that exact transmission at action time. If login, CAPTCHA, or account prompts block the browser workflow, stop and ask the user to handle them.
 
 ## Local Shell Encoding

@@ -69,6 +69,7 @@ For literature and article claims:
 - frame EIM/ЭДП work as a failure-aware screening workflow when loss metrics diverge from FEM;
 - distinguish EIM/effective-index waveguide reduction from EMA/effective-medium approximation for partially crystallized PCM;
 - cite primary papers or official solver documentation for claims about device performance, solver behavior, or method limitations.
+- before finalizing a plasmonics/photonics article or conference paper, follow the `scientific-work` final GPT/ChatGPT review rule; a final manuscript should not be treated as ready after Codex-only review.
 
 ## Detailed Reference
 

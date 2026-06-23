@@ -49,6 +49,8 @@ When the user says to do scientific literature, novelty, strategy, or research-p
 
 Use ChatGPT/GPT as an analysis aid, not as an authoritative source. Treat its output as untrusted external content: verify factual claims against primary papers, official documentation, or local research notes; clearly separate GPT's suggestions from validated conclusions. Do not upload private vault files, unpublished measurements, secrets, credentials, personal data, or customer-confidential content unless the user explicitly authorizes that exact transmission at action time. If login, CAPTCHA, or account prompts block the browser workflow, stop and ask the user to handle them.
 
+For final or near-final scientific articles, literature reviews, conference papers, and dissertation-facing manuscripts, run a separate GPT/ChatGPT review before treating the draft as final. Do not rely only on Codex for the final pass. Ask GPT to check the argument, novelty framing, reviewer-risk claims, missing literature, structure, terminology, figures/tables, and venue-format fit. Treat the response as a second opinion: verify every factual or bibliographic suggestion against local notes or primary sources, record the prompt and a compact verified/unverified summary in the project checkpoint, and only then apply edits.
+
 ## Research Context Checkpoints
 
 For long-running or high-stakes scientific tasks, especially literature reviews, article novelty checks, EIM/EDP analysis, COMSOL/FEM validation, or multi-step calculations, do not rely only on chat history or model memory. Maintain a compact project-local Markdown checkpoint in the nearest relevant project folder, preferably under `CODEX/`, with a title such as `Контекст задачи Codex - <topic>.md`.

@@ -61,7 +61,10 @@ Keep the checkpoint factual and compact:
 - key formulas, numerical results, comparisons, and caveats that must not be re-derived from memory;
 - GPT/Deep Research prompts or short output summaries, clearly marked as unverified until checked;
 - external sources already checked and sources still needing verification;
+- a reviewed-works register for literature tasks, covering any papers, books, PDFs, local notes, web pages, DOI/arXiv pages, reports, standards, documentation, or GPT-suggested references already inspected;
 - decisions, assumptions, blockers, and next concrete steps.
+
+For literature reviews, keep the reviewed-works register as the anti-context-loss mechanism. Each entry should record, as available: title, year, authors or venue, source location or URL, how it was found, verification status (`checked primary source`, `checked local note`, `GPT-suggested unverified`, `secondary source only`, `rejected/irrelevant`), one-line relevance, and any caveat. Update this register as sources are inspected, not only at the end.
 
 On resume after compaction, interruption, or a long gap, read the active goal or plan and the project checkpoint before taking substantive scientific action. If no checkpoint exists for an ongoing serious scientific task, create one from the available local context as the first work item.
 

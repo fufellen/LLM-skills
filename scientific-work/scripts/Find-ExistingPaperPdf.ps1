@@ -116,6 +116,8 @@ $files = Get-ChildItem -LiteralPath $resolvedRoot -Recurse -File -Filter "*.pdf"
 $results = New-Object System.Collections.Generic.List[object]
 foreach ($file in $files) {
     $norm = Normalize-Text $file.FullName
+    $nameNorm = Normalize-Text $file.Name
+    $parentNorm = Normalize-Text (Split-Path -Leaf $file.DirectoryName)
     $score = 0
     $reasons = New-Object System.Collections.Generic.List[string]
     $yearMatched = $false
@@ -134,7 +136,7 @@ foreach ($file in $files) {
         [void]$reasons.Add("doi-suffix")
     }
 
-    if ($Year -and $norm.Contains((Normalize-Text $Year))) {
+    if ($Year -and (($nameNorm.Contains((Normalize-Text $Year))) -or ($parentNorm.Contains((Normalize-Text $Year))))) {
         $score += 12
         $yearMatched = $true
         [void]$reasons.Add("year")

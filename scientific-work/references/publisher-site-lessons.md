@@ -6,6 +6,7 @@ Use this file for compact reusable lessons from publisher, DOI, repository, and 
 
 - Before downloading from a publisher page, search the vault for an existing PDF by DOI, DOI-safe fragment, DOI suffix, year, and stable title words. Existing filenames may contain truncated, corrected, translated, or slightly wrong titles.
 - If an existing valid PDF is found, update the project manifest/checkpoint with the local path instead of creating a duplicate. Treat DOI and DOI-suffix matches as strong; treat title-only matches as candidates that need manual confirmation, especially for families of papers with similar PCM/plasmonics titles.
+- When deduplicating by year, match the year against the PDF filename or the immediate paper-folder name, not the whole absolute path. Project folders can contain unrelated years such as `article_2026` and create false confidence for older papers.
 - If a publisher page blocks script-based PDF access with 403 or a bot/security check, do not immediately mark the paper unavailable. Try the in-app browser and, when needed, let the user complete institutional login or browser verification in the visible UI.
 - When a new site-specific route is learned, append a short note here after the session.
 

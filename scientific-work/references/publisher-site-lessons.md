@@ -8,6 +8,7 @@ Use this file for compact reusable lessons from publisher, DOI, repository, and 
 - If an existing valid PDF is found, update the project manifest/checkpoint with the local path instead of creating a duplicate. Treat DOI and DOI-suffix matches as strong; treat title-only matches as candidates that need manual confirmation, especially for families of papers with similar PCM/plasmonics titles.
 - When deduplicating by year, match the year against the PDF filename or the immediate paper-folder name, not the whole absolute path. Project folders can contain unrelated years such as `article_2026` and create false confidence for older papers.
 - If a publisher page blocks script-based PDF access with 403 or a bot/security check, do not immediately mark the paper unavailable. Try the in-app browser and, when needed, let the user complete institutional login or browser verification in the visible UI.
+- When a CAPTCHA/security-check page appears, first try one or two ordinary page reloads or the same legitimate route again, without clicking or solving the CAPTCHA itself. If the blocker persists after those attempts, tell the user to complete the human verification manually in the visible browser.
 - When a new site-specific route is learned, append a short note here after the session.
 
 ## AIP Publishing
@@ -26,3 +27,4 @@ Use this file for compact reusable lessons from publisher, DOI, repository, and 
 ## ResearchGate
 
 - ResearchGate pages may expose author-provided full text in search snippets or metadata, but browser access can stop at a `Security check required` page and shell download can return HTTP 403. Treat this as an author-provided PDF candidate, not as downloaded full text. Continue only through visible browser verification or ask the user to download manually; do not mark it as read until a valid local `%PDF` file exists.
+- ResearchGate can show ordinary cookie/privacy and signup overlays before the PDF controls. These may be dismissed through normal UI controls; they are not CAPTCHA. If the Codex in-app browser cannot save the `Download` response, ask the user to download the visible author PDF manually, then move it from `Downloads/` to the project literature folder, rename it with the DOI-safe pattern, validate `%PDF`, and update manifest/checkpoint.

@@ -17,6 +17,7 @@ Use this reference when creating scientific, technical, or popular-science talks
 - Keep the style scientific-popular by default: precise, vivid, and explain technical terms before using them heavily.
 - When the user says to "prepare the presentation" without naming a tool, create a practical local presentation file when feasible, preferably `.pptx` inside the relevant synced vault folder, and keep a Markdown source note beside it.
 - Look for visuals in the user's vault first. Use internet images only when they add clear value, prefer official/open/public-domain sources, and record source URLs. For technical diagrams, prefer creating simple original schematics in the deck over copying unclear-license images.
+- When the user asks to find or generate presentation images through GPT, use ChatGPT/GPT in the in-app browser as the visual-search and image-generation surface. Use it for both internet image discovery and AI-generated bitmap assets, keep prompts and selected source URLs in the project handoff note, and stop for user login/CAPTCHA if browser GPT access is blocked.
 - Durable presentation preferences from the user should be added back into this workflow or another relevant skill reference automatically.
 
 ## Structure

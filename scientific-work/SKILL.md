@@ -113,7 +113,7 @@ Do not store secrets, credentials, private raw datasets, unpublished full measur
 - For planning, give actionable work items: what to read, calculate, model, compare, and write into notes.
 - For article work, separate the paper's goal, method, geometry/materials, model or experiment parameters, results, limitations, and usefulness for the dissertation.
 - For modeling, keep source files safe, record only scientific decisions and results in diaries, and verify against analytic or independent references whenever possible.
-- For candidate-exam tickets or "answer this question" requests tied to the PhD vault, prefer Obsidian-ready Markdown by default: create or update the relevant `.md` note when one exists, use `####` sections, Obsidian `[[links]]`, KaTeX formulas instead of code blocks for equations, concise oral-exam wording, and a short source-notes section.
+- For candidate-exam tickets or "answer this question" requests tied to the PhD vault, prefer Obsidian-ready Markdown by default: create or update the relevant `.md` note when one exists, use `####` sections, Obsidian `[[links]]`, LaTeX-syntax formulas instead of code blocks for equations, concise oral-exam wording, and a short source-notes section.
 
 ## Guardrails
 

@@ -1,18 +1,20 @@
 # Default Skill Pattern
 
-Use this reference when creating or updating user-owned Codex skills.
+Use this reference when creating or updating user-owned shared-base skills and AI-specific thin adapters.
 
 ## Minimal Structure
 
 Every durable user-owned skill should have:
 
-- `SKILL.md` with only `name` and `description` in frontmatter;
-- `agents/openai.yaml` with `display_name`, `short_description`, and `default_prompt`;
-- `references/` for detailed guidance that should load only when relevant;
-- `scripts/` only for repeatable deterministic utilities;
-- `assets/` only for reusable output resources.
+- `_base/skills/<skill-name>/SKILL.md` as the shared source of durable behavior;
+- optional shared-base `references/` for detailed guidance that should load only when relevant;
+- optional shared-base `scripts/` only for repeatable deterministic utilities;
+- optional shared-base `assets/` only for reusable output resources;
+- `<skill-name>/SKILL.md` as a thin Codex adapter pointing to the shared base;
+- Codex `agents/openai.yaml` with `display_name`, `short_description`, and `default_prompt`;
+- `.claude/skills/<skill-name>/SKILL.md` as a thin Claude adapter when Claude should expose the same skill.
 
-Avoid extra README, changelog, installation, or quick-reference files unless the user explicitly asks for them.
+Avoid extra README, changelog, installation, or quick-reference files unless the user explicitly asks for them. Do not duplicate durable rules across Codex and Claude adapters.
 
 ## Default Self-Improvement Section
 
@@ -21,11 +23,11 @@ Adapt this section for non-static user-owned domain skills:
 ```markdown
 ## Self-Improvement And Publishing
 
-When <domain> work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact domain rules, command patterns, parser improvements, validation checks, reusable examples, or tooling notes in this skill or a focused `references/<topic>.md` file. Do not store secrets, credentials, private content, copyrighted source text, generated logs, raw project/customer material, or one-off facts in the skill.
+When <domain> work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact domain rules, command patterns, parser improvements, validation checks, reusable examples, or tooling notes in this shared-base skill or a focused shared-base `references/<topic>.md` file. Do not store secrets, credentials, private content, copyrighted source text, generated logs, raw project/customer material, or one-off facts in the skill.
 
 Before materially editing this skill, applying self-learning updates, or publishing changes, run the owning repository's freshness check: fetch `origin main`, compare local `HEAD` with `origin/main`, fast-forward if local is behind and the relevant working tree is clean, and inspect dirty/ahead/diverged states before continuing.
 
-After materially updating this skill, validate it when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
+After materially updating this skill, validate the shared base and adapters when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
 
 If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the files, commit history, nearby rules, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
 ```
@@ -37,7 +39,7 @@ For skills mirrored from the personal repository to a corporate repository, add 
 Use this checklist before committing user-owned skill changes:
 
 1. Run the freshness check.
-2. Validate changed skills with the system `quick_validate.py` when feasible.
+2. Validate changed shared-base skills and AI-specific adapters with the system `quick_validate.py` when feasible.
 3. Test added or changed scripts.
 4. Run `git status --short`.
 5. Confirm unrelated user changes remain unstaged.

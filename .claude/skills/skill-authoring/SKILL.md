@@ -1,14 +1,16 @@
 ---
 name: skill-authoring
-description: Create, update, validate, self-improve, publish, and maintain the user's personal skills with their defaults. Use when asked to create a new skill, update an existing skill, scaffold SKILL.md/resources metadata, add durable skill lessons, set up self-learning behavior, run skill validation, commit and push skill repository changes, or resolve skill repository merge conflicts.
+description: Create, update, validate, self-improve, publish, and maintain user-owned shared skills plus Codex/Claude thin adapters with the user's defaults. Use when asked to create a new skill, update an existing skill, scaffold shared-base SKILL.md resources or AI-specific adapters, add durable skill lessons, set up self-learning behavior, run skill validation, commit and push skill repository changes, or resolve skill repository merge conflicts.
 ---
 
-# Skill Authoring (Claude Code pointer)
+# Skill Authoring (Claude Code adapter)
 
-Canonical source of truth (Codex skill): `../../../skill-authoring/SKILL.md` (relative to this repo root).
+Shared base skill: ../../../_base/skills/skill-authoring/SKILL.md.
 
-When this skill triggers, **read that file and follow it fully**, together with any `references/`, `scripts/`, and `assets/` next to it. Don't restate its rules here — always defer to the canonical Codex `SKILL.md` so Codex and Claude Code stay in sync.
+When this skill triggers, read that base SKILL.md completely and follow it together with any references/, scripts/, and assets/ next to the base file. Resolve relative resource paths from the shared base skill directory.
+
+Keep this file as a Claude-specific thin adapter: frontmatter and Claude-only trigger wording belong here; durable domain rules, reusable workflows, scripts, references, and lessons belong in the shared base skill.
 
 Notes:
-- Ignore `agents/openai.yaml` (Codex-only metadata).
-- This is a meta-skill. When authoring/updating a skill, edit the canonical Codex `SKILL.md` and keep its matching `.claude/skills` pointer in sync.
+- Ignore agents/openai.yaml; it is Codex-only metadata in the Codex adapter.
+- Update the shared base first for behavior changes, then adjust Codex/Claude adapters only when their platform-specific pointers or trigger descriptions need to change.

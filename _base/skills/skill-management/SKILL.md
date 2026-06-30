@@ -1,0 +1,262 @@
+---
+name: skill-management
+description: Create and update the user's shared skill base and AI-specific thin adapters for Codex, Claude, and other agents. Use when the user asks to add, edit, persist, synchronize, relocate, or organize skills, especially when deciding where skills should live across PCs and Google Drive.
+---
+
+# Skill Management
+
+## Canonical Location
+
+Create and update user-owned shared skills and AI-specific thin adapters in the Google Drive synced Obsidian vault by default:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills
+```
+
+This synced folder is the canonical repository for the user's personal skill system. Durable behavior lives in the shared base layer so Codex, Claude, and future AI-specific adapters can all use the same rules through Google Drive and Git synchronization.
+
+## Shared Base And Thin Adapters
+
+Use a two-layer skill architecture:
+
+- Shared base skills live under `_base/skills/<skill-name>/`. Put durable domain rules, reusable workflows, references, scripts, assets, lessons, and self-improvement policy there.
+- Codex adapters live at `<skill-name>/SKILL.md`, with Codex-only `agents/openai.yaml` next to them. Keep these files thin: frontmatter, trigger wording, and a pointer to the shared base.
+- Claude adapters live at `.claude/skills/<skill-name>/SKILL.md`. Keep these files thin: Claude trigger wording and a pointer to the same shared base.
+- Other AI-specific adapters should follow the same pattern: a minimal platform-specific wrapper that points to `_base/skills/<skill-name>/`.
+
+When changing skill behavior, edit the shared base first. Edit Codex, Claude, or other adapters only when platform-specific trigger text, metadata, or pointer paths need to change. Do not copy durable rules into more than one adapter.
+
+## GitHub Mirror
+
+The Google Drive skill folder is also mirrored to GitHub:
+
+```text
+https://github.com/fufellen/codex-skills
+```
+
+Local git repository path:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills
+```
+
+After materially creating or updating user-owned skills, commit and push the skill changes to this repository by default unless the user explicitly says not to. These user-owned skill repositories have no pull-request review, so push directly to the default branch `main`; do not open a feature branch or PR for skill changes. Before committing:
+
+1. Check `git status --short`.
+2. Make sure `secrets/`, API keys, tokens, local credentials, caches, and generated logs are not staged.
+3. Stage only relevant skill files and repo metadata.
+4. Use a concise commit message describing the skill update.
+5. Push to `origin main`.
+
+If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
+
+Before materially editing a user-owned skill, applying self-learning updates, or publishing changes, run a lightweight freshness check modeled on `nto-formatting`:
+
+1. Fetch remote state with `git fetch origin main`.
+2. Compare local `HEAD` with `origin/main`.
+3. If they match, continue.
+4. If local `HEAD` is behind and the relevant working tree is clean, fast-forward with `git merge --ff-only origin/main`.
+5. If the repository is dirty, ahead, or diverged, inspect and report the state before editing or publishing. Continue autonomously only when dirty changes are unrelated to the target skill and can be left unstaged, or when the intended integration can be determined safely.
+
+If remote changes, divergence, or merge conflicts occur while publishing user-owned skill changes, resolve them autonomously when the intended final meaning can be determined from the files, commit history, and the user's current instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
+
+## Corporate Skills Submodule
+
+The corporate skills repository is stored as a Git submodule inside the personal skills repository. Its root is the `nto-formatting` skill, and separately requested corporate skills may live as top-level skill folders inside that same checkout.
+
+```text
+Corporate source of truth: https://github.com/ak-tech-electronics/codex-skills
+Personal repo with submodule: https://github.com/fufellen/codex-skills
+Submodule path in personal repo: nto-formatting
+```
+
+The corporate repo root is the skill folder itself: it must contain `SKILL.md` at repo root, plus optional `agents/`, `references/`, `scripts/`, and `assets/` folders. Do not nest it as `nto-formatting/SKILL.md` inside the corporate repo.
+
+Keep personal-repo details out of the corporate `nto-formatting` skill. The personal repository knows that it consumes the corporate repo as a submodule; the corporate repo should only describe itself as the NTO skill source of truth and may refer generically to downstream mirrors or submodules.
+
+Use corporate skills in-place from the Git checkout where they were cloned. Do not copy corporate skill folders into a system skills directory as independent duplicates. If a system-level skills repository, registry, bootstrap folder, or local Codex configuration needs to expose a corporate skill, store only a lightweight pointer to the checked-out skill path, such as a path entry, manifest entry, symlink, or submodule pointer. Edit, validate, commit, and push the corporate checkout itself.
+
+Do not pull the NTO submodule on every ordinary skill use. Use this freshness model instead:
+
+- For normal NTO drafting or review, use the local submodule checkout as-is.
+- Before editing the NTO skill, applying self-learning updates, or publishing changes, run `git -C nto-formatting fetch origin main`.
+- Compare `git -C nto-formatting rev-parse HEAD` with `git -C nto-formatting rev-parse origin/main`.
+- If the submodule is behind and clean, fast-forward it with `git -C nto-formatting merge --ff-only origin/main`.
+- If the submodule is dirty, ahead, or diverged, stop and report the state before editing.
+- Use `git submodule update --remote nto-formatting` only when the user explicitly asks to sync to the latest corporate version without making a skill edit.
+
+If a merge conflict occurs while updating or publishing the corporate `nto-formatting` skill, resolve it autonomously when the intended result can be determined from the files, commit history, and the user's current instruction. Validate the corporate skill, then commit and push the corporate repo. Commit and push the updated submodule pointer only when the current workspace is a parent repository that actually consumes the corporate repo as a submodule. If the current workspace contains only the standalone corporate repo, no parent pointer exists and no pointer commit is needed. Stop only when the conflict requires guessing unavailable technical meaning, choosing between incompatible user instructions, exposing confidential data, or using unavailable repository permissions.
+
+When `nto-formatting` is materially updated:
+
+1. Work inside the submodule path or a fresh corporate repo clone.
+2. Validate the skill in the corporate repo root.
+3. Commit and push the corporate repo first.
+4. If working inside a parent repo with `nto-formatting` as a submodule, return to that parent repo and verify that `nto-formatting` points at the new corporate commit.
+5. Commit and push the updated submodule pointer only when such a parent repo exists.
+6. Report the corporate commit hash and, when applicable, the parent repo pointer commit hash.
+
+Do not duplicate the corporate NTO skill as ordinary tracked files in the personal repo. On a fresh clone of the personal repo, initialize submodules with `git submodule update --init --recursive`; when updating from the corporate `main` branch, use `git submodule update --remote nto-formatting`.
+
+## Corporate LTspice Skill
+
+The `ltspice-simulation` skill is corporate-primary and lives inside the corporate checkout at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\nto-formatting\ltspice-simulation
+```
+
+Do not keep an independent top-level duplicate at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\ltspice-simulation
+```
+
+For LTspice skill reads, edits, validation, commits, and pushes, work in the corporate checkout path. After publishing corporate changes, commit and push only the updated submodule pointer in the personal repository.
+
+## Default Rule
+
+- When creating a new user skill, place it under the Google Drive synced skill folder above unless the user explicitly asks for another location.
+- When updating an existing user skill, prefer the Google Drive copy if one exists.
+- Do not create independent duplicated skill instructions under `C:\Users\User\.codex\skills` unless the user explicitly asks.
+- Treat local non-synced skill folders as temporary bootstrap pointers, cache, or system-managed content, not as the durable home for user preferences.
+- Do not commit or push synced secrets; keep `secrets/` folders and local credential files ignored.
+- If a user gives a durable preference about how skills should be created, updated, named, synced, or used, add it to the shared base for this skill or the relevant domain skill without waiting for another reminder.
+- When creating or materially updating user-owned skills, use `skill-authoring` as the personal default workflow, alongside the system `skill-creator` mechanics.
+- Work through the AI-specific thin adapter that triggered, but persist reusable changes in `_base/skills/<skill-name>/`. The adapter should remain a pointer, not the source of durable behavior.
+- When a new or existing skill needs self-learning, reusable lessons, or durable preference persistence, use the `skill-learning` skill instead of copying the full learning policy into every domain skill.
+- Material self-learning updates to user-owned skills should be validated, committed, and pushed by default unless the user explicitly says not to. Future skill creation should include a compact domain-specific self-improvement section that points to `skill-learning` and this publishing/merge-conflict policy.
+- Future skill creation should include an NTO-style freshness check before material edits, self-learning updates, and publishing.
+- When a personal skill is mirrored to a corporate repository, keep the personal repository copy as the safety copy unless the user explicitly asks to remove it. Corporate publishing, permissions, sync, or merge failures must not cause loss of the user's personal skill work.
+
+## Existing Google Drive Skills
+
+- `scientific-work` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-work
+```
+
+- `plasmonics-photonics` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\plasmonics-photonics
+```
+
+- `knowledge-refactoring` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\knowledge-refactoring
+```
+
+- `nto-formatting` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\nto-formatting
+```
+
+- `ltspice-simulation` currently lives inside the corporate checkout at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\nto-formatting\ltspice-simulation
+```
+
+- `pdf-textbook-to-markdown` currently lives in the personal skills repository as the safety copy at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\pdf-textbook-to-markdown
+```
+
+It is also mirrored in the corporate checkout at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\nto-formatting\pdf-textbook-to-markdown
+```
+
+- `skill-learning` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\skill-learning
+```
+
+- `skill-authoring` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\skill-authoring
+```
+
+- `obsidian-canvas` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\obsidian-canvas
+```
+
+- `phd-lerer-repo` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\phd-lerer-repo
+```
+
+- `markdown-to-docx` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\markdown-to-docx
+```
+
+- Presentation workflow rules for scientific/popular-science decks currently live at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-work\references\presentation-workflow.md
+```
+
+## Creating New Skills
+
+When creating a new skill from scratch:
+
+1. Use the personal `skill-authoring` workflow for user defaults and the system `skill-creator` guidance for generator/validation mechanics.
+2. Use `skill-learning` when the skill should persist reusable lessons, failure modes, commands, durable user preferences, or self-improvement behavior.
+3. Initialize the shared base in `_base/skills/<skill-name>/`.
+4. Add a Codex adapter at `<skill-name>/SKILL.md` and, when Claude should use the skill, a Claude adapter at `.claude/skills/<skill-name>/SKILL.md`; both should point to the shared base.
+5. Keep the adapter `SKILL.md` files concise and platform-specific only.
+6. Put detailed workflows in shared-base `references/`.
+7. Put deterministic utilities in shared-base `scripts/`.
+8. Put templates and reusable media in shared-base `assets/`.
+9. Validate the shared base and adapters with the skill-creator validation script when feasible.
+10. Include a compact self-improvement section in the shared base that says durable lessons should be saved through `skill-learning`, validated, committed, pushed, and semantically merge-resolved when safe.
+
+## Updating Existing Skills
+
+Before editing a skill:
+
+1. Check whether a Google Drive version exists.
+2. Edit the Google Drive version first.
+3. If the change affects durable behavior, edit `_base/skills/<skill-name>/`, not the Codex/Claude adapter.
+4. Edit adapters only for platform-specific frontmatter descriptions, UI metadata, or pointer paths.
+5. Avoid editing system skills under `.system` unless the user explicitly asks and the file is intended to be user-modifiable.
+6. After updating, tell the user exactly which shared base and adapter files changed.
+
+## Cross-PC Expectations
+
+For a skill to be useful on another PC:
+
+- its folder should be inside the synced Google Drive skill root;
+- scripts and references should use relative paths where possible;
+- absolute paths may mention the expected vault root, but should explain that Google Drive sync must place the vault at the same or adapted path;
+- secrets should not be duplicated unless the user explicitly requests synced secrets for convenience;
+- if a local connector or plugin is required, document how to test it from the synced skill.
+
+## Relationship To Domain Skills
+
+Use this skill for general rules about skill storage and synchronization. Use domain skills for domain behavior:
+
+- general scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
+- plasmonics, nanophotonics, SPP/DLSPP/LR-DLSPP, PCM photonics, optical antennas, EIM/Р­Р”Рџ, and photonic COMSOL/FEM/CST mode-analysis workflows: `plasmonics-photonics`;
+- scientific and technical report / NTO formatting: `nto-formatting`;
+- LTspice schematic and netlist simulation workflows: `nto-formatting/ltspice-simulation`;
+- PDF textbook to Markdown workflows: `pdf-textbook-to-markdown` in the personal repo, mirrored to `nto-formatting/pdf-textbook-to-markdown` in the corporate repo when requested;
+- shared self-learning and reusable-lesson policy for skills: `skill-learning`;
+- user-owned skill creation/update workflow and default self-improvement/publishing policy: `skill-authoring`;
+- Obsidian `.canvas` creation, validation, and visual tree layout: `obsidian-canvas`;
+- reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
+- presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`;
+- Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

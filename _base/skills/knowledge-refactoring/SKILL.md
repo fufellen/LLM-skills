@@ -1,0 +1,113 @@
+---
+name: knowledge-refactoring
+description: Refactor Obsidian vault notes and other knowledge bases into linked sources of truth, and keep the vault clean. Use when the user asks to remove duplicates, consolidate notes, choose canonical notes, replace repeated explanations with [[Obsidian links]], audit stale facts against source files or code, reorganize technical knowledge without moving files, delete junk/temporary/backup files, or resolve sync "(conflict ...)" duplicate files.
+---
+
+# Knowledge Refactoring
+
+## Core Rule
+
+Make knowledge DRY without making it cryptic. Each durable fact should have one canonical home; other notes should mention the concept briefly and link to the canonical note or section.
+
+Reusable scientific and technical term definitions should be canonical standalone term notes. If a note defines a term inline, extract or consolidate the reusable definition into the term note and replace repeated explanations elsewhere with `[[Term]]` links plus only the local context needed by that note.
+
+Granularity is not the enemy of DRY: do not avoid creating a term note just because the concept is small, elementary, or seems minor — a focused note the reader can open beats an unexplained term, and many small non-overlapping notes are healthier than a few bloated ones. The only hard constraint is non-duplication: the same definition must live in exactly one canonical note. Before creating a new note, search the whole vault (not just the current folder) to confirm the definition does not already exist elsewhere; if it does, link or consolidate instead of writing a second copy.
+
+## Self-Improvement And Publishing
+
+When knowledge-refactoring work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact canonicalization rules, anti-duplication heuristics, validation checks, or reusable search/refactor workflows in this skill or a focused reference file. Do not store private note content, customer material, credentials, generated logs, or one-off project facts in the skill.
+
+Before materially editing this skill, applying self-learning updates, or publishing changes, run the owning repository's freshness check: fetch `origin main`, compare local `HEAD` with `origin/main`, fast-forward if local is behind and the relevant working tree is clean, and inspect dirty/ahead/diverged states before continuing.
+
+After materially updating this skill, validate it when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
+
+If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the files, commit history, nearby rules, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
+
+## Workflow
+
+1. Search the relevant folder first, then widen the search only as needed.
+2. Identify duplicated claims, tables, code layouts, procedures, and checklists.
+3. Assign a role to each note before editing:
+   - canonical specification;
+   - route map or workflow;
+   - audience summary;
+   - diagnostic checklist;
+   - archive or historical context.
+4. Keep complete details only in the canonical note. In other notes, replace duplicated details with `[[Note]]` or `[[Note#Section]]`.
+5. Preserve unique context: decisions, caveats, chronology, diagnostics, and project-specific warnings should not be deleted just because related facts are canonical elsewhere.
+6. When a note describes software, protocols, schemas, hardware behavior, or APIs, verify the canonical facts against the actual source files before treating them as truth.
+7. Do not move or rename notes unless the user explicitly asks.
+8. After material edits, run the vault note validator when available.
+
+When reorganizing term notes, do not assume every term note already lives in a folder named `terms`, `Термины`, or `thermins`. Search for scattered standalone term notes in the relevant vault area, including project folders and root folders, but do not move paper notes, reports, course notes, modeling diaries, or other context-rich notes merely because they contain definitions.
+
+## Vault Hygiene (Junk Cleanup)
+
+Cleaning junk is destructive: identify candidates, verify, then delete, and report exactly what was removed. Respect any explicit user boundary (e.g. "keep and just list") over your own judgment.
+
+Treat as junk and safe to delete:
+- temp extraction artifacts: `_tmp*`, `tmp_*`, `*.tmp` (including orphaned Word temp files `~WRL*.tmp`);
+- editor/auto backups: `*~` (e.g. `.kra~`, `.psd~`, `.bmp~`), `*.bak`/`*.orig`/`*.old`/`*.swp` outside intentional backup folders — but verify the real original exists before deleting any `*~` backup;
+- OS junk: `.DS_Store`, `Thumbs.db`, `ehthumbs.db`.
+
+Never delete without checking — these look like junk but are not:
+- `desktop.ini` in a Google Drive vault hold folder icons (`IconResource=...GoogleDriveFS.exe`); harmless, regenerated by Drive — leave them unless the user explicitly asks to remove all;
+- empty `.md` notes are usually intentional stubs/skeleton (exam topics, term placeholders) — do not bulk-delete empty notes;
+- `.obsidian/` config and `.obsidian/backups/*.bak` are intentional app state; only the sync-conflict copies of config (see below) are junk;
+- the Obsidian `.trash/` folder is the user's safety net — do not empty it without asking;
+- `.venv/`, `site-packages/`, `node_modules/`, `__pycache__/` are real dependencies/tooling, never vault junk — prune these paths from every search and deletion.
+
+## Sync-Conflict Resolution
+
+Google Drive / Obsidian Sync leave duplicate files named `X (conflict YYYY-MM-DD-HH-MM-SS).ext` (timestamps may stack). Never delete them in bulk or by size heuristic — a conflict copy can hold edits made on another device that exist nowhere else.
+
+For each conflict file, derive the base by stripping every ` (conflict ...)` segment, then diff against it and classify:
+- base missing → the conflict copy is the only copy and holds real content; do not delete it. Rename it to the clean base name to drop the `(conflict ...)` suffix, first confirming the clean name is free and that no note links to the suffixed name (otherwise fix or keep the links);
+- identical to base → pure duplicate, delete the conflict copy;
+- conflict is a strict subset / older snapshot (only removals, trivial reflow, or raw pre-cleanup OCR vs cleaned LaTeX) → the base is canonical, delete the conflict copy;
+- conflict has unique or newer lines (real differing content) → do not delete; merge the unique fragment into the base, or escalate to the user. When the base is empty but the conflict has content, the conflict is the valuable copy.
+
+Config conflict copies under `.obsidian/` (`app (conflict ...).json`, `core-plugins (conflict ...).json`, etc.) are app-state junk — the live config beside them is canonical, delete the conflict copies.
+
+## Canonicalization Heuristics
+
+- Put byte layouts, packet formats, constants, enum mappings, and selectors in one specification note.
+- Put reusable term definitions in standalone term notes; project notes, report sections, and literature notes should link to them rather than becoming the only definition source.
+- Put end-to-end procedures in a route-map note that links to the specification sections.
+- Put troubleshooting in a diagnostic note or section, linking to the relevant specs instead of copying field lists.
+- Put human-facing briefings in short summary notes with links to the authoritative details.
+- If two notes both look canonical, choose the one whose title names the concept most directly, then turn the other into a workflow, index, or summary.
+- For a tutorial or lesson series, keep one overview/route-map note (e.g. a course plan) that links to the detailed lessons instead of re-explaining them, and make each lesson the canonical home for its own topic. Extract tooling/API/language primitives that recur across sibling lessons (e.g. CMake `OBJECT`/`INTERFACE` libraries, `PUBLIC`/`PRIVATE` visibility, toolchain files, presets) into standalone concept notes; in each lesson replace the inline definition with a short context phrase plus a `[[concept]]` link.
+- When that link points to a recurring primitive whose canonical note does not yet exist, create the standalone note in the same pass rather than leaving a dangling placeholder link — especially when sibling primitives already have their own notes. Reserve placeholder `[[links]]` for genuinely out-of-scope future notes, and verify whether the target already exists before assuming it is missing. Point every reference at the exact note title, using `[[Note|alias]]` when the filename carries a qualifier (e.g. `[[find_package (CMake)|find_package]]`).
+
+## Recurrent Patterns And Lessons
+
+- Inconsistent partial refactors: when two copies of a note coexist (e.g. a stray `Untitled/` copy beside a numbered copy), DRY refactoring may have been applied to only one — and split unpredictably across both. `diff` each pair and pick the copy with more `[[links]]` and fewer inline definition blocks as canonical, merging any unique content from the other before deleting.
+- A folder literally named `Untitled` (or notes named `Untitled*`) is a strong duplication/junk signal — its contents are usually older copies or scattered term notes that belong in the parent section folder.
+- Windows `MAX_PATH` (260) truncates long note titles, leaving a `~` mid-filename (e.g. `...коле~ельных систем...`); such truncated names silently break `[[full title]]` links and the index that points to them. Prefer short stable filenames (e.g. topic numbers) with the full title as an `# H1` heading inside the note, and point the index at them with `[[short|Full Title]]` aliases.
+- Bare short filenames like `1.md` collide across the vault (e.g. an Excalidraw plugin `1.md`), making `[[1]]` ambiguous; qualify such links with a folder or full vault path (`[[Folder/1|...]]`), and verify with a duplicate-basename scan (`find ... -printf '%f\n' | sort | uniq -d`).
+- Distributed-but-linked is not duplication: a concept split into a general note plus a specialization (e.g. `TE волны` + `TE волны … в прямоугольном волноводе`), or a term web spread across `PhD/Термины`, the vault root, and a section folder, is correct DRY structure when each note covers a distinct facet and they cross-link. Do not merge these; only merge true same-concept duplicates.
+- The `Test-Note.ps1` validator indexes only `.md`, so it reports `.pdf`/image/`.canvas` attachment links as missing — false positives. Confirm the attachment exists before treating such a link as broken.
+
+## Obsidian Links
+
+Use exact wiki links for local notes:
+
+```text
+[[Canonical Note]]
+[[Canonical Note#Section]]
+[[Canonical Note|display text]]
+```
+
+Prefer the shortest resolvable wiki link. If the note title is unique in the vault, use `[[Note]]` or `[[Note|display text]]` instead of a vault-root path. Add only the minimal folder path needed to disambiguate duplicate filenames.
+
+Do not write meta-comments inside notes such as "removed duplication here". Make the note read naturally.
+
+## Verification
+
+For technical refactors:
+
+- cite source paths inside the note when they are useful for future checking;
+- distinguish verified facts from hypotheses;
+- remove or qualify stale statements that no longer match source code;
+- prefer source code, primary docs, and generated artifacts over memory.

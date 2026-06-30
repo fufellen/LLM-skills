@@ -29,7 +29,7 @@ Local git repository path:
 C:\Users\User\Мой диск\Obsidian\.codex\skills
 ```
 
-After materially creating or updating user-owned skills, commit and push the skill changes to this repository by default unless the user explicitly says not to. Before committing:
+After materially creating or updating user-owned skills, commit and push the skill changes to this repository by default unless the user explicitly says not to. These user-owned skill repositories have no pull-request review, so push directly to the default branch `main`; do not open a feature branch or PR for skill changes. Before committing:
 
 1. Check `git status --short`.
 2. Make sure `secrets/`, API keys, tokens, local credentials, caches, and generated logs are not staged.

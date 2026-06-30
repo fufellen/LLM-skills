@@ -26,6 +26,7 @@ Use this reference before creating or editing Obsidian notes.
 - Do not duplicate standalone term-note explanations inside working notes, paper notes, method notes, or formula notation blocks. If a term already has a note, link it and keep only the local role needed for the current formula or argument.
 - When a new term note was created because of a specific source note, link the term naturally from that source note if the location is obvious.
 - Do not add meta-comments inside notes such as "to avoid duplication"; just link naturally.
+- Linking direction: always add the specific→general link, since a specific note is naturally an instance of the broader concept (for example RC-цепь → `[[Теория цепей]]`); this reads as "частный случай ...". Add general→specific links only as a deliberate curated hub/list, not exhaustively by hand, because Obsidian backlinks already expose the children. When adding only one direction, prefer specific→general.
 
 ## Term Notes
 

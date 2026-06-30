@@ -78,6 +78,15 @@ Config conflict copies under `.obsidian/` (`app (conflict ...).json`, `core-plug
 - For a tutorial or lesson series, keep one overview/route-map note (e.g. a course plan) that links to the detailed lessons instead of re-explaining them, and make each lesson the canonical home for its own topic. Extract tooling/API/language primitives that recur across sibling lessons (e.g. CMake `OBJECT`/`INTERFACE` libraries, `PUBLIC`/`PRIVATE` visibility, toolchain files, presets) into standalone concept notes; in each lesson replace the inline definition with a short context phrase plus a `[[concept]]` link.
 - When that link points to a recurring primitive whose canonical note does not yet exist, create the standalone note in the same pass rather than leaving a dangling placeholder link — especially when sibling primitives already have their own notes. Reserve placeholder `[[links]]` for genuinely out-of-scope future notes, and verify whether the target already exists before assuming it is missing. Point every reference at the exact note title, using `[[Note|alias]]` when the filename carries a qualifier (e.g. `[[find_package (CMake)|find_package]]`).
 
+## Recurrent Patterns And Lessons
+
+- Inconsistent partial refactors: when two copies of a note coexist (e.g. a stray `Untitled/` copy beside a numbered copy), DRY refactoring may have been applied to only one — and split unpredictably across both. `diff` each pair and pick the copy with more `[[links]]` and fewer inline definition blocks as canonical, merging any unique content from the other before deleting.
+- A folder literally named `Untitled` (or notes named `Untitled*`) is a strong duplication/junk signal — its contents are usually older copies or scattered term notes that belong in the parent section folder.
+- Windows `MAX_PATH` (260) truncates long note titles, leaving a `~` mid-filename (e.g. `...коле~ельных систем...`); such truncated names silently break `[[full title]]` links and the index that points to them. Prefer short stable filenames (e.g. topic numbers) with the full title as an `# H1` heading inside the note, and point the index at them with `[[short|Full Title]]` aliases.
+- Bare short filenames like `1.md` collide across the vault (e.g. an Excalidraw plugin `1.md`), making `[[1]]` ambiguous; qualify such links with a folder or full vault path (`[[Folder/1|...]]`), and verify with a duplicate-basename scan (`find ... -printf '%f\n' | sort | uniq -d`).
+- Distributed-but-linked is not duplication: a concept split into a general note plus a specialization (e.g. `TE волны` + `TE волны … в прямоугольном волноводе`), or a term web spread across `PhD/Термины`, the vault root, and a section folder, is correct DRY structure when each note covers a distinct facet and they cross-link. Do not merge these; only merge true same-concept duplicates.
+- The `Test-Note.ps1` validator indexes only `.md`, so it reports `.pdf`/image/`.canvas` attachment links as missing — false positives. Confirm the attachment exists before treating such a link as broken.
+
 ## Obsidian Links
 
 Use exact wiki links for local notes:

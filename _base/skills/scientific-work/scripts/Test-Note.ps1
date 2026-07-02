@@ -17,7 +17,16 @@ $strictUtf8 = [System.Text.UTF8Encoding]::new($false, $true)
 $OutputEncoding = $utf8NoBom
 
 if (-not $VaultRoot) {
-    $VaultRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..\..\..\..")).Path
+    $probe = $PSScriptRoot
+    while ($probe -and -not (Test-Path -LiteralPath (Join-Path $probe ".obsidian") -PathType Container)) {
+        $probe = Split-Path -Parent $probe
+    }
+    if ($probe) {
+        $VaultRoot = $probe
+    }
+    else {
+        $VaultRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..\..\..\..")).Path
+    }
 }
 
 if ([System.IO.Path]::IsPathRooted($Path)) {

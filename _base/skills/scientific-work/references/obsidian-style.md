@@ -13,6 +13,7 @@ Use this reference before creating or editing Obsidian notes.
 - Do not leave an empty line after a heading; place the following paragraph, list, or code block on the next line directly under the heading, the same as after a label line.
 - Use LaTeX math syntax for formulas, not fenced code blocks. Obsidian renders it with MathJax, so the engine is not KaTeX; write plain LaTeX math.
 - For inline formulas in Obsidian notes, use `$...$`, not `\(...\)`: in this vault `\(...\)` can remain visible in rendered text instead of displaying as math. Use `$$...$$` for display equations.
+- Do not embed bare math operators like `$\le$`, `$\ge$`, `$\sim$` glued into prose (e.g. `($\le$400 нм)` or `$P\ge$half-max`) - such fragments render unreliably in Obsidian (user-confirmed). Either use the Unicode character in plain text (`(≤400 нм)`, `P ≥ half-max`) or put the whole expression inside one inline formula (`$\lambda \le 400$ нм`).
 - After formulas that introduce or combine symbols, explain notation with a separate, non-indented `Где:` block followed immediately by non-indented bullet items, for example `Где:` then `- $\beta$ - ...` and `- $k_0$ - ...`. Do not indent `Где:` or its bullets under a previous list item, because Obsidian will render them as nested bullets.
 - Never fold formula notation into an inline prose sentence such as "где $X$ — ..., $Y$ — ...". Always use the `Где:` block with exactly one symbol per bullet, even for just two or three symbols, in the form `- $symbol$ - description` (symbol, space-hyphen-space, then the meaning). Link every symbol that has a term note, for example `- $\mathbf{P}$ - [[материальная поляризация среды (P)]]` and `- $\varepsilon_0$ - [[диэлектрическая проницаемость свободного пространства (вакуума)]]`.
 
@@ -38,6 +39,11 @@ Use this reference before creating or editing Obsidian notes.
 - Add physical or engineering meaning.
 - Add key formula, packet field, geometry, applicability, or limitation when relevant.
 - Keep small standalone term notes focused; link out for deeper context.
+
+## Paper Notes
+
+- In notes that analyze or reproduce a paper, never cite the paper's internals bare: "формула (1)", "рис. 2", "п. 3" must say whose they are - "формула (1) статьи [[paper-note]]", "рис. 2 статьи" - because the note has its own figures/formulas and bare numbers are ambiguous. Referencing the source paper's own formulas, paragraphs, and headings is allowed and encouraged; when the note reproduces that formula in its own section, also point to that section ("воспроизведена в п. 2.1").
+- Reproduction/method notes need a geometry/model schematic per modeling level (what exactly is being solved: layers, periods, sizes, incidence) - a reader should not have to reconstruct the solved structure from prose; generate a simple matplotlib scheme into the note's media folder if the source has none.
 
 ## Mermaid Diagrams
 

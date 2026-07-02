@@ -44,6 +44,7 @@ Use this reference before creating or editing Obsidian notes.
 
 - In notes that analyze or reproduce a paper, never cite the paper's internals bare: "формула (1)", "рис. 2", "п. 3" must say whose they are - "формула (1) статьи [[paper-note]]", "рис. 2 статьи" - because the note has its own figures/formulas and bare numbers are ambiguous. Referencing the source paper's own formulas, paragraphs, and headings is allowed and encouraged; when the note reproduces that formula in its own section, also point to that section ("воспроизведена в п. 2.1").
 - Reproduction/method notes need a geometry/model schematic per modeling level (what exactly is being solved: layers, periods, sizes, incidence) - a reader should not have to reconstruct the solved structure from prose; generate a simple matplotlib scheme into the note's media folder if the source has none.
+- Never leave bare internal cross-references like "см. п. 3.3", "та же геометрия, что выше", "см. Схему 3" - they force the reader to scroll-hunt (explicit user requirement). Make them clickable: same-note heading anchor `[[#3.3 Full heading text|п. 3.3]]`, or link/re-embed the referenced figure (a small `![[scheme.png|420]]` copy on its own line is fine). Exception: inside Markdown table cells keep plain text (aliased links break tables). For heading anchors to work, keep headings free of wikilinks - link terms in the body near the heading instead of inside it.
 
 ## Mermaid Diagrams
 

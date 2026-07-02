@@ -45,6 +45,8 @@ When reorganizing term notes, do not assume every term note already lives in a f
 
 Cleaning junk is destructive: identify candidates, verify, then delete, and report exactly what was removed. Respect any explicit user boundary (e.g. "keep and just list") over your own judgment.
 
+Deletion consent (explicit user rule): delete a file only when it is evident from content-level comparison (diff of full text, not file size or timestamps) that the surviving copy genuinely supersedes it — and even then, first notify the user with the evidence and ask whether deletion is allowed. Do not delete or trash verified duplicates silently in the same turn; present the classified list and wait for confirmation. Moving to the vault `.trash/` counts as deletion for this rule.
+
 Treat as junk and safe to delete:
 - temp extraction artifacts: `_tmp*`, `tmp_*`, `*.tmp` (including orphaned Word temp files `~WRL*.tmp`);
 - editor/auto backups: `*~` (e.g. `.kra~`, `.psd~`, `.bmp~`), `*.bak`/`*.orig`/`*.old`/`*.swp` outside intentional backup folders — but verify the real original exists before deleting any `*~` backup;
@@ -61,7 +63,7 @@ Never delete without checking — these look like junk but are not:
 
 Google Drive / Obsidian Sync leave duplicate files named `X (conflict YYYY-MM-DD-HH-MM-SS).ext` (timestamps may stack). Never delete them in bulk or by size heuristic — a conflict copy can hold edits made on another device that exist nowhere else.
 
-For each conflict file, derive the base by stripping every ` (conflict ...)` segment, then diff against it and classify:
+For each conflict file, derive the base by stripping every ` (conflict ...)` segment, then diff against it and classify. Classification only prepares the proposal — actual deletion of any category below still requires the user's go-ahead per the deletion-consent rule above:
 - base missing → the conflict copy is the only copy and holds real content; do not delete it. Rename it to the clean base name to drop the `(conflict ...)` suffix, first confirming the clean name is free and that no note links to the suffixed name (otherwise fix or keep the links);
 - identical to base → pure duplicate, delete the conflict copy;
 - conflict is a strict subset / older snapshot (only removals, trivial reflow, or raw pre-cleanup OCR vs cleaned LaTeX) → the base is canonical, delete the conflict copy;

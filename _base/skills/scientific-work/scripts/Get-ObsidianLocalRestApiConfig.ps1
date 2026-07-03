@@ -22,7 +22,12 @@ if (-not $VaultRoot) {
     }
 }
 
-$configPath = Join-Path $VaultRoot ".codex\skills\scientific-work\secrets\obsidian-local-rest-api.json"
+$configPath = Join-Path $VaultRoot ".codex\secrets\scientific-work\obsidian-local-rest-api.json"
+$legacyConfigPath = Join-Path $VaultRoot ".codex\skills\scientific-work\secrets\obsidian-local-rest-api.json"
+
+if ((-not (Test-Path -LiteralPath $configPath -PathType Leaf)) -and (Test-Path -LiteralPath $legacyConfigPath -PathType Leaf)) {
+    $configPath = $legacyConfigPath
+}
 
 if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
     throw "Obsidian Local REST API config not found: $configPath"

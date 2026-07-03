@@ -15,31 +15,31 @@ Reusable UTF-8-safe helpers for searching and reading the Obsidian vault from Po
 ## Examples
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Read-Note.ps1" "PhD\Кандидатский экзамен\1. Теория колебаний\11.md" -First 80
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Read-Note.ps1" "PhD\Кандидатский экзамен\1. Теория колебаний\11.md" -First 80
 ```
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Search-Vault.ps1" "показатель Ляпунова" -Roots PhD -Context 2 -Literal
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Search-Vault.ps1" "показатель Ляпунова" -Roots PhD -Context 2 -Literal
 ```
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Find-Term.ps1" "показатель Ляпунова" -Roots PhD
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Find-Term.ps1" "показатель Ляпунова" -Roots PhD
 ```
 
 Use `-AllVault` when the term may appear outside the default research area.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Find-ExistingPaperPdf.ps1" -Doi "10.1063/5.0082094" -Year 2022 -Title "Ultra-compact nonvolatile plasmonic phase change modulators and switches with dual electrical-optical functionality" -Root "."
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Find-ExistingPaperPdf.ps1" -Doi "10.1063/5.0082094" -Year 2022 -Title "Ultra-compact nonvolatile plasmonic phase change modulators and switches with dual electrical-optical functionality" -Root "."
 ```
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Install-ObsidianLocalRestApi.ps1" -Enable
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Install-ObsidianLocalRestApi.ps1" -Enable
 ```
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Test-ObsidianLocalRestApi.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Test-ObsidianLocalRestApi.ps1"
 ```
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Get-ObsidianLocalRestApiConfig.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Get-ObsidianLocalRestApiConfig.ps1"
 ```

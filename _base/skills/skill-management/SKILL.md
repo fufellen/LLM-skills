@@ -23,6 +23,8 @@ Use a two-layer skill architecture:
 - Codex adapters live at `<skill-name>/SKILL.md`, with Codex-only `agents/openai.yaml` next to them. Keep these files thin: frontmatter, trigger wording, and a pointer to the shared base.
 - Claude adapters live at `.claude/skills/<skill-name>/SKILL.md`. Keep these files thin: Claude trigger wording and a pointer to the same shared base.
 - Other AI-specific adapters should follow the same pattern: a minimal platform-specific wrapper that points to `_base/skills/<skill-name>/`.
+- Keep adapter folders thin too. A Codex adapter folder should contain only `SKILL.md` plus platform metadata such as `agents/openai.yaml`; a Claude adapter folder should contain only its `SKILL.md` unless Claude-specific metadata becomes necessary. Do not keep `references/`, `scripts/`, `assets/`, `secrets/`, caches, generated logs, or durable workflow files inside adapter folders.
+- Store synced local credentials outside adapter folders, for example under `.codex/secrets/<skill-name>/`, and document the path from the shared base when a script needs it. Keep legacy adapter-local secret paths only as temporary migration fallbacks.
 
 When changing skill behavior, edit the shared base first. Edit Codex, Claude, or other adapters only when platform-specific trigger text, metadata, or pointer paths need to change. Do not copy durable rules into more than one adapter.
 

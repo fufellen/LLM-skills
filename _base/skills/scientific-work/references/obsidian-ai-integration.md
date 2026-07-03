@@ -11,7 +11,7 @@ Use this reference when connecting Codex or another AI assistant to the user's O
    - Graph view
    - Properties
    - Bases
-2. Use local `scientific-work/scripts/` helpers as a filesystem fallback for UTF-8-safe note reads and exact search.
+2. Use local `scripts/` helpers from this shared-base skill as a filesystem fallback for UTF-8-safe note reads and exact search.
 3. Use `Obsidian Local REST API` when an external agent needs live Obsidian access, metadata, or MCP.
 
 ## Installed Bridge
@@ -33,8 +33,10 @@ The user explicitly chose to keep the Obsidian Local REST API key in Google Driv
 Standard synced config path:
 
 ```text
-.codex/skills/scientific-work/secrets/obsidian-local-rest-api.json
+.codex/secrets/scientific-work/obsidian-local-rest-api.json
 ```
+
+Older checkouts may still have `.codex/skills/scientific-work/secrets/obsidian-local-rest-api.json`; migrate that file to the standard path so the `scientific-work` adapter remains only a thin pointer.
 
 Expected fields:
 
@@ -46,7 +48,7 @@ Expected fields:
 }
 ```
 
-When using Obsidian Local REST API or MCP, read the API key from this config path first. Do not print the full key in user-facing responses unless the user explicitly asks to inspect it.
+When using Obsidian Local REST API or MCP, read the API key from the standard config path first. Do not print the full key in user-facing responses unless the user explicitly asks to inspect it.
 
 ## Helper Scripts
 
@@ -58,13 +60,13 @@ When using Obsidian Local REST API or MCP, read the API key from this config pat
 Example install/update:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Install-ObsidianLocalRestApi.ps1" -Enable
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Install-ObsidianLocalRestApi.ps1" -Enable
 ```
 
 Example status check without exposing secrets:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\scientific-work\scripts\Test-ObsidianLocalRestApi.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skills\scientific-work\scripts\Test-ObsidianLocalRestApi.ps1"
 ```
 
 If the plugin is enabled and Obsidian is running, but `api_key_configured` is false, ask the user to paste the key from Obsidian settings into the synced config path above.

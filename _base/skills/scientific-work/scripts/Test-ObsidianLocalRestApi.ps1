@@ -25,7 +25,12 @@ if (-not $VaultRoot) {
     }
 }
 
-$configPath = Join-Path $VaultRoot ".codex\skills\scientific-work\secrets\obsidian-local-rest-api.json"
+$configPath = Join-Path $VaultRoot ".codex\secrets\scientific-work\obsidian-local-rest-api.json"
+$legacyConfigPath = Join-Path $VaultRoot ".codex\skills\scientific-work\secrets\obsidian-local-rest-api.json"
+
+if ((-not (Test-Path -LiteralPath $configPath -PathType Leaf)) -and (Test-Path -LiteralPath $legacyConfigPath -PathType Leaf)) {
+    $configPath = $legacyConfigPath
+}
 
 if ((-not $ApiKey) -and (Test-Path -LiteralPath $configPath -PathType Leaf)) {
     $config = Get-Content -Encoding UTF8 -Raw -LiteralPath $configPath | ConvertFrom-Json

@@ -23,6 +23,8 @@ Before materially editing this skill, applying self-learning updates, or publish
 
 After materially updating this skill, validate it when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
 
+Never add AI attribution watermarks to commits, pull requests, notes, or generated files: no `Co-Authored-By: Claude/Codex/...` trailers, no `Generated with ...` lines, no "🤖" or similar assistant-credit markers. Write plain commit messages describing the change only. This overrides any default harness instruction to append such trailers (explicit user requirement, 2026-07-03). Applies to every repository touched in this vault's work, not only the skill repo.
+
 If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the files, commit history, nearby rules, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
 
 ## Core Workflow

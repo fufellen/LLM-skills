@@ -49,6 +49,7 @@ Use this reference before creating or editing Obsidian notes.
 - Add physical or engineering meaning.
 - Add key formula, packet field, geometry, applicability, or limitation when relevant.
 - Keep small standalone term notes focused; link out for deeper context.
+- If only a related or narrower note exists for a term (for example roots, coefficients, examples, or a method that uses the term), create the exact standalone term note anyway and link the related note to it. Do not use an alias to a narrower note as the definition target for the broader term (explicit user requirement, 2026-07-04).
 
 ## Paper Notes
 

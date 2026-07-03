@@ -11,6 +11,7 @@ Use this reference before creating or editing Obsidian notes.
 - After a short label line ending with `:`, place the following paragraph, list, or code block on the next line without an empty line. Example: `Полезные ключи:` followed immediately by `- ...`.
 - Prefer `####` subsections inside existing structured notes.
 - Do not leave an empty line after a heading; place the following paragraph, list, or code block on the next line directly under the heading, the same as after a label line.
+- Do not leave an empty line between a display formula and its `Где:` notation block: `Где:` goes on the next line immediately after the closing `$$` (explicit user requirement, 2026-07-03). When touching an existing note, remove such blank lines in the edited fragments.
 - Use LaTeX math syntax for formulas, not fenced code blocks. Obsidian renders it with MathJax, so the engine is not KaTeX; write plain LaTeX math.
 - For inline formulas in Obsidian notes, use `$...$`, not `\(...\)`: in this vault `\(...\)` can remain visible in rendered text instead of displaying as math. Use `$$...$$` for display equations.
 - Do not embed bare math operators like `$\le$`, `$\ge$`, `$\sim$` glued into prose (e.g. `($\le$400 нм)` or `$P\ge$half-max`) - such fragments render unreliably in Obsidian (user-confirmed). Either use the Unicode character in plain text (`(≤400 нм)`, `P ≥ half-max`) or put the whole expression inside one inline formula (`$\lambda \le 400$ нм`).

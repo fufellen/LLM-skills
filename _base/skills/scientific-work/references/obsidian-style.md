@@ -7,6 +7,7 @@ Use this reference before creating or editing Obsidian notes.
 - Write in Russian by default.
 - Keep English technical terms next to Russian terms when useful.
 - Use concise Markdown that is useful as a note, not chat transcript prose.
+- Build explanations as a smooth narrative: motivate each new object, operation, or symbol before it appears, so nothing shows up "ни с того ни с сего" (out of nowhere). When a non-obvious step enters a derivation - e.g. "умножение поля на $\varepsilon(x)$", a new matrix, a substitution - first give one or two sentences on where it comes from (which equation, definition, or physical fact forces it), then perform the step. Lead the reader from the familiar to the new; prefer a short bridging sentence/paragraph over an abrupt jump, even in terse term notes (explicit user requirement, 2026-07-03).
 - Do not add a top-level heading that duplicates the note filename; Obsidian already shows the file title, and repeating it as `# ...` reads as a duplicate title.
 - After a short label line ending with `:`, place the following paragraph, list, or code block on the next line without an empty line. Example: `Полезные ключи:` followed immediately by `- ...`.
 - Prefer `####` subsections inside existing structured notes.

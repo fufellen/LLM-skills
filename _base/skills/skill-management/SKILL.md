@@ -45,8 +45,9 @@ After materially creating or updating user-owned skills, commit and push the ski
 1. Check `git status --short`.
 2. Make sure `secrets/`, API keys, tokens, local credentials, caches, and generated logs are not staged.
 3. Stage only relevant skill files and repo metadata.
-4. Use a concise commit message describing the skill update.
-5. Push to `origin main`.
+4. Split commits by semantic block when the update contains independent concerns; avoid vague rollups such as "skill update" when separate commits like "document commit policy" and "refresh skill inventory" would be clearer.
+5. Use concise commit messages that briefly describe the concrete change.
+6. Push to `origin main`.
 
 If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
 

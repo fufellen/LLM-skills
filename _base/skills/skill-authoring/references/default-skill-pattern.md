@@ -27,7 +27,7 @@ When <domain> work reveals a durable, reusable lesson, use the `skill-learning` 
 
 Before materially editing this skill, applying self-learning updates, or publishing changes, run the owning repository's freshness check: fetch `origin main`, compare local `HEAD` with `origin/main`, fast-forward if local is behind and the relevant working tree is clean, and inspect dirty/ahead/diverged states before continuing.
 
-After materially updating this skill, validate the shared base and adapters when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
+After materially updating this skill, validate the shared base and adapters when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata. Split commits by semantic block when the update contains independent concerns; avoid vague rollups such as "skill update".
 
 If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the files, commit history, nearby rules, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.
 ```
@@ -46,7 +46,7 @@ Use this checklist before committing user-owned skill changes:
 6. Confirm `secrets/`, credentials, caches, generated logs, and protected source material are not staged.
 7. Stage only relevant skill files.
 8. Run `git diff --cached --check`.
-9. Commit with a concise message.
+9. Commit with concise messages that each describe one semantic block.
 10. Push to `origin main`.
 
 ## Useful Commands

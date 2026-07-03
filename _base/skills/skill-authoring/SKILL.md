@@ -29,6 +29,7 @@ Read `references/default-skill-pattern.md` before creating a new skill or adding
 - Add or update Claude adapters under `.claude/skills/<skill-name>/SKILL.md` when Claude should expose the same shared base.
 - Include a compact self-improvement and publishing section in every non-static shared-base skill.
 - Validate changed skills when feasible, stage only relevant files, commit, and push by default unless the user explicitly says not to.
+- Split commits by semantic block when skill work contains independent concerns. Avoid vague rollups such as "skill update"; prefer separate concise commits for changes like "add publishing policy", "update protocol workflow", or "refresh Codex adapter".
 - When mirroring a personal skill to a corporate repository, keep the personal repository copy as the safety copy unless the user explicitly asks to remove it. Corporate publishing problems should not risk losing the user's skill work.
 
 ## Freshness Check
@@ -51,7 +52,7 @@ Before materially editing a user-owned skill, applying self-learning updates, or
 6. Add or update shared-base references/scripts/assets only when they remove real future repetition.
 7. Validate the shared base and adapters with `quick_validate.py`; test scripts that were added or changed.
 8. Update `skill-management` when creating a durable user-owned skill so the synced skill inventory and routing stay current.
-9. Commit and push the relevant shared-base and adapter files according to the publishing policy.
+9. Commit and push the relevant shared-base and adapter files according to the publishing policy, using separate semantic commits when the changes cover independent concerns.
 
 ## Update Workflow
 

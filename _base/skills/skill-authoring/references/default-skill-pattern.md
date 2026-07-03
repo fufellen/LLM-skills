@@ -14,6 +14,8 @@ Every durable user-owned skill should have:
 - Codex `agents/openai.yaml` with `display_name`, `short_description`, and `default_prompt`;
 - `.claude/skills/<skill-name>/SKILL.md` as a thin Claude adapter when Claude should expose the same skill.
 
+Durable skills should live in the synced Google Drive skill repository or in a project Git repository. Local-only skill folders should contain only thin pointers/adapters, caches, or system-managed skills; do not put durable behavior there.
+
 Avoid extra README, changelog, installation, or quick-reference files unless the user explicitly asks for them. Do not duplicate durable rules across Codex and Claude adapters.
 
 ## Default Self-Improvement Section

@@ -23,6 +23,7 @@ Read `references/default-skill-pattern.md` before creating a new skill or adding
 
 - Create user-owned skills under `C:\Users\User\Мой диск\Obsidian\.codex\skills` unless the user explicitly requests another location.
 - Prefer the synced Google Drive skill copy over local bootstrap/system copies.
+- Never store durable user-owned skills only in local non-synced skill folders. Use the Google Drive skill repository or a project Git repository as the durable source, and keep any local-only skill entry as a thin pointer or adapter.
 - Use the system `init_skill.py` for new skills; do not hand-roll the initial directory unless the generator is unavailable.
 - Keep AI-specific adapter `SKILL.md` files thin. Put durable behavior in the shared base `SKILL.md`, growing guidance in shared-base `references/`, repeatable deterministic utilities in shared-base `scripts/`, and reusable templates/media in shared-base `assets/`.
 - Add Codex `agents/openai.yaml` with a clear display name, short description, and default prompt when a Codex adapter exists.

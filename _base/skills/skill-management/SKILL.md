@@ -119,8 +119,9 @@ For LTspice skill reads, edits, validation, commits, and pushes, work in the cor
 
 - When creating a new user skill, place it under the Google Drive synced skill folder above unless the user explicitly asks for another location.
 - When updating an existing user skill, prefer the Google Drive copy if one exists.
-- Do not create independent duplicated skill instructions under `C:\Users\User\.codex\skills` unless the user explicitly asks.
-- Treat local non-synced skill folders as temporary bootstrap pointers, cache, or system-managed content, not as the durable home for user preferences.
+- Never store durable user-owned skills only in local non-synced skill folders such as `C:\Users\User\.codex\skills`.
+- Durable skills belong either in the Google Drive synced skill repository or in the Git repository of the project they serve.
+- Treat local non-synced skill folders as temporary bootstrap pointers, thin adapters to the durable source, cache, or system-managed content, not as the durable home for user preferences.
 - Do not commit or push synced secrets; keep `secrets/` folders and local credential files ignored.
 - If a user gives a durable preference about how skills should be created, updated, named, synced, or used, add it to the shared base for this skill or the relevant domain skill without waiting for another reminder.
 - When creating or materially updating user-owned skills, use `skill-authoring` as the personal default workflow, alongside the system `skill-creator` mechanics.

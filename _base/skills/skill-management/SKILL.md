@@ -31,7 +31,7 @@ When changing skill behavior, edit the shared base first. Edit Codex, Claude, or
 The Google Drive skill folder is also mirrored to GitHub:
 
 ```text
-https://github.com/fufellen/codex-skills
+https://github.com/fufellen/LLM-skills
 ```
 
 Local git repository path:
@@ -67,7 +67,7 @@ The corporate skills repository is stored as a Git submodule inside the personal
 
 ```text
 Corporate source of truth: https://github.com/ak-tech-electronics/codex-skills
-Personal repo with submodule: https://github.com/fufellen/codex-skills
+Personal repo with submodule: https://github.com/fufellen/LLM-skills
 Submodule path in personal repo: nto-formatting
 ```
 

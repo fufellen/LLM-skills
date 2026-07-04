@@ -207,6 +207,12 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\phd-lerer-re
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\markdown-to-docx
 ```
 
+- `optics-spectroscopy-article` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\optics-spectroscopy-article
+```
+
 - Presentation workflow rules for scientific/popular-science decks currently live at:
 
 ```text
@@ -262,5 +268,6 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - user-owned skill creation/update workflow and default self-improvement/publishing policy: `skill-authoring`;
 - Obsidian `.canvas` creation, validation, and visual tree layout: `obsidian-canvas`;
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
+- journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

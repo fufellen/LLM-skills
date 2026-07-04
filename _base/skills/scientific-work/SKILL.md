@@ -94,6 +94,7 @@ Do not store secrets, credentials, private raw datasets, unpublished full measur
   - `scripts/Install-ObsidianLocalRestApi.ps1` installs or updates the Obsidian Local REST API plugin release files inside the synced vault.
   - `scripts/Get-ObsidianLocalRestApiConfig.ps1` reads the synced Obsidian Local REST API config and reports whether the API key is configured.
   - `scripts/Test-ObsidianLocalRestApi.ps1` checks whether the local Obsidian REST/MCP endpoint is reachable.
+  - `scripts/Invoke-ObsidianLocalRestApi.ps1` calls the Obsidian Local REST API using the synced config; use it for compact live-vault reads/writes when Obsidian is running instead of manually composing curl commands.
 - When a helper command or one-off script for vault, note, search, encoding, validation, or AI-tooling work is reusable, promote it into this Google Drive skill's `scripts/` directory instead of leaving it only in chat history. Keep reusable helpers in this canonical skill, test them, then add or update the corresponding bullet in this section so future runs discover and use them.
 - If direct `.ps1` execution is blocked by Windows Execution Policy, run scripts with `powershell -NoProfile -ExecutionPolicy Bypass -File <script> ...` rather than changing the user's global policy.
 - Use these scripts especially when answering term questions, candidate-exam-ticket questions, or any task that requires searching Russian-language notes.

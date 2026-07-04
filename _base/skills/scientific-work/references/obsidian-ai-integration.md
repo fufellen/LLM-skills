@@ -112,6 +112,7 @@ If the plugin is enabled and Obsidian is running, but `api_key_configured` is fa
 
 - Exact local text search: `Search-Vault.ps1` or Obsidian Search.
 - Term-note workflow: use scripts/API to gather candidate notes, existing definitions, backlinks, and target paths; spend model tokens on synthesis and the final diff, not on repeated manual filesystem plumbing.
+- For term-note search, exclude `*.excalidraw.md` and `*.excalidraw.restored.md` on the first pass unless the task explicitly concerns diagrams; Excalidraw compressed JSON can dominate results and waste context, while useful diagram labels can be searched in a second targeted pass.
 - Structured note lists/tables: Obsidian Bases first, Dataview if Bases is not enough.
 - Semantic discovery: Smart Connections, if installed and configured by the user.
 - External AI tool access to the live vault: Obsidian Local REST API / MCP by default, because Obsidian should be open with the synced vault on each machine.

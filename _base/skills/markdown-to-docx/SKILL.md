@@ -26,6 +26,43 @@ python ".\scripts\convert_md_to_docx.py" "input.md" --output "output.docx" --ref
 - For final scientific papers, replace important display equations with Word equation objects when feasible. If that is not feasible in the current run, leave a clear follow-up note in the document or report it to the user.
 - When generating a camera-ready document, unzip or programmatically inspect `word/document.xml` and search for `\|`, `\ |`, raw formula underscores, and raw Markdown markers before saying the DOCX is ready.
 
+## TeX-Math Manuscripts (lesson 2026-07-04)
+
+For documents whose math must become real Word equations (journal
+manuscripts, theses), do NOT use the gfm+sanitizer path: the sanitizer
+mangles `$...$` content (splits `$K_{1,2}$`, turns subscripts into literal
+text), and the `gfm` reader leaves `--` unconverted. Instead run pandoc
+directly on the preserved source:
+
+```powershell
+pandoc "input.md" --from markdown-smart --to docx --standalone --wrap=none --resource-path "<folder with figures>" --output "output.docx"
+```
+
+Rules for the Markdown source in this mode:
+
+- no `\operatorname{}` or `\text{}` inside math - pandoc's OMML output
+  shows them as literal `operatorname` text and quoted subscripts
+  (`ε_"eff"`); use `\mathrm{}`;
+- write final punctuation literally (the reader has smart disabled): if the
+  user wants plain "-", put "-" in the source, never `--`/`—`;
+- keep display formulas shallow (introduce shorthand symbols rather than
+  nesting parentheses inside `\frac`);
+- avoid commas in subscripts of inline math (`$K_{1,2}$` is fragile; write
+  `$K_1$ и $K_2$`).
+
+Post-process with python-docx: body styles 12 pt / 1.5 spacing / journal
+font, and recolor Heading/Title styles to black - pandoc's default
+reference doc ships blue headings, which users read as an AI tell.
+
+DOCX QA for this mode - scan `word/document.xml` and `word/styles.xml` for:
+`operatorname`, `--`, `—`, `<m:t>"`, blue heading colors
+(`4F81BD|345A8A|365F91|2E74B5|1F4D78` outside Hyperlink/TOCHeading), and
+confirm `<m:oMath>` count roughly matches the number of formulas.
+
+If Word COM is used to export PDF, `Quit()` may leave a zombie WINWORD.EXE
+that locks the DOCX against the next conversion - stop lingering WINWORD
+processes after export.
+
 ## Detailed Guidance
 
 Read `references/conversion-checklist.md` when the task involves a publication, report, thesis material, image captions, equations, tables, or a user complaint about bad DOCX formatting.

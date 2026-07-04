@@ -97,6 +97,32 @@ permissions.
    fix. Only then call the draft submission-ready.
 8. Record the resulting files and their status in the checkpoint.
 
+## User Feedback Lessons (2026-07-04, manuscript review by user)
+
+Hard requirements from the user's review of the first generated DOCX; check
+every one of them before calling a DOCX ready:
+
+1. **Headings must be black.** Pandoc/Word default blue headings are an
+   instant "AI-generated" tell. Recolor Heading/Title styles to RGB(0,0,0)
+   (python-docx pass); standard blue hyperlinks in references are fine.
+2. **Only the plain hyphen "-".** No TeX-style `--` and no long dashes
+   `—`/`–` anywhere in the manuscript text - the user wants ordinary "-"
+   even where Russian typography would use an em dash. Write it literally
+   in the source; do not rely on smart punctuation.
+3. **Word-safe math only.** No `\operatorname{}` and no `\text{}` inside
+   TeX math - via pandoc they surface in Word as literal `operatorname` and
+   quoted subscripts (`ε_"eff"`). Use `\mathrm{}` (e.g.
+   `\mathrm{Im}\,\varepsilon_{\mathrm{eff}}`). Keep display formulas simple
+   (introduce shorthand symbols instead of deep nested fractions).
+4. **Convert with plain pandoc markdown, not the gfm+sanitizer path** - see
+   the corresponding lesson in `markdown-to-docx`.
+5. **QA the produced DOCX by inspecting `word/document.xml` and
+   `word/styles.xml`**: zero matches for `operatorname`, `--`, `—`,
+   `<m:t>"`; no blue heading colors; equations present as `<m:oMath>` with
+   stacked fractions `<m:f>`; then verify the title block against the
+   sample in ospr-7.pdf (`© И. О. Фамилия¹, И. О. Фамилия¹,*` +
+   `*e-mail:`).
+
 ## Output Conventions
 
 - Keep the article draft note, the generated DOCX/PDF, and the submission

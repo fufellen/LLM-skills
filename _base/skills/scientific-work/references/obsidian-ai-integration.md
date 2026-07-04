@@ -121,6 +121,16 @@ If the plugin is enabled and Obsidian is running, but `api_key_configured` is fa
 
 For recurring Obsidian tasks, prefer a two-layer workflow: small deterministic scripts or Local REST API calls perform search/read/write/validation, and Codex only decides the content and checks the resulting diff. Avoid dumping large note bodies into context when a script can return titles, paths, headings, link status, or short snippets first. Fall back to direct filesystem edits only when Obsidian is not running, the API is unavailable, or exact patch control is safer.
 
+## Self-Learning
+
+Before nontrivial Obsidian API/MCP work, read `references/obsidian-ai-integration-lessons.md` together with this file. After the task, if a reusable lesson appears, update the skill before finishing:
+
+- Add durable workflow rules, endpoint behavior, search heuristics, failure modes, and validation checks to `references/obsidian-ai-integration-lessons.md`.
+- Promote repeated command sequences, wrappers, parsers, validators, or safe edit flows into `scripts/` instead of leaving them as chat-only shell history.
+- Update this reference when the lesson changes the default decision rule, setup checklist, safety policy, or cross-PC expectation.
+- Do not save API keys, tokens, private note contents, raw confidential material, generated logs, or one-off facts in the skill.
+- Validate changed scripts or references when feasible, then commit and push the relevant skill files under the `skill-learning` / `skill-management` publishing rules.
+
 ## Safety
 
 - Do not create additional copies of API keys, bearer tokens, or generated credentials outside the standard synced config path unless the user explicitly asks.

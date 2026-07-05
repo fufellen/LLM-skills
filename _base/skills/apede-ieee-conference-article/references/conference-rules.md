@@ -165,6 +165,25 @@ if there are >=2 sub-topics.
 - Table styles provided: table head, table column head, table column subhead,
   table copy, table footnote. Use **letters for table footnotes** (a, b, ...).
 - Do not put footnotes in the abstract or reference list.
+- **Border style is horizontal rules only** (like the template's "TABLE I -
+  Table Type Styles" example): a rule at the very top, a rule under the
+  column-head row, and a rule at the bottom - **no vertical lines and no
+  inner rules between body rows.** A full box grid ("Table Grid") is the
+  most common wrong-looking output from generators - do not use it.
+- **Table body text is 8 pt.** If the table is too wide to fit one column at
+  8 pt, make it span BOTH columns (see below) rather than shrinking the font.
+
+## Wide figures and tables (both-column span)
+
+- "Large figures and tables may span across both columns." A wide table or
+  figure must be placed in a **full-width (one-column) region** of the
+  two-column page, not squeezed into a single column at an unreadable font.
+- In a python-docx builder this means bracketing the float with two
+  CONTINUOUS section breaks: switch to a 1-column section, emit the caption
+  + table/figure, then switch back to 2 columns. Verify in the built file
+  that `w:cols w:num` toggles 2 -> 1 -> 2 around each wide float.
+- Text inside a spanned figure stays at the IEEE figure-label size (8 pt
+  Times New Roman); a spanned table stays at 8 pt.
 
 ## References (IEEE numbered style)
 
@@ -230,7 +249,12 @@ Format examples (from the template):
       each; Roman symbols italic, Greek not; long dash for minus.
 - [ ] Figures: cited before placement; caption BELOW; "Fig. 1"; axes with words
       + units in parentheses; >=300 dpi / vector; each figure a separate file.
-- [ ] Tables: head ABOVE; letter footnotes; real Word tables.
+- [ ] Body text is JUSTIFIED (both edges), not left-aligned.
+- [ ] Tables: head ABOVE; letter footnotes; real Word tables; horizontal
+      rules only (no vertical/grid lines); body text 8 pt.
+- [ ] Wide tables/figures span BOTH columns (1-column region), not shrunk.
+- [ ] Display equations render at the BODY font size (10 pt), not the Word
+      default 11 pt - OMML runs must carry an explicit size.
 - [ ] References: IEEE numbered [1] in citation order; punctuation after the
       bracket; all authors unless >=6 (then et al.); title first-word-only caps.
 - [ ] **ALL template guidance text removed** (grep for stock sentences).

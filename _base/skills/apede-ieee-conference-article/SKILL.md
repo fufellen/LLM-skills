@@ -227,6 +227,14 @@ of them; automate the checks where a recipe is given.
     the IEEE copyright-notice placeholder and the first page a sponsors
     text box (see references/conference-rules.md) - a digest built only
     from the body text misses them.
+15. **Layout defects a generator produces that must be checked against the
+    template example, not eyeballed** (all verifiable in the built DOCX):
+    body text must be JUSTIFIED not left-aligned; display equations must
+    carry an explicit run size equal to the body size (Word defaults OMML
+    to 11 pt while body is 10 pt); tables use horizontal rules only (no box
+    grid) at 8 pt; wide tables/figures span both columns via a 1-column
+    continuous section. Compare your output side by side with the
+    template's own "TABLE I" and figure example before calling it done.
 13. **EIM/PCM formula artifacts are submission blockers.** In DOCX builds,
     propagation formulas must preserve division: `n_eff = beta/k0`,
     `k0 = 2*pi/lambda0`, `L_power = 1/(2 Im beta) =

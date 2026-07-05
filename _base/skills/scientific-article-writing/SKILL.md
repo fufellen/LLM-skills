@@ -127,6 +127,16 @@ Run these on every manuscript regardless of venue:
   вытекающая мода; near cutoff -> вблизи отсечки; claim ->
   утверждение / заявляемый результат; reduced-order -> приближенный
   (редуцированный); branch tracking -> отслеживание модовой ветви.
+- **Working-vocabulary leakage (English manuscripts).** The mirror
+  problem: an English version written from a Russian working draft
+  inherits insider calques that mean nothing to an international reader.
+  Watch for: "local" meaning "our in-house runs" ("local COMSOL data" ->
+  "our/reference COMSOL runs"), "referred to locally as" -> "known in the
+  Russian-language literature as", working-title jargon that was never
+  introduced ("failure atlas" -> spell out the meaning), compound
+  shorthand ("COMSOL-side step" -> "a step on the FEM side"). Also scan
+  for British spellings (IEEE uses American English), "allows to /
+  possibility to / it is necessary to note", doubled words, and "data is".
 
 ## Multi-Language Drafts
 

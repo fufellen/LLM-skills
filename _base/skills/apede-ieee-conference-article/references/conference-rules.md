@@ -5,7 +5,11 @@ Source: the official template supplied for APEDE,
 which is the **stock IEEE two-column conference template** ("Paper Title,
 use style: paper title" / "This electronic document is a live template ...").
 The digest below is that template's prescriptions, reorganized as a
-checklist. Recheck before an actual submission:
+checklist. NOTE: parts of it (table rule style, page-1 footer copyright
+line, sponsors text box) come from VIEWING the template rendered to images,
+not from its extracted text - re-view the template visually when updating
+this digest, per `scientific-article-writing` "Authoring A Venue Skill".
+Recheck before an actual submission:
 - IEEE templates: https://www.ieee.org/conferences/publishing/templates.html
 - APEDE current-year call for papers (page limit, portal, PDF checker).
 

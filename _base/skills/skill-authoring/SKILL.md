@@ -47,6 +47,7 @@ Before materially editing a user-owned skill, applying self-learning updates, or
 
 1. Choose a short lowercase hyphen-case skill name. Avoid names that collide with system skills; use a clearer personal wrapper name when needed.
 2. Create or update `_base/skills/<skill-name>/SKILL.md` as the shared source of durable behavior.
+   - When the skill is built FROM a source document (an official template, spec, style guide, or example file), do not digest it by extracted text alone. RENDER it to images and inspect it visually too: visual conventions - table rule style, heading appearance, column layout, caption placement, equation numbering, footers/headers, text boxes - are invisible in extracted text and are exactly what gets missed. For DOCX/PDF use `scientific-article-writing` scripts/render_docx_pages.py; for a web page, screenshot it. Capture the visual rules in the skill, not only the textual ones.
 3. Create or update the Codex adapter at `<skill-name>/SKILL.md`; keep it to frontmatter, trigger wording, and a pointer to the shared base.
 4. Create or update `.claude/skills/<skill-name>/SKILL.md` when Claude should expose the same skill; keep it to Claude trigger wording and a pointer to the shared base.
 5. Add the default self-improvement and publishing section from `references/default-skill-pattern.md` to the shared base, adapting only the domain-specific lesson examples and protected-content list.

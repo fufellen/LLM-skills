@@ -179,6 +179,28 @@ Run these on every manuscript regardless of venue:
   for British spellings (IEEE uses American English), "allows to /
   possibility to / it is necessary to note", doubled words, and "data is".
 
+## Authoring A Venue Skill From The Journal/Conference Template
+
+This applies when BUILDING a new venue skill (e.g. `apede-...`,
+`optics-...`) from the journal's or conference's official template or
+author guidelines - not when writing a paper.
+
+- **Inspect the official template/rules document visually, not only by
+  extracted text.** Reading the text of a template `.docx`/`.pdf` captures
+  the prose rules but MISSES the visual conventions, which are usually the
+  ones that get a paper bounced or that the user later has to point out by
+  hand: the table rule style (e.g. horizontal rules only vs a full grid),
+  heading appearance, one/two-column layout, caption placement, figure/axis
+  style, equation numbering position, and non-body parts (page footer
+  copyright line, sponsors/funding text box, running headers). Render the
+  template to images and LOOK at it (scripts/render_docx_pages.py for
+  DOCX/PDF; screenshot the live rules web page), then encode those visual
+  rules in the skill and its `references/`.
+- Keep the template's own example table and example figure as the reference
+  the skill tells future runs to compare their output against.
+- Recheck the live author-guidelines page before real submissions; template
+  files bundled in a repo go stale.
+
 ## Multi-Language Drafts
 
 - The pair (RU draft, EN draft) must stay scientifically identical; only

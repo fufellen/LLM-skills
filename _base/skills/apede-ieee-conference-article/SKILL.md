@@ -218,6 +218,23 @@ of them; automate the checks where a recipe is given.
     languages, build scripts, metadata blocks). Default order
     student-first / supervisor-last, but confirm with the user. In the IEEE
     template each author needs their own block with e-mail.
+13. **EIM/PCM formula artifacts are submission blockers.** In DOCX builds,
+    propagation formulas must preserve division: `n_eff = beta/k0`,
+    `k0 = 2*pi/lambda0`, `L_power = 1/(2 Im beta) =
+    lambda0/(4*pi Im n_eff)`, `L_pi = lambda0/(2 Delta Re n_eff)`, and
+    `IL = alpha L_pi`. Use OMML/Word equations for these in camera-ready
+    outputs; at minimum, a working draft must show explicit slashes or
+    stacked fractions. Reject collapsed strings like `n_eff=betak0`,
+    `k0=2pilambda0`, `Lpower=12Imbeta`, and visible layer-stack escapes
+    such as `air\ |\ PCM\ |\ SiO_2`.
+14. **No internal reviewer/TODO text in the emitted paper.** If author data,
+    optical-constant sources, expert-conclusion status, or FEM validation
+    details are not yet available, move them to a non-emitted
+    "Open pre-submission checks" section or the project checkpoint. The DOCX
+    body must not contain `[УТОЧНИТЬ]`, Russian service notes, or TODO text.
+    For incomplete FEM validation, state the reference data as diagnostic and
+    name the missing checks; do not imply that mesh/domain/PML convergence or
+    wavelength-sweep validation was performed.
 
 ## Where IEEE Differs From The Ioffe Journal Rules
 

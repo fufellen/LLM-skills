@@ -60,6 +60,10 @@ Violating any of these is a defect, not a style choice.
    those style definitions, and QA must verify it by parsing
    `word/styles.xml` (check EVERY build script of the article, including
    secondary-language ones - this is where the rule gets missed).
+   Also reject collapsed formula artifacts created by naive TeX stripping:
+   missing fraction bars, lost subscripts, and adjacency that changes the
+   meaning of equations (for example `beta/k0` becoming `betak0`, or
+   `1/(2 Im beta)` becoming `12Imbeta`) are content defects, not typography.
 7. **Report everything unresolved.** The final report must list every
    remaining rule violation and every placeholder. Never call a manuscript
    "ready" or "camera-ready" while placeholders or known violations remain.

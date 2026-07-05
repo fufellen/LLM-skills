@@ -25,6 +25,19 @@ python ".\scripts\convert_md_to_docx.py" "input.md" --output "output.docx" --ref
 - Render scientific tokens such as `SiO_2`, `lambda_0`, `k_0`, `n_eff`, `L_pi`, and `L_power` as Word subscripts, Unicode-safe text, or equation objects. Plain underscores are acceptable only in file names, code, identifiers, or explicit user-requested literal text.
 - For final scientific papers, replace important display equations with Word equation objects when feasible. If that is not feasible in the current run, leave a clear follow-up note in the document or report it to the user.
 - When generating a camera-ready document, unzip or programmatically inspect `word/document.xml` and search for `\|`, `\ |`, raw formula underscores, and raw Markdown markers before saying the DOCX is ready.
+- Never render equations by deleting TeX commands and braces. In particular,
+  `\frac{\beta}{k_0}`, `\frac{2\pi}{\lambda_0}`, and
+  `\frac{1}{2\operatorname{Im}\beta}` must become either real Word
+  fraction objects (`<m:f>` inside `<m:oMath>`) or unambiguous plain text
+  with explicit `/` and parentheses. Collapsed text such as `βk0`,
+  `2πλ_0`, `12Imβ`, or `λ04πImn_eff` is a hard artifact failure.
+- Treat layer-stack expressions as structured text, not fragile math cleanup:
+  render `air | PCM | SiO2` as `air | PCM | SiO₂` (or real Word subscripts),
+  never as visible TeX escapes such as `air\ |\ PCM\ |\ SiO_2`.
+- For generated DOCX QA, inspect both paragraph text and OMML math text.
+  Count important display equations and verify that expected formulas are
+  present as `<m:oMath>` with `<m:f>` fractions where fractions are required;
+  text extraction alone can concatenate numerator and denominator.
 
 ## TeX-Math Manuscripts (lesson 2026-07-04)
 

@@ -63,6 +63,21 @@ For COMSOL/FEM/CST mode analysis:
 - validate mesh, domain size, PML/boundary settings, and material assignments before calling a solver result a reference;
 - track modes by field profile, overlap integral, confinement factor, and power distribution rather than by fixed mode number alone;
 - check whether residual loss comes from PCM, metal absorption, radiation/leaky channels, boundaries/PML, or numerical artifacts.
+- If mesh/domain/PML convergence, wavelength sweep, or field-based branch
+  tracking has not actually been performed, describe the solver comparison as
+  diagnostic or preliminary. Do not leave a manuscript placeholder for this
+  inside the article body, and do not upgrade a fixed-mode-label run into a
+  final FEM benchmark by wording alone.
+
+For manuscript and DOCX work in this domain:
+- protect the physical divisions in the standard guided-mode formulas:
+  $n_\mathrm{eff}=\beta/k_0$, $k_0=2\pi/\lambda_0$,
+  $L_\mathrm{power}=1/(2\operatorname{Im}\beta)=
+  \lambda_0/(4\pi\operatorname{Im}n_\mathrm{eff})$, and
+  $L_\pi=\lambda_0/(2\Delta\operatorname{Re}n_\mathrm{eff})$;
+- reject generated text where TeX cleanup collapses these into multiplication
+  or adjacency, such as `n_eff=betak0`, `k0=2pilambda0`, `12Imbeta`, or
+  `lambda04piImn_eff`.
 
 For literature and article claims:
 - do not claim a first PCM modulator, first PCM phase shifter, first plasmonic PCM device, or first EIM use for DLSPP unless primary literature verification supports it;

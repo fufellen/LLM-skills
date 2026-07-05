@@ -23,6 +23,9 @@ Primary rule sources (in priority order):
 
 ## Division Of Labour With Other Skills
 
+- Universal venue-agnostic manuscript discipline (source-of-truth selection,
+  claim/number QA, citation-order checks, safe count-asserted bulk edits):
+  `scientific-article-writing`. Rules in this skill override it on conflicts.
 - Scientific content, claim control, checkpoints, final GPT review:
   `scientific-work` (final-review rule is mandatory for submission drafts)
   and `plasmonics-photonics` (domain claim rules).

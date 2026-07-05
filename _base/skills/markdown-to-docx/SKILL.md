@@ -41,6 +41,12 @@ python ".\scripts\convert_md_to_docx.py" "input.md" --output "output.docx" --ref
   `w:tblW`, `w:tblLayout w:type="fixed"`, each `w:gridCol`, and each
   cell `w:tcW`; then inspect `word/document.xml` and confirm the grid-width
   sum is less than or equal to the target column width.
+- Do not leave `_fixed`, `_test`, `_v2`, or backup-named DOCX files as the
+  delivered state when the user expects the canonical filename. If a target
+  DOCX is locked by Microsoft Word, close only the target Word document(s)
+  for that path via Word COM, rebuild the canonical filename, and clean up
+  temporary variants before reporting completion. Use alternate names only
+  as short-lived recovery artifacts, not as the final answer.
 - For generated DOCX QA, inspect both paragraph text and OMML math text.
   Count important display equations and verify that expected formulas are
   present as `<m:oMath>` with `<m:f>` fractions where fractions are required;

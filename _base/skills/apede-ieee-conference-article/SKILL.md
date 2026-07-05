@@ -208,8 +208,10 @@ of them; automate the checks where a recipe is given.
    Parse `word/document.xml` directly with namespace
    `http://purl.oclc.org/ooxml/wordprocessingml/main`.
 10. **Windows file lock:** a DOCX open in Word raises PermissionError on
-    save. Build to a `_v2` name, tell the user, and delete the stale copy
-    after regenerating the canonical file.
+    save. Close only the target Word document(s) for the article path via
+    Word COM, then rebuild the canonical DOCX name. Do not leave `_fixed`,
+    `_test`, `_v2`, backup, or stale working-draft DOCX variants in the
+    article folder as the delivered state.
 11. **Check the deadline against today's date at task start** and flag if
     passed - conference deadlines are often extended, but the user must
     confirm.

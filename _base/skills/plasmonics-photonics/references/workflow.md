@@ -63,6 +63,10 @@ Always state whether $Im(n_\mathrm{eff})$ was reported by the solver with a nega
 
 For PCM tasks, record:
 - material name and composition: GST, GSST, GSS4T1, Sb2S3, Sb2Se3, In3SbTe2, or other;
+  expand ambiguous PCM shorthand at first use. In particular, `GSS4T1`
+  is a source-used shorthand for `Ge2Sb2Se4Te1` and should be written as
+  `Ge2Sb2Se4Te1 (GSS4T1, a GSST-family composition)` in manuscripts so it
+  is not mistaken for a typo of `GSST`;
 - amorphous/crystalline/partial state;
 - $n(\lambda)$ and $k(\lambda)$ source;
 - deposition/crystallization caveat when relevant;

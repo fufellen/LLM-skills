@@ -220,6 +220,13 @@ of them; automate the checks where a recipe is given.
     languages, build scripts, metadata blocks). Default order
     student-first / supervisor-last, but confirm with the user. In the IEEE
     template each author needs their own block with e-mail.
+13. **This conference template uses `Keywords—`, not `Index Terms—`.**
+    "Index Terms" is the IEEE-journal habit and creeps in from old drafts -
+    check the label against references/conference-rules.md, not memory.
+14. **Check the template's non-body parts too**: the page-1 footer carries
+    the IEEE copyright-notice placeholder and the first page a sponsors
+    text box (see references/conference-rules.md) - a digest built only
+    from the body text misses them.
 13. **EIM/PCM formula artifacts are submission blockers.** In DOCX builds,
     propagation formulas must preserve division: `n_eff = beta/k0`,
     `k0 = 2*pi/lambda0`, `L_power = 1/(2 Im beta) =

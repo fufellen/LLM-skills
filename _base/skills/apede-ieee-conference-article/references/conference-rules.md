@@ -52,11 +52,26 @@ failure mode - grep the final DOCX/PDF for stock sentences.
   not alter them.** Do not revise the current style designations.
 - Confirm you have the correct template for your paper size before styling.
 
+## Copyright notice (page-1 footer) and sponsors text box
+
+- The template's first-page **footer contains the IEEE copyright-notice
+  placeholder**: `XXX-X-XXXX-XXXX-X/XX/$XX.00 ©20XX IEEE`. The camera-ready
+  paper must have this filled with the code and year the conference
+  provides (or handled exactly as the conference instructs). Never leave
+  the `XXX` placeholder in a submitted paper, and never delete the footer
+  on your own - ask the conference/user if the code is unknown.
+- The first page also has a **sponsors/funding text box** ("Identify
+  applicable funding agency here. If none, delete this text box."):
+  either fill it with the real funding agency/grant or DELETE the text
+  box entirely.
+
 ## Workflow the template assumes
 
 - Write and save the content as a plain text file FIRST; finish all content
   and organizational editing BEFORE formatting.
 - Keep text and graphic files separate until the text is formatted and styled.
+- Duplicate the template with Save As and **name the paper file using the
+  naming convention prescribed by the conference**.
 - Do **not** use hard tabs; limit hard returns to one at the end of a
   paragraph. Do **not** add pagination anywhere. Do **not** number text
   headings by hand - the template numbers them.
@@ -219,6 +234,10 @@ Format examples (from the template):
 - [ ] References: IEEE numbered [1] in citation order; punctuation after the
       bracket; all authors unless >=6 (then et al.); title first-word-only caps.
 - [ ] **ALL template guidance text removed** (grep for stock sentences).
+- [ ] Page-1 footer copyright notice filled with the conference-provided
+      code/year (no `XXX-X-XXXX` placeholder left); sponsors text box filled
+      or deleted.
+- [ ] Paper file named per the conference naming convention.
 - [ ] Within the conference PAGE LIMIT.
 - [ ] IEEE-Xplore-compliant PDF (fonts embedded, correct size) - run PDF eXpress
       / conference checker if required.

@@ -227,7 +227,14 @@ of them; automate the checks where a recipe is given.
     stacked fractions. Reject collapsed strings like `n_eff=betak0`,
     `k0=2pilambda0`, `Lpower=12Imbeta`, and visible layer-stack escapes
     such as `air\ |\ PCM\ |\ SiO_2`.
-14. **No internal reviewer/TODO text in the emitted paper.** If author data,
+14. **Inline scientific symbols and IEEE tables need DOCX-specific QA.**
+    Do not let inline math cleanup create pseudo-subscript artifacts such as
+    `nₑff`, `εₑff`, `Imnₑff`, or phrases like "real part of nₑff"; rewrite
+    prose as "effective index" / "real part of the effective index" or use
+    real OMML. In two-column IEEE DOCX builds, tables must have fixed
+    `w:tblGrid`/`w:tcW` widths whose sum fits one column; `cell.width` alone
+    can leave a page-wide grid and make the table span both columns.
+15. **No internal reviewer/TODO text in the emitted paper.** If author data,
     optical-constant sources, expert-conclusion status, or FEM validation
     details are not yet available, move them to a non-emitted
     "Open pre-submission checks" section or the project checkpoint. The DOCX

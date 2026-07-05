@@ -23,6 +23,7 @@ python ".\scripts\convert_md_to_docx.py" "input.md" --output "output.docx" --ref
 - Never let Markdown escape syntax become visible Word text. Convert `air\ |\ PCM\ |\ SiO_2` into readable text such as `air | PCM | SiO_2` with the `2` rendered as a subscript or Word equation text.
 - Do not place layer-stack, equation, or list lines immediately after a figure caption unless they are part of the caption. If Markdown conversion causes them to appear under the caption, move them back into the body text before or after the figure.
 - Render scientific tokens such as `SiO_2`, `lambda_0`, `k_0`, `n_eff`, `L_pi`, and `L_power` as Word subscripts, Unicode-safe text, or equation objects. Plain underscores are acceptable only in file names, code, identifiers, or explicit user-requested literal text.
+- Do not fake multi-letter subscripts with partial Unicode subscripts in running prose. Strings such as `nₑff`, `εₑff`, `Imnₑff`, or `Renₑff` are visible artifacts. In prose, either rewrite as words ("effective index", "real part of the effective index") or emit a real OMML inline/display equation; in compact tables, plain `n_eff` is safer than pseudo-subscript text.
 - For final scientific papers, replace important display equations with Word equation objects when feasible. If that is not feasible in the current run, leave a clear follow-up note in the document or report it to the user.
 - When generating a camera-ready document, unzip or programmatically inspect `word/document.xml` and search for `\|`, `\ |`, raw formula underscores, and raw Markdown markers before saying the DOCX is ready.
 - Never render equations by deleting TeX commands and braces. In particular,
@@ -34,6 +35,12 @@ python ".\scripts\convert_md_to_docx.py" "input.md" --output "output.docx" --ref
 - Treat layer-stack expressions as structured text, not fragile math cleanup:
   render `air | PCM | SiO2` as `air | PCM | SiO₂` (or real Word subscripts),
   never as visible TeX escapes such as `air\ |\ PCM\ |\ SiO_2`.
+- In two-column Word outputs, pipe tables must have a real fixed table grid.
+  With python-docx, setting only `cell.width` is insufficient because Word can
+  retain a page-wide `w:tblGrid` and make the table span both columns. Set
+  `w:tblW`, `w:tblLayout w:type="fixed"`, each `w:gridCol`, and each
+  cell `w:tcW`; then inspect `word/document.xml` and confirm the grid-width
+  sum is less than or equal to the target column width.
 - For generated DOCX QA, inspect both paragraph text and OMML math text.
   Count important display equations and verify that expected formulas are
   present as `<m:oMath>` with `<m:f>` fractions where fractions are required;

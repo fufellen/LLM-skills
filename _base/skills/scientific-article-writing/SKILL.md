@@ -1,6 +1,6 @@
 ---
 name: scientific-article-writing
-description: Universal venue-agnostic discipline for preparing, reviewing, and QA-ing scientific manuscripts and conference papers. Use for написание статьи, подготовка рукописи, review or proofread an article draft, checking citation order and renumbering references, verifying table numbers against data files, syncing bilingual (RU/EN) drafts, pre-submission checklists, safe bulk edits of manuscript files, and DOCX artifact QA. Venue-specific rules (APEDE/IEEE, Оптика и спектроскопия) live in their dedicated skills and override this one; this skill is the shared base that prevents common manuscript mistakes.
+description: Universal venue-agnostic discipline for preparing, reviewing, and QA-ing scientific manuscripts and conference papers. Use for написание статьи, подготовка рукописи, review or proofread an article draft, checking citation order and renumbering references, verifying table numbers against data files, syncing bilingual (RU/EN) drafts, pre-submission checklists, safe bulk edits of manuscript files, and DOCX artifact QA. Venue-specific rules (APEDE/IEEE conference via apede-ieee-conference-article, Оптика и спектроскопия via optics-spectroscopy-article, russian НТО/GOST 7.32 reports via nto-formatting) live in their dedicated skills and override this one; this skill is the shared base that prevents common manuscript mistakes.
 ---
 
 # Scientific Article Writing (universal base)
@@ -9,11 +9,17 @@ description: Universal venue-agnostic discipline for preparing, reviewing, and Q
 
 Shared, venue-agnostic rules for manuscript work. Written imperatively so
 that ANY model - including weaker ones - can follow them without judgment
-calls. When a dedicated venue skill exists
-(`apede-ieee-conference-article`, `optics-spectroscopy-article`), read it
-too; its rules override this skill on conflicts. Conversion mechanics live
-in `markdown-to-docx`; domain claim rules in `plasmonics-photonics` /
-`scientific-work`.
+calls. When a dedicated venue skill exists, read it too; its rules override
+this skill on conflicts. Known venue skills:
+- `apede-ieee-conference-article` - APEDE / IEEE two-column conference
+  papers (IEEE Xplore);
+- `optics-spectroscopy-article` - journal «Оптика и спектроскопия» and
+  similar Ioffe journals;
+- `nto-formatting` - Russian НТО / отчет о НИР materials per
+  GOST 7.32-2017 (lives in the corporate skills submodule
+  `nto-formatting/_base/skills/nto-formatting/`).
+Conversion mechanics live in `markdown-to-docx`; domain claim rules in
+`plasmonics-photonics` / `scientific-work`.
 
 ## Non-Negotiable Rules
 

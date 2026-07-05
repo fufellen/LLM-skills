@@ -1,6 +1,6 @@
 ---
 name: scientific-article-writing
-description: Universal venue-agnostic discipline for preparing, reviewing, and QA-ing scientific manuscripts and conference papers. Use for написание статьи, подготовка рукописи, review or proofread an article draft, checking citation order and renumbering references, verifying table numbers against data files, syncing bilingual (RU/EN) drafts, pre-submission checklists, safe bulk edits of manuscript files, and DOCX artifact QA. Venue-specific rules (APEDE/IEEE, Оптика и спектроскопия) live in their dedicated skills and override this one; this skill is the shared base that prevents common manuscript mistakes.
+description: Universal venue-agnostic discipline for preparing, reviewing, and QA-ing scientific manuscripts and conference papers. Use for написание статьи, подготовка рукописи, review or proofread an article draft, checking citation order and renumbering references, verifying table numbers against data files, syncing bilingual (RU/EN) drafts, pre-submission checklists, safe bulk edits of manuscript files, and DOCX artifact QA. Venue-specific rules (APEDE/IEEE conference via apede-ieee-conference-article, Оптика и спектроскопия via optics-spectroscopy-article, russian НТО/GOST 7.32 reports via nto-formatting) live in their dedicated skills and override this one; this skill is the shared base that prevents common manuscript mistakes.
 ---
 
 # Scientific Article Writing (Codex adapter)

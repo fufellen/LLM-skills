@@ -54,7 +54,12 @@ Violating any of these is a defect, not a style choice.
    the artifact itself (unzip DOCX, read `word/document.xml`): no raw TeX
    (`\mathrm`, `$`, `operatorname`), no Markdown leftovers (`[[`, `####`,
    `**`), no template guidance text, no `TODO`. Verify tables, figures, and
-   required blocks are physically present.
+   required blocks are physically present. **Headings must be black**:
+   python-docx/Word default Heading and Title styles are blue - every build
+   script that assigns Word heading styles must also force RGB(0,0,0) on
+   those style definitions, and QA must verify it by parsing
+   `word/styles.xml` (check EVERY build script of the article, including
+   secondary-language ones - this is where the rule gets missed).
 7. **Report everything unresolved.** The final report must list every
    remaining rule violation and every placeholder. Never call a manuscript
    "ready" or "camera-ready" while placeholders or known violations remain.
@@ -102,6 +107,26 @@ Run these on every manuscript regardless of venue:
 - **Names.** Cyrillic-to-Latin transliteration is verified per author
   (щ -> shch, ч -> ch, ж -> zh); author-preferred spellings win over
   standard transliteration - ask if unknown.
+- **Language purity (Russian manuscripts).** Russian scientific prose must
+  not mix in English words where standard Russian terms exist - sentences
+  like "Полученные результаты предлагают трехуровневый workflow" or "до
+  дорогих FEM sweep" are defects (суржик), not style. English is allowed
+  ONLY: (a) in parentheses when first defining a term or abbreviation,
+  (b) in established abbreviations (PCM, FEM, SPP, PML, COMSOL, TM),
+  (c) in reference titles. Register: научный стиль уровня опытного
+  ученого, не студенческий жаргон. Automate: grep the artifact body for a
+  forbidden list (workflow, screening, sweep, solver, overlap, lossy,
+  claim, reduced model, decision layer, branch tracking, branch
+  validation, phase-trend, eigenmode, mode analysis, hold-out,
+  state-paired, failure-aware, camera-ready, ...); hits outside
+  definitional parentheses are defects. Typical replacements:
+  workflow -> схема/методика; screening -> предварительный отбор;
+  sweep -> серия параметрических расчетов; eigenmode solver -> программа
+  поиска собственных мод; overlap -> перекрытие; insertion loss ->
+  вносимые потери; lossy -> с потерями / поглощающий; leaky mode ->
+  вытекающая мода; near cutoff -> вблизи отсечки; claim ->
+  утверждение / заявляемый результат; reduced-order -> приближенный
+  (редуцированный); branch tracking -> отслеживание модовой ветви.
 
 ## Multi-Language Drafts
 

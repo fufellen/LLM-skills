@@ -1,0 +1,9 @@
+display_name: APEDE / IEEE Conference Article
+short_description: Оформление доклада для конференции APEDE в стандартном двухколоночном шаблоне IEEE (IEEE Xplore, camera-ready).
+default_prompt: |
+  Подготовь доклад для конференции APEDE (шаблон IEEE, IEEE Xplore) по навыку
+  apede-ieee-conference-article: проверь структуру, титул и аннотацию (без
+  символов/формул), заголовки, аббревиатуры, единицы, формулы в редакторе
+  формул, рисунки и таблицы, список литературы в нумерованном стиле IEEE [1]
+  по референсу references/conference-rules.md, удали весь шаблонный текст,
+  собери camera-ready DOCX/PDF и перечисли все оставшиеся нарушения правил.

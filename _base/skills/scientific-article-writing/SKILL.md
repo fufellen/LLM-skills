@@ -64,9 +64,45 @@ Violating any of these is a defect, not a style choice.
    missing fraction bars, lost subscripts, and adjacency that changes the
    meaning of equations (for example `beta/k0` becoming `betak0`, or
    `1/(2 Im beta)` becoming `12Imbeta`) are content defects, not typography.
-7. **Report everything unresolved.** The final report must list every
+7. **Look at the rendered pages, do not only parse the XML.** Parsing
+   `word/document.xml` proves attributes (a `both` value, a border `nil`);
+   it does NOT show how the page actually looks - unbalanced columns, a
+   caption split from its table, an equation that renders too large, a
+   figure that overflows the column, an author line that wrapped badly.
+   These are only visible by eye. After building the DOCX, render it to
+   per-page images and ACTUALLY VIEW them, comparing against the venue
+   template's own example page/table/figure. This is mandatory before
+   calling layout done - the user should never be the one catching visual
+   nuances by hand. Recipe below.
+8. **Report everything unresolved.** The final report must list every
    remaining rule violation and every placeholder. Never call a manuscript
    "ready" or "camera-ready" while placeholders or known violations remain.
+
+## Visual Proof (render and look) - mandatory for any templated document
+
+Two QA layers, both required: (a) XML artifact scan (rule 6), and (b) a
+visual render you actually look at (rule 7). One does not replace the other.
+
+Render DOCX -> PDF -> per-page PNG, then read each PNG as an image:
+
+```
+python <this skill>/scripts/render_docx_pages.py "<file.docx>" "<out_dir>" --dpi 110
+```
+
+The script converts DOCX->PDF (LibreOffice `soffice --headless` if present,
+else MS Word COM on Windows via PowerShell/`ExportAsFixedFormat`, format 17)
+and renders pages with PyMuPDF. It also accepts a PDF directly. Then open
+each PNG and check, against the template's example:
+- overall two-column balance, no half-empty columns or orphaned headings;
+- every table looks like the template's table example (rule style, header,
+  fit) and its caption sits with it; wide floats truly span both columns;
+- equations are the body text size and render as real fractions, not raw
+  TeX or oversized glyphs;
+- figures fit their column/span, axis labels legible, caption below;
+- title/author/affiliation block wraps sensibly (e-mail not stranded).
+
+Note: a DOCX open in Word locks the file; close it (or render a `_v2`
+copy). Do this render every time layout code changes, not just once.
 
 ## Standard Workflow
 
@@ -75,8 +111,9 @@ Violating any of these is a defect, not a style choice.
 3. Check the submission deadline against today's date; flag if passed.
 4. Number/claim QA (rule 4) on the source draft.
 5. Apply venue formatting rules; run the Universal Checks below.
-6. Convert (via `markdown-to-docx` or the article's build script) and QA
-   the artifact (rule 6).
+6. Convert (via `markdown-to-docx` or the article's build script), then QA
+   the artifact in TWO layers: the XML scan (rule 6) and the visual render
+   you look at (rule 7 / Visual Proof section).
 7. Sync secondary-language drafts from the corrected source; keep reference
    numbering identical across languages; append a dated entry to the
    draft's edit log describing what was synced.

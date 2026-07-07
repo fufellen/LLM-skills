@@ -35,6 +35,7 @@ Add Christian and Bible-specific discipline to presentation work. Use this skill
 ## Visual Discipline
 
 - Follow `presentation-creation` visual rules. Do not cover the main biblical character, face, gesture, key object, or focal action with text panels.
+- In children's lesson visuals, do not let lesson text cover children who are part of the scene; use sky, margins, landscape texture, or other low-importance background areas for text.
 - If an image contains a biblical character and a key object, such as Moses and the burning bush, protect both when possible; use low-importance sky, margins, rocks, or other background texture for text.
 - Prefer images that help the audience observe the Bible story rather than decorative religious atmosphere.
 

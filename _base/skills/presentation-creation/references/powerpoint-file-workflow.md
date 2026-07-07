@@ -23,7 +23,7 @@ Use this reference when reading, editing, validating, or creating `.pptx` decks 
 - Prefer adding content into existing placeholders or duplicated design patterns. Avoid adding visually unrelated boxes, colors, or fonts.
 - Use structured APIs for slides, shapes, relationships, and media. Avoid raw search/replace across XML unless no safer path exists and the change is tightly scoped.
 - If a deck needs substantial reconstruction and programmatic editing is too fragile, create a new deck in the requested tool or make a copy and document the manual/GUI step that remains.
-- For illustrated or photo-based slides, treat faces, bodies, gestures, key objects, and focal action as protected visual areas. Text cards may overlap low-importance texture or background, but should not cover the main person or object.
+- For illustrated or photo-based slides, treat faces, bodies, gestures, key objects, and focal action as protected visual areas. In group scenes, protect foreground people as a set, especially children. Text cards may overlap low-importance texture or background, but should not cover the main person, group, or object.
 
 ## Validation
 

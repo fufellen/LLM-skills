@@ -36,7 +36,8 @@ Add Christian and Bible-specific discipline to presentation work. Use this skill
 
 - Follow `presentation-creation` visual rules. Do not cover the main biblical character, face, gesture, key object, or focal action with text panels.
 - In children's lesson visuals, do not let lesson text cover children who are part of the scene, including partially visible children behind reeds, crowds, or other scenery. A translucent text card still counts as covering them. Use sky, margins, landscape texture, or other low-importance background areas for text.
-- If an image contains a biblical character and a key object, such as Moses and the burning bush, protect both when possible; use low-importance sky, margins, rocks, or other background texture for text.
+- If an image contains a biblical character and a key object or symbolic animal, such as Moses and the burning bush, David and his sling, Peter and the rooster, or Jesus and Peter's restored conversation, protect all of them when possible; use low-importance sky, margins, rocks, water, or other background texture for text.
+- Do not make Bible quotations too small just to keep all of them visible on one slide. Prefer one readable direct Scripture quote on the slide and put additional cross-references, comparison lists, and teaching prompts in speaker notes.
 - Prefer images that help the audience observe the Bible story rather than decorative religious atmosphere.
 
 ## Verification

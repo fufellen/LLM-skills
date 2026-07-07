@@ -23,7 +23,8 @@ Use this reference when reading, editing, validating, or creating `.pptx` decks 
 - Prefer adding content into existing placeholders or duplicated design patterns. Avoid adding visually unrelated boxes, colors, or fonts.
 - Use structured APIs for slides, shapes, relationships, and media. Avoid raw search/replace across XML unless no safer path exists and the change is tightly scoped.
 - If a deck needs substantial reconstruction and programmatic editing is too fragile, create a new deck in the requested tool or make a copy and document the manual/GUI step that remains.
-- For illustrated or photo-based slides, treat faces, bodies, gestures, key objects, and focal action as protected visual areas. In group scenes, protect foreground people as a set, especially children, including partially visible figures in reeds, crowds, doorways, or background action. Text cards may overlap low-importance texture or background, but should not cover the main person, group, or object even when the card is translucent.
+- For illustrated or photo-based slides, treat faces, bodies, gestures, key objects, symbolic animals, and focal action as protected visual areas. In group scenes, protect foreground people as a set, especially children, including partially visible figures in reeds, crowds, doorways, or background action. Protect the whole visible extent of important subjects, not only the face; covering a rooster's tail, a child's hairline, a disciple's head edge, a staff, a hand, or a key object with a translucent card still counts as overlap. Text cards may overlap low-importance texture or background, but should not cover the main person, group, animal, or object even when the card is translucent.
+- Keep text readable after layout fixes. If avoiding overlap requires making body text tiny, shorten the visible slide text, move secondary quotes or teacher support into speaker notes, or choose/regenerate a composition with more open space.
 
 ## Validation
 

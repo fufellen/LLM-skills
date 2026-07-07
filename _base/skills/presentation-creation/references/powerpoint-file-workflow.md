@@ -31,7 +31,7 @@ Use this reference when reading, editing, validating, or creating `.pptx` decks 
 - Re-extract changed slide text to confirm Cyrillic, punctuation, scripture references, and line breaks survived.
 - Check slide count, target deck path, and original deck timestamp/size when preservation matters.
 - Render or open the deck in PowerPoint, LibreOffice, Google Slides, or the browser when available, especially after layout-heavy edits.
-- Look for text overflow, unreadable contrast, broken images, missing fonts, accidental removal of speaker notes or media, and overlays that hide the main visual subject.
+- Look for text overflow, unreadable contrast, broken images, missing fonts, accidental removal of speaker notes or media, visible presenter-only cues that belong in speaker notes, and overlays that hide the main visual subject.
 
 ## Handoff Note
 

@@ -25,7 +25,7 @@ Create practical presentation artifacts: slide decks, improved deck copies, slid
 3. Choose the output. If the user asks for a deck, create or update a local `.pptx`, Google Slides/Canva file, or the requested format when feasible. If a full deck is not feasible, create an Obsidian-ready Markdown source note with slide plan, speaker notes, visual suggestions, and source notes.
 4. Shape the narrative. Define one main point, audience promise, section flow, and closing takeaway. Keep one main idea per slide.
 5. Build or revise slides. Prefer concise slide text, strong visual hierarchy, and visuals that clarify the actual subject. Avoid decorative filler, dense paragraphs, and unsupported claims.
-6. Add speaker support. Include presenter notes or a companion note when the deck needs explanation beyond slide text.
+6. Add speaker support. Include presenter notes or a companion note when the deck needs explanation beyond slide text. Put facilitator-only prompts, teaching cues, activity directions, and labels like "Question for children" in speaker notes, not on the visible slide, unless the user explicitly asks for audience-facing instructions.
 7. Validate. Check slide count, readable text, broken media, layout overflow, source attribution, and whether the original stayed untouched. For `.pptx` details, read `references/powerpoint-file-workflow.md`.
 8. Handoff. Report the exact file path, what changed, assumptions, validation performed, and any remaining manual checks.
 
@@ -40,6 +40,7 @@ Create practical presentation artifacts: slide decks, improved deck copies, slid
 
 - Use existing local images and deck style first.
 - Keep the main subject visible. Do not place text panels, callouts, logos, or translucent overlays across faces, bodies, gestures, key objects, or the focal action of an illustration/photo. A translucent card still counts as covering the subject if the person or object remains visible beneath it. In group or children's scenes, protect all visible or partially visible foreground people, not only one named protagonist. Reposition, narrow, shorten, or split text before accepting a slide where the visual subject becomes background for the text.
+- Keep visible slide text audience-facing. Do not show presenter cues such as "ask the children", "question for children", "show/point out", "game", "activity", or similar facilitation labels on the slide surface; move them to speaker notes or a companion teacher note.
 - When the user asks to use GPT in the browser for presentation images or regeneration, use the browser/GPT surface as requested, keep prompts and selected source URLs in a handoff note, and stop if login, CAPTCHA, or unavailable browser state blocks progress.
 - For AI-generated images, write prompts that specify subject, audience, aspect ratio, style, historical/context constraints, and text-free output unless text is required.
 - For internet images, prefer official, open-license, public-domain, or clearly attributable sources. Record URLs.

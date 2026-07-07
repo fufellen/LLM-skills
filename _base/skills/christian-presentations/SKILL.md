@@ -27,7 +27,7 @@ Add Christian and Bible-specific discipline to presentation work. Use this skill
 
 ## Lesson And Audience Fit
 
-- For children, keep one clear spiritual truth per slide and pair it with a question, observation task, or small application.
+- For children, keep one clear spiritual truth per slide and pair it with a question, observation task, or small application in speaker notes. Do not print teacher-facing labels or prompts such as `Вопрос детям`, `Спросите детей`, `Покажите`, `Попросите детей`, `Игра`, or similar facilitation cues on the visible slide; put them in speaker notes or a teacher companion note instead.
 - Do not soften Scripture into generic moralism. Keep the connection to God, Christ, sin, repentance, faith, obedience, prayer, and grace explicit when the passage requires it.
 - Avoid adding speculative details to Bible scenes unless clearly labeled as teacher explanation or visual imagination.
 - Preserve reverent tone without making the deck heavy. For children, use concrete scenes, questions, and simple applications.
@@ -44,6 +44,7 @@ Add Christian and Bible-specific discipline to presentation work. Use this skill
 - Re-read every Scripture quote against the source after editing.
 - Check that each quotation mark contains actual source wording, not a paraphrase.
 - Check that each Bible reference points to the verse actually quoted.
+- Check visible slides for teacher-facing prompt labels and move them to speaker notes before final handoff.
 - For `.pptx`, also run the file checks from `presentation-creation/references/powerpoint-file-workflow.md`.
 
 ## Self-Improvement And Publishing

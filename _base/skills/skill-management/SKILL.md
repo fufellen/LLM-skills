@@ -213,6 +213,12 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\markdown-to-
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\optics-spectroscopy-article
 ```
 
+- `presentation-creation` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\presentation-creation
+```
+
 - Presentation workflow rules for scientific/popular-science decks currently live at:
 
 ```text
@@ -269,5 +275,6 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - Obsidian `.canvas` creation, validation, and visual tree layout: `obsidian-canvas`;
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
-- presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`;
+- general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
+- presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`, used alongside `presentation-creation` when relevant;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

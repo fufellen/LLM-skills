@@ -1,0 +1,4 @@
+interface:
+  display_name: "Presentation Creation"
+  short_description: "Create and improve slide decks"
+  default_prompt: "Use $presentation-creation to create or improve a presentation deck."

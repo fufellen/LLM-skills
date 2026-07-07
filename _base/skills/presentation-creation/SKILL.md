@@ -15,6 +15,7 @@ Create practical presentation artifacts: slide decks, improved deck copies, slid
 - If the user gives an existing presentation, inspect its slide count, text, visual pattern, and apparent purpose before deciding whether to edit, add, or regenerate.
 - Work from the user's local vault, source files, and existing assets first. Use web sources only for current facts, missing visuals, or verification.
 - For scientific, technical, or popular-science talks, also use `scientific-work` and read `scientific-work/references/presentation-workflow.md` when relevant.
+- For Christian, church, Bible, Sunday school, sermon, youth, camp, or devotional decks, also use `christian-presentations` for Scripture accuracy, Bible quotation rules, and church lesson tone.
 - When a request mentions Canva, Google Slides, Figma, or a browser-based GPT workflow, use the matching app/plugin/browser skill when available.
 
 ## Workflow
@@ -38,6 +39,7 @@ Create practical presentation artifacts: slide decks, improved deck copies, slid
 ## Visuals And GPT/Browser Work
 
 - Use existing local images and deck style first.
+- Keep the main subject visible. Do not place text panels, callouts, logos, or translucent overlays across faces, bodies, gestures, key objects, or the focal action of an illustration/photo. Reposition, narrow, shorten, or split text before accepting a slide where the visual subject becomes background for the text.
 - When the user asks to use GPT in the browser for presentation images or regeneration, use the browser/GPT surface as requested, keep prompts and selected source URLs in a handoff note, and stop if login, CAPTCHA, or unavailable browser state blocks progress.
 - For AI-generated images, write prompts that specify subject, audience, aspect ratio, style, historical/context constraints, and text-free output unless text is required.
 - For internet images, prefer official, open-license, public-domain, or clearly attributable sources. Record URLs.

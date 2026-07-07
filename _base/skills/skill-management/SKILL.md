@@ -213,6 +213,12 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\markdown-to-
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\optics-spectroscopy-article
 ```
 
+- `christian-presentations` currently lives at:
+
+```text
+C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\christian-presentations
+```
+
 - `presentation-creation` currently lives at:
 
 ```text
@@ -276,5 +282,6 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
+- Christian, church, Bible, Sunday school, youth, sermon, camp, and devotional deck content rules: `christian-presentations`, used alongside `presentation-creation`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`, used alongside `presentation-creation` when relevant;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

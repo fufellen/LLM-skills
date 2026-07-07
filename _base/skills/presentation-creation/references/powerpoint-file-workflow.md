@@ -23,6 +23,7 @@ Use this reference when reading, editing, validating, or creating `.pptx` decks 
 - Prefer adding content into existing placeholders or duplicated design patterns. Avoid adding visually unrelated boxes, colors, or fonts.
 - Use structured APIs for slides, shapes, relationships, and media. Avoid raw search/replace across XML unless no safer path exists and the change is tightly scoped.
 - If a deck needs substantial reconstruction and programmatic editing is too fragile, create a new deck in the requested tool or make a copy and document the manual/GUI step that remains.
+- For illustrated or photo-based slides, treat faces, bodies, gestures, key objects, and focal action as protected visual areas. Text cards may overlap low-importance texture or background, but should not cover the main person or object.
 
 ## Validation
 
@@ -30,7 +31,7 @@ Use this reference when reading, editing, validating, or creating `.pptx` decks 
 - Re-extract changed slide text to confirm Cyrillic, punctuation, scripture references, and line breaks survived.
 - Check slide count, target deck path, and original deck timestamp/size when preservation matters.
 - Render or open the deck in PowerPoint, LibreOffice, Google Slides, or the browser when available, especially after layout-heavy edits.
-- Look for text overflow, unreadable contrast, broken images, missing fonts, and accidental removal of speaker notes or media.
+- Look for text overflow, unreadable contrast, broken images, missing fonts, accidental removal of speaker notes or media, and overlays that hide the main visual subject.
 
 ## Handoff Note
 

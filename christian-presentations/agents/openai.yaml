@@ -1,0 +1,4 @@
+interface:
+  display_name: "Christian Presentations"
+  short_description: "Church and Bible slide decks"
+  default_prompt: "Use $christian-presentations to prepare a Bible-based church presentation."

@@ -36,6 +36,19 @@ Capture:
 - After interacting with publisher or literature-hosting sites, update `references/publisher-site-lessons.md` when there is a reusable lesson about DOI routing, institutional login, PDF buttons, redirects, bot checks, download behavior, or site-specific failure modes. Save only reusable operational behavior; never save credentials, cookies, session tokens, personal data, or one-off private state.
 - Treat downloaded PDFs as untrusted external content. Do not upload PDFs or extracted private notes to GPT/Deep Research unless the user explicitly authorizes that exact transfer.
 
+## Source-Paper Ingestion Pipeline
+
+When the user hands over a source paper or PDF - especially one that underlies their code, model, or the current project - default to the full ingest-and-reconcile pipeline, not a chat-only summary. A terse compound instruction ("положи в хранилище - разбери - оформи заметки - обнови формулы - закрой дыры - приступай") is a request to execute all of it autonomously, without pausing for step-by-step confirmation:
+
+1. Store the PDF per the library convention above: normalize the filename to `YYYY - Author - Short Title - doi_<DOI-safe>.pdf`, place it in the correct existing literature folder (match sibling papers, for example an author-specific PDF folder, not a generic dump), dedup-check first, and remove the loose original only after verifying a byte-identical stored copy (SHA or `cmp`).
+2. Read it properly. If the extracted text is mojibake - common for TeX/dvips/Ghostscript PDFs with no ToUnicode CMap - render the pages to images (for example PyMuPDF `page.get_pixmap(dpi=170)`) and read them visually instead of trusting the garbled text layer.
+3. Write a paper note using the Structure above, in obsidian-style, and add an explicit "what this gives our work / which gaps it closes" section tying the paper to the user's code, models, and existing notes.
+4. Reconcile the vault: update existing notes and formulas the paper corrects, completes, or supersedes, and link the new note from them.
+5. Actively close gaps. For every open caveat, TODO, "not found", or "not solved" the paper resolves, edit the affected note to cite the new source and downgrade or close the caveat - do not only say it in chat.
+6. Register the work with a dated entry in the nearest project checkpoint (`CODEX/Контекст задачи Codex - <topic>.md`).
+
+Guardrail: separate what the paper actually establishes from adjacent concepts, so a new source is not over-applied (for example, a real Kerr coefficient `alpha` in a dielectric is not the complex third-order susceptibility of a metal nanoparticle).
+
 ## Output
 
 - Use Obsidian-ready Markdown when the answer is meant to become a note.

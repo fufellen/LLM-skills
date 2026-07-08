@@ -11,6 +11,15 @@ Use this skill for the user's specialized plasmonic and photonic research contex
 
 For general Obsidian note style, checkpoint discipline, paper-note structure, term-note capture, and PhD vault hygiene, use the general `scientific-work` rules when available. This skill adds the plasmonics/photonics physics and claim-control layer.
 
+## Note Capture (non-negotiable)
+
+Plasmonics/photonics conceptual work must be captured back into the vault by default, applying `scientific-work` note-capture rules 12-14 even when that skill is not separately loaded. Do not wait to be asked, and do not answer only in chat:
+- for "объясни / разбери / что тут происходит / как это получается" explanations of PhD/vault material, create or update the nearest relevant note and answer with a link (scientific-work rule 12);
+- for a clarifying question about the content of an existing note - for example "это точная формула или приближение", "откуда берётся эта формула", "почему одна формула, если параметр/χ⁽³⁾ не универсален", "что здесь означает этот множитель" - after answering, add a compact clarification to the relevant section of the source note, following `references/obsidian-style.md` from the shared `scientific-work` skill (rule 14);
+- for a stated physical guess or hypothesis, record it in the nearest appropriate note with an explicit status (rule 13).
+
+Skip the note update only when the user explicitly asks not to write files, or the question is clearly casual and unrelated to vault content. When a task begins touching vault notes, load the `scientific-work` note-capture and `obsidian-style` rules if they are not already in context, so this behavior does not depend on remembering to open that skill.
+
 ## Self-Improvement And Publishing
 
 When plasmonics-photonics work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact domain rules, validation checks, reusable modeling patterns, source-audit lessons, or formula conventions in this skill or a focused `references/<topic>.md` file. Do not store secrets, credentials, private raw datasets, unpublished full measurements, copyrighted source text, generated logs, raw project/customer material, or one-off project facts in the skill.

@@ -93,14 +93,20 @@ else {
 }
 
 if ($CheckLinks -and $linkMatches.Count -gt 0) {
-    $noteFiles = Get-ChildItem -LiteralPath $VaultRoot -Recurse -File -Filter "*.md" -ErrorAction SilentlyContinue |
+    # Index every non-service file in the vault, not only .md, so attachment
+    # links and embeds (PDF, PNG, canvas, ...) resolve the same way Obsidian does.
+    $allFiles = Get-ChildItem -LiteralPath $VaultRoot -Recurse -File -ErrorAction SilentlyContinue |
         Where-Object {
             $_.FullName -notmatch "\\(\.git|\.trash|\.venv|\.obsidian|_\.obsidian)\\"
         }
 
-    $titleSet = @{}
-    foreach ($file in $noteFiles) {
-        $titleSet[$file.BaseName] = $true
+    # PowerShell hashtables key case-insensitively, matching Obsidian link
+    # resolution on Windows.
+    $fullNameSet = @{}   # exact filename incl. extension: "figure.png", "paper.pdf", "Note.md"
+    $baseNameSet = @{}   # filename without extension: "Note", "figure"
+    foreach ($file in $allFiles) {
+        $fullNameSet[$file.Name] = $true
+        $baseNameSet[$file.BaseName] = $true
     }
 
     $missing = New-Object System.Collections.Generic.List[string]
@@ -112,17 +118,35 @@ if ($CheckLinks -and $linkMatches.Count -gt 0) {
             continue
         }
 
+        $hasExt = $target -match "\.[A-Za-z0-9]+$"
         $found = $false
+
         if ($target -match "[/\\]") {
+            # Path-qualified link/embed: try the exact path under the vault root,
+            # append .md for an extensionless note path, then fall back to a
+            # shortest-path filename match (as Obsidian does).
             $rel = $target -replace "/", "\"
-            if (-not $rel.EndsWith(".md", [System.StringComparison]::OrdinalIgnoreCase)) {
-                $rel += ".md"
+            $found = Test-Path -LiteralPath (Join-Path $VaultRoot $rel) -PathType Leaf
+            if (-not $found -and -not $hasExt) {
+                $found = Test-Path -LiteralPath (Join-Path $VaultRoot ($rel + ".md")) -PathType Leaf
             }
-            $candidate = Join-Path $VaultRoot $rel
-            $found = Test-Path -LiteralPath $candidate -PathType Leaf
+            if (-not $found) {
+                $leaf = Split-Path -Leaf $rel
+                if ($leaf -match "\.[A-Za-z0-9]+$") {
+                    $found = $fullNameSet.ContainsKey($leaf)
+                }
+                else {
+                    $found = $baseNameSet.ContainsKey($leaf) -or $fullNameSet.ContainsKey($leaf + ".md")
+                }
+            }
+        }
+        elseif ($hasExt) {
+            # Bare attachment filename (e.g. .pdf, .png): match the full name anywhere.
+            $found = $fullNameSet.ContainsKey($target)
         }
         else {
-            $found = $titleSet.ContainsKey($target)
+            # Bare note name: resolves to <name>.md (or any file with that base name).
+            $found = $baseNameSet.ContainsKey($target) -or $fullNameSet.ContainsKey($target + ".md")
         }
 
         if (-not $found) {

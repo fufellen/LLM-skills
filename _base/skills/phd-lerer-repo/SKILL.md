@@ -11,11 +11,17 @@ Use this skill for the dedicated calculation-code repository:
 
 ```text
 GitHub: https://github.com/fufellen/phd_lerer
-Default local checkout: C:\Users\mrfuf\source\phd_lerer
+Local checkout (machine-dependent): C:\Users\mrfuf\source\phd_lerer or C:\Users\User\source\phd_lerer
 Default branch: master
 ```
 
+The checkout path differs per PC (for example `mrfuf` on one machine, `User` on another), so absolute paths written inside Obsidian notes may point at another machine's copy - resolve `phd_lerer` on the current PC instead of trusting a note's hardcoded path.
+
 This repository is the durable home for reproducible calculation sources from the Lerer/PhD workflow. Obsidian notes may explain results, but source code, small deterministic inputs, and small reference outputs should live here when they are useful beyond one note.
+
+## Checkout Freshness (before computing)
+
+Before running repo scripts or trusting their numbers, confirm the local checkout is not behind `origin/master`: `git fetch origin`, then compare `HEAD` with `origin/master`. A stale checkout can carry outdated material tables (for example `composite_ema` `eps_au`/`eps_ag`/`eps_cu`) that silently change numeric results - a cross-check that should read 0.80 read 1.76 purely because the local `eps_au(532)` was an older table revision, and only matched the source note after a fast-forward. If the checkout is behind with a clean tree, fast-forward (`git merge --ff-only origin/master`) before computing; if it has diverged or the tree is dirty, resolve that first. After syncing, re-run the script's self-test and confirm anchor values match the source note before building anything on top.
 
 ## Repository Rules
 

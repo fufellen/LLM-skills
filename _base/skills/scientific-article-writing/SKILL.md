@@ -173,10 +173,22 @@ Run these on every manuscript regardless of venue:
   «бесметалльный срез» (misspelled: «бес-» is impossible before the voiced
   «м»; the chemistry term «безметалльный» exists but is niche jargon).
   Prefer a natural prepositional phrase instead of coining an adjective:
-  metal-free cut -> «срез без металла»; PCM-loaded -> «с PCM-нагрузкой /
-  нагруженный PCM». If a coined adjective feels needed, first check it
-  exists in real Russian literature; otherwise rephrase (user-flagged,
-  2026-07-09).
+  metal-free cut -> «срез без металла»; PCM-loaded -> «с PCM-нагрузкой»
+  (hyphenated participle compounds like «PCM-нагруженный» are calques;
+  noun compounds like «PCM-нагрузка», «PCM-фазовращатель» are fine, and
+  adverb+participle terms like «диэлектрически нагруженный волновод»
+  are established - do not "fix" those). If a coined adjective feels
+  needed, first check it exists in real Russian literature; otherwise
+  rephrase (user-flagged, 2026-07-09).
+  More verified pairs from the same sweep: full-vector -> «полновекторный»
+  (one word; hyphenated «полно-векторный» is a calque spelling);
+  anchor (reference solution) -> «эталон / эталонное решение», not
+  «якорь»; lossier -> «потери выше / более высокие потери», never
+  «лоссовее»; "the first robust observation" -> «Первое: ...» (parallel
+  enumeration), not «первое устойчивое наблюдение»; close candidates ->
+  «близкие варианты»; "in terms of X" -> «в пересчете на X / по X»;
+  computational window -> «расчетная область»; lateral substrate
+  cladding -> «боковая оболочка из <материала>», not «подложечная».
 - **Working-vocabulary leakage (English manuscripts).** The mirror
   problem: an English version written from a Russian working draft
   inherits insider calques that mean nothing to an international reader.

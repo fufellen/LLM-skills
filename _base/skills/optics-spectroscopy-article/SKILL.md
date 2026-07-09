@@ -26,6 +26,9 @@ Primary rule sources (in priority order):
 - Universal venue-agnostic manuscript discipline (source-of-truth selection,
   claim/number QA, citation-order checks, safe count-asserted bulk edits):
   `scientific-article-writing`. Rules in this skill override it on conflicts.
+- Natural Russian scientific language, де-кальке (avoid English calques,
+  false friends, суржик) in the Russian manuscript, title, and abstract:
+  `ru-language-purity`. Mandatory before finalizing Russian prose.
 - Scientific content, claim control, checkpoints, final GPT review:
   `scientific-work` (final-review rule is mandatory for submission drafts)
   and `plasmonics-photonics` (domain claim rules).

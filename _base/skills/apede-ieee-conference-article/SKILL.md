@@ -36,6 +36,10 @@ Primary rule sources (in priority order):
   claim/number QA, citation-order checks, safe count-asserted bulk edits,
   submission-blocker checks): `scientific-article-writing`. Venue rules in
   this skill override it where they conflict.
+- English kept free of Russian-lab insider calques and working-title jargon
+  when the paper is written or translated from a Russian working draft (the
+  mirror check), and де-кальке for any Russian-language version:
+  `ru-language-purity`.
 - Scientific content, claim control, checkpoints, final GPT review:
   `scientific-work` (final-review rule is mandatory for submission drafts)
   and `plasmonics-photonics` (domain claim rules).

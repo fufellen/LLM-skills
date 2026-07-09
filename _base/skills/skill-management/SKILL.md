@@ -135,7 +135,7 @@ For LTspice skill reads, edits, validation, commits, and pushes, work in the cor
 
 ## Existing Google Drive Skills
 
-- `scientific-work` currently lives at:
+- `scientific-work` (personal source of truth, now also mirrored into the corporate checkout at `.codex/skills/nto-formatting/scientific-work` so the corporate `scientific-article-writing` resolves its reference) currently lives at:
 
 ```text
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-work
@@ -201,7 +201,7 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\obsidian-can
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\phd-lerer-repo
 ```
 
-- `markdown-to-docx` currently lives at:
+- `markdown-to-docx` (personal source of truth, now also mirrored into the corporate checkout at `.codex/skills/nto-formatting/markdown-to-docx` so the corporate `scientific-article-writing` resolves its reference) currently lives at:
 
 ```text
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\markdown-to-docx

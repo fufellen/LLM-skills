@@ -38,6 +38,7 @@ python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --output "book.md
 
 ## Obsidian Conventions
 
+- The extracted conversion note MUST link its source PDF with an Obsidian `[[filename.pdf]]` wikilink in the header (the `extract` command emits `> Source: [[<name>.pdf]]`), never a bare backtick path - a path string is not a backlink, so the source document shows no incoming links even though the whole study derives from it. When a separate analysis/paper note exists, cross-link it too. This mirrors the `obsidian-style.md` "Paper Notes" rule (explicit user requirement, 2026-07-09).
 - Store media in a nearby folder such as `<book-stem>_media/`.
 - Keep Obsidian attachment filenames short and stable, especially on Windows. Prefer names such as `<book-key>-fig-02-02.png` over caption-derived names; long full paths can fail in Obsidian/Electron even when the same files open in external viewers.
 - Visually inspect extracted figure crops before relinking or translation. Page-region crops can accidentally include neighboring formulas, paragraphs, or captions; recrop/regenerate the PNG so only the figure artwork and its own internal labels remain.

@@ -198,7 +198,7 @@ def extract_with_fitz(
     lines: list[str] = [
         f"# {title}",
         "",
-        f"> Source: `{pdf_path}`",
+        f"> Source: [[{Path(pdf_path).name}]]",
         f"> Extracted: {_dt.date.today().isoformat()}",
         "> Method: PyMuPDF page text extraction",
         "",
@@ -252,7 +252,7 @@ def extract_with_pypdf(
     lines: list[str] = [
         f"# {title}",
         "",
-        f"> Source: `{pdf_path}`",
+        f"> Source: [[{Path(pdf_path).name}]]",
         f"> Extracted: {_dt.date.today().isoformat()}",
         "> Method: pypdf text extraction",
         "",

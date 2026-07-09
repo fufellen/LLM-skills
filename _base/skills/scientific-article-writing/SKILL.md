@@ -130,8 +130,15 @@ Run these on every manuscript regardless of venue:
   (IEEE does). Also: one work = one number; every cited number exists in
   the list and vice versa. To renumber: build old->new map, apply in one
   regex pass, re-sort the list block, re-run the check.
-- **Abbreviations.** Every acronym is expanded at its FIRST body use
-  (abstract does not count), once, and used consistently after.
+- **Abbreviations.** Every acronym is expanded exactly ONCE in the whole
+  manuscript, and the abstract COUNTS as that one introduction (explicit
+  user rule, 2026-07-09, overriding the common "re-expand in the body"
+  convention): if the abstract already expanded it, the body just uses the
+  abbreviation. Never keep two variant forms of one abbreviation in one
+  document (DLSPP vs DLSPPW; FEM vs МКЭ vs spelled-out «методом конечных
+  элементов») - pick one form per language and unify it everywhere by
+  count-asserted replace. QA: grep expansion patterns `(\w+\)`-style and
+  assert one introduction per acronym; grep known variant pairs.
 - **Placeholders.** Grep for `УТОЧНИТЬ`, `TODO`, `FIXME`, `XXX`, `???` -
   each hit must be intentional and reported.
 - **Typography.** Decimal points with leading zeros (`0.25`, never `.25`);
@@ -143,6 +150,17 @@ Run these on every manuscript regardless of venue:
   convention; venue skill may differ). Figure axis labels are
   `Quantity (unit)`, figures meet the venue dpi minimum, each figure also
   exists as a separate file.
+- **Figures are designed for black-and-white print.** Distinguish series
+  and marker lines by line STYLE, marker shape, or hatch pattern - never
+  by color alone (color may stay as a secondary cue). Keep hatching thin,
+  sparse, and light-gray so fills do not read as bold dirt in print.
+  Text labels must not touch or overlap the lines/graphics they annotate -
+  offset or stagger them (user correction 2026-07-09: bold hatching and
+  S-labels sitting on cut lines). In-figure wording (legends, annotations)
+  must use the manuscript text's own terminology in that language - a
+  legend saying "anchor" while the text says "reference" is a defect.
+  Verify all of this on the rendered page (rule 7), including a mental
+  grayscale check.
 - **Wikilinks and vault artifacts.** `[[...]]`, Obsidian frontmatter,
   local-note sections ("Локальные источники", GPT notes, edit logs) must
   never leak into the submission artifact.

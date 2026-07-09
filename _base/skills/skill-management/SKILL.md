@@ -231,6 +231,10 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\presentation
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-work\references\presentation-workflow.md
 ```
 
+- `scientific-article-writing` (universal venue-agnostic manuscript base) lives in the personal skills repository at `.codex/skills/scientific-article-writing` (shared base `_base/skills/scientific-article-writing/`) and is now also mirrored into the corporate checkout at `.codex/skills/nto-formatting/scientific-article-writing`. Keep the personal copy as the safety copy.
+
+- `ru-language-purity` is the shared source of truth for де-кальке (RU/EN language purity: English calques, false friends, суржик, invented compounds, plus the mirror EN-from-RU check). Personal safety copy at `.codex/skills/ru-language-purity` (shared base `_base/skills/ru-language-purity/`, checklist in `references/decalque-ru-en.md`), mirrored into the corporate checkout at `.codex/skills/nto-formatting/ru-language-purity`. Referenced by `scientific-article-writing`, `nto-formatting`, `optics-spectroscopy-article`, and `apede-ieee-conference-article` instead of each embedding its own copy.
+
 ## Creating New Skills
 
 When creating a new skill from scratch:
@@ -274,6 +278,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - general scientific notes, papers, PhD work, Obsidian research workflows: `scientific-work`;
 - plasmonics, nanophotonics, SPP/DLSPP/LR-DLSPP, PCM photonics, optical antennas, EIM/Р­Р”Рџ, and photonic COMSOL/FEM/CST mode-analysis workflows: `plasmonics-photonics`;
 - scientific and technical report / NTO formatting: `nto-formatting`;
+- natural Russian scientific language and the shared RU/EN де-кальке checklist (English calques, false friends, суржик, invented compounds) used across the manuscript/report skills: `ru-language-purity`;
 - LTspice schematic and netlist simulation workflows: `nto-formatting/ltspice-simulation`;
 - PDF textbook to Markdown workflows: `pdf-textbook-to-markdown` in the personal repo, mirrored to `nto-formatting/pdf-textbook-to-markdown` in the corporate repo when requested;
 - shared self-learning and reusable-lesson policy for skills: `skill-learning`;

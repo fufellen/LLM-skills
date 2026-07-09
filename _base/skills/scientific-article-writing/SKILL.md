@@ -149,46 +149,21 @@ Run these on every manuscript regardless of venue:
   (щ -> shch, ч -> ch, ж -> zh); author-preferred spellings win over
   standard transliteration - ask if unknown.
 - **Language purity (Russian manuscripts).** Russian scientific prose must
-  not mix in English words where standard Russian terms exist - sentences
-  like "Полученные результаты предлагают трехуровневый workflow" or "до
-  дорогих FEM sweep" are defects (суржик), not style. English is allowed
-  ONLY: (a) in parentheses when first defining a term or abbreviation,
-  (b) in established abbreviations (PCM, FEM, SPP, PML, COMSOL, TM),
-  (c) in reference titles. Register: научный стиль уровня опытного
-  ученого, не студенческий жаргон. Automate: grep the artifact body for a
-  forbidden list (workflow, screening, sweep, solver, overlap, lossy,
-  claim, reduced model, decision layer, branch tracking, branch
-  validation, phase-trend, eigenmode, mode analysis, hold-out,
-  state-paired, failure-aware, camera-ready, ...); hits outside
-  definitional parentheses are defects. Typical replacements:
-  workflow -> схема/методика; screening -> предварительный отбор;
-  sweep -> серия параметрических расчетов; eigenmode solver -> программа
-  поиска собственных мод; overlap -> перекрытие; insertion loss ->
-  вносимые потери; lossy -> с потерями / поглощающий; leaky mode ->
-  вытекающая мода; near cutoff -> вблизи отсечки; claim ->
-  утверждение / заявляемый результат; reduced-order -> приближенный
-  (редуцированный); branch tracking -> отслеживание модовой ветви.
-  A separate defect class: INVENTED calque adjectives coined to mirror an
-  English "X-free"/"X-loaded" compound - e.g. "metal-free cut" ->
-  «бесметалльный срез» (misspelled: «бес-» is impossible before the voiced
-  «м»; the chemistry term «безметалльный» exists but is niche jargon).
-  Prefer a natural prepositional phrase instead of coining an adjective:
-  metal-free cut -> «срез без металла»; PCM-loaded -> «с PCM-нагрузкой»
-  (hyphenated participle compounds like «PCM-нагруженный» are calques;
-  noun compounds like «PCM-нагрузка», «PCM-фазовращатель» are fine, and
-  adverb+participle terms like «диэлектрически нагруженный волновод»
-  are established - do not "fix" those). If a coined adjective feels
-  needed, first check it exists in real Russian literature; otherwise
-  rephrase (user-flagged, 2026-07-09).
-  More verified pairs from the same sweep: full-vector -> «полновекторный»
-  (one word; hyphenated «полно-векторный» is a calque spelling);
-  anchor (reference solution) -> «эталон / эталонное решение», not
-  «якорь»; lossier -> «потери выше / более высокие потери», never
-  «лоссовее»; "the first robust observation" -> «Первое: ...» (parallel
-  enumeration), not «первое устойчивое наблюдение»; close candidates ->
-  «близкие варианты»; "in terms of X" -> «в пересчете на X / по X»;
-  computational window -> «расчетная область»; lateral substrate
-  cladding -> «боковая оболочка из <материала>», not «подложечная».
+  not mix in English words (суржик), wrong-sense translations (false
+  friends like careful -> «аккуратный»), invented calque compounds
+  («PCM-нагруженный», «бесметалльный», «полно-векторный», «лоссовее»),
+  or imported metaphors (anchor -> «якорь»). English is allowed ONLY:
+  (a) in parentheses when first defining a term or abbreviation, (b) in
+  established abbreviations (PCM, FEM, SPP, PML, COMSOL, TM), (c) in
+  reference titles. Register: научный стиль уровня опытного ученого.
+  MANDATORY: before writing or editing Russian manuscript prose - and as
+  a full pass over any text translated from an (AI-written) English
+  draft - read `references/decalque-ru-en.md` and apply it: it holds the
+  strategic rules (rewrite from facts, resolve sense against the source,
+  existence test for coined words), the verified replacement tables by
+  defect class, the deliberate keeps (do not over-correct established
+  terms), and the grep automation recipe. New caught calques are added
+  to that file, not inlined here.
 - **Working-vocabulary leakage (English manuscripts).** The mirror
   problem: an English version written from a Russian working draft
   inherits insider calques that mean nothing to an international reader.

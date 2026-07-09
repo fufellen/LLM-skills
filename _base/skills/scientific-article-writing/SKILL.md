@@ -19,7 +19,8 @@ this skill on conflicts. Known venue skills:
   GOST 7.32-2017 (lives in the corporate skills submodule
   `nto-formatting/_base/skills/nto-formatting/`).
 Conversion mechanics live in `markdown-to-docx`; domain claim rules in
-`plasmonics-photonics` / `scientific-work`.
+`plasmonics-photonics` / `scientific-work`; RU/EN language purity
+(де-кальке) in `ru-language-purity`.
 
 ## Non-Negotiable Rules
 
@@ -148,32 +149,24 @@ Run these on every manuscript regardless of venue:
 - **Names.** Cyrillic-to-Latin transliteration is verified per author
   (щ -> shch, ч -> ch, ж -> zh); author-preferred spellings win over
   standard transliteration - ask if unknown.
-- **Language purity (Russian manuscripts).** Russian scientific prose must
-  not mix in English words (суржик), wrong-sense translations (false
-  friends like careful -> «аккуратный»), invented calque compounds
-  («PCM-нагруженный», «бесметалльный», «полно-векторный», «лоссовее»),
-  or imported metaphors (anchor -> «якорь»). English is allowed ONLY:
-  (a) in parentheses when first defining a term or abbreviation, (b) in
-  established abbreviations (PCM, FEM, SPP, PML, COMSOL, TM), (c) in
-  reference titles. Register: научный стиль уровня опытного ученого.
-  MANDATORY: before writing or editing Russian manuscript prose - and as
-  a full pass over any text translated from an (AI-written) English
-  draft - read `references/decalque-ru-en.md` and apply it: it holds the
-  strategic rules (rewrite from facts, resolve sense against the source,
-  existence test for coined words), the verified replacement tables by
-  defect class, the deliberate keeps (do not over-correct established
-  terms), and the grep automation recipe. New caught calques are added
-  to that file, not inlined here.
-- **Working-vocabulary leakage (English manuscripts).** The mirror
-  problem: an English version written from a Russian working draft
-  inherits insider calques that mean nothing to an international reader.
-  Watch for: "local" meaning "our in-house runs" ("local COMSOL data" ->
-  "our/reference COMSOL runs"), "referred to locally as" -> "known in the
-  Russian-language literature as", working-title jargon that was never
-  introduced ("failure atlas" -> spell out the meaning), compound
-  shorthand ("COMSOL-side step" -> "a step on the FEM side"). Also scan
-  for British spellings (IEEE uses American English), "allows to /
-  possibility to / it is necessary to note", doubled words, and "data is".
+- **Language purity (RU and EN).** Use the `ru-language-purity` skill - the
+  shared source of truth for де-кальке, referenced by every writing skill so
+  the checklist is not duplicated here. Russian scientific prose must not
+  carry English words (суржик), false friends (careful -> «аккуратный»),
+  invented calque compounds («PCM-нагруженный», «бесметалльный»,
+  «полно-векторный», «лоссовее»), or imported metaphors (anchor -> «якорь»);
+  English is allowed ONLY (a) in parentheses when first defining a term or
+  abbreviation, (b) in established abbreviations (PCM, FEM, SPP, PML, COMSOL,
+  TM), (c) in reference titles. Register: научный стиль уровня опытного
+  ученого. MANDATORY before writing or editing Russian manuscript prose, and
+  as a full pass over any RU text translated from an (AI-written) English
+  draft: read `ru-language-purity` and its `references/decalque-ru-en.md`
+  (strategic rules, replacement tables by defect class, deliberate keeps,
+  grep recipe) and apply it. The mirror direction applies too: an English
+  version written from a Russian working draft must not keep insider calques
+  ("local" = in-house runs, "referred to locally as", unintroduced
+  working-title jargon, "COMSOL-side step") - `ru-language-purity` covers
+  that direction as well.
 
 ## Authoring A Venue Skill From The Journal/Conference Template
 

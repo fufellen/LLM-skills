@@ -1,0 +1,16 @@
+---
+name: ru-language-purity
+description: Keep Russian scientific prose natural and free of English calques (кальки), суржик, false friends, and invented compound words, and catch the mirror problem of Russian insider jargon leaking into English manuscripts. Use before writing or editing Russian научный текст, as a full pass over any Russian text translated from an English (AI-written) draft, and when checking an English version written from a Russian working draft. Shared source of truth for де-кальке rules, referenced by scientific-article-writing, nto-formatting, optics-spectroscopy-article, apede-ieee-conference-article, and any skill producing bilingual RU/EN technical text.
+---
+
+# RU/EN Language Purity (Codex adapter)
+
+Shared base skill: ../_base/skills/ru-language-purity/SKILL.md.
+
+When this skill triggers, read that base SKILL.md completely and follow it together with any references/, scripts/, and assets/ next to the base file. Resolve relative resource paths from the shared base skill directory.
+
+Keep this file as a Codex-specific thin adapter: frontmatter, trigger wording, and Codex-only metadata belong here; durable domain rules, reusable workflows, scripts, references, and lessons belong in the shared base skill.
+
+Codex-specific notes:
+- agents/openai.yaml is Codex UI metadata for this adapter.
+- Update the shared base first for behavior changes, then adjust Codex/Claude adapters only when their platform-specific pointers or trigger descriptions need to change.

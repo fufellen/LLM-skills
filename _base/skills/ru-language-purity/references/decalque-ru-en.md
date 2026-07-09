@@ -90,6 +90,7 @@ What is NOT a calque here (do not "fix"):
 | English source | Calque (wrong) | Natural Russian |
 | --- | --- | --- |
 | anchor (reference solution) | якорь | эталон; эталонное решение (и в подписях/легендах фигур EN-текста - "reference", не "anchor") |
+| referred to locally as / locally called | локально называемый; локальное название | известный в русскоязычной литературе как; русскоязычное название |
 | corresponds to the infinite-width limit | отвечает пределу бесконечной ширины | описывает бесконечно широкую структуру |
 | failure-aware / regions of inapplicability | с учетом областей неприменимости; карта областей неприменимости | границы применимости |
 | the first robust observation is | первое устойчивое наблюдение | «Первое: ...» (parallel enumeration) |
@@ -145,7 +146,8 @@ defect. Forbidden list to grep for, with replacements:
    `аккуратн\w* баланс`, `тщательн\w* компромисс`, `подложечн`,
    `расчетн\w* окн`, `мер\w* перекрытия`, `устойчивое наблюдение`,
    `программн\w* работ`, `балансир`, `област\w+ неприменимости`,
-   `отвечает пределу`, `быстрый инструмент`.
+   `отвечает пределу`, `быстрый инструмент`, `локальн` (локально
+   называемый / локальное название - вне смысла «локализация поля»).
 3. For each hit: find the EN source phrase, resolve the intended sense
    (rule 2), fix with the tables above or rephrase.
 4. Fix in ALL title locations at once (working title, title block,

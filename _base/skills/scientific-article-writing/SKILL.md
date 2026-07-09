@@ -167,6 +167,14 @@ Run these on every manuscript regardless of venue:
 - **Names.** Cyrillic-to-Latin transliteration is verified per author
   (щ -> shch, ч -> ch, ж -> zh); author-preferred spellings win over
   standard transliteration - ask if unknown.
+- **Reader-facing shorthand.** If a recurring attribute term is shorthand
+  the target reader may not parse («прозрачные состояния» meaning k≈0 PCM
+  states), replace it with the self-explanatory form («слабопоглощающие
+  состояния») or define it in place with numbers at first use. A term may
+  legitimately stay in ONE language when the cited literature establishes
+  it there ("transparent PCM" comes from the cited titles, so EN keeps it
+  while RU prose uses the self-explanatory form) - meaning stays identical
+  (user correction 2026-07-09).
 - **Language purity (RU and EN).** Use the `ru-language-purity` skill - the
   shared source of truth for де-кальке, referenced by every writing skill so
   the checklist is not duplicated here. Russian scientific prose must not

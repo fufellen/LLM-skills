@@ -168,6 +168,15 @@ Run these on every manuscript regardless of venue:
   вытекающая мода; near cutoff -> вблизи отсечки; claim ->
   утверждение / заявляемый результат; reduced-order -> приближенный
   (редуцированный); branch tracking -> отслеживание модовой ветви.
+  A separate defect class: INVENTED calque adjectives coined to mirror an
+  English "X-free"/"X-loaded" compound - e.g. "metal-free cut" ->
+  «бесметалльный срез» (misspelled: «бес-» is impossible before the voiced
+  «м»; the chemistry term «безметалльный» exists but is niche jargon).
+  Prefer a natural prepositional phrase instead of coining an adjective:
+  metal-free cut -> «срез без металла»; PCM-loaded -> «с PCM-нагрузкой /
+  нагруженный PCM». If a coined adjective feels needed, first check it
+  exists in real Russian literature; otherwise rephrase (user-flagged,
+  2026-07-09).
 - **Working-vocabulary leakage (English manuscripts).** The mirror
   problem: an English version written from a Russian working draft
   inherits insider calques that mean nothing to an international reader.

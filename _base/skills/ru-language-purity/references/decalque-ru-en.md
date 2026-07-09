@@ -30,7 +30,16 @@ any model, including weaker ones, can apply it without judgment calls.
    by a script that asserts the expected occurrence count per file and
    verifies zero leftovers, then rebuild artifacts and re-verify inside
    the built DOCX/PDF text.
-6. **Убирай слова-филлеры и книжные обороты (заумность).** Если
+6. **Согласуй определения с расшифровкой аббревиатуры по числу и роду.**
+   Аббревиатура наследует грамматику своей расшифровки. Если в тексте
+   введено «плазмонные наночастицы (ПНЧ)» (мн. ч.), то дальше только
+   «золотых ПНЧ», «этих ПНЧ» - НЕ «золотой ПНЧ». Проверяй все определения
+   перед аббревиатурой грепом по шаблону «(прилагательное в ед. ч.) +
+   АББР» и сверяй с тем, как аббревиатура раскрыта при первом упоминании.
+   Если нужен единственный объект - пиши слово полностью
+   («проницаемость наночастицы»), а не аббревиатуру
+   (explicit user correction, 2026-07-09).
+7. **Убирай слова-филлеры и книжные обороты (заумность).** Если
    прилагательное можно убрать без потери смысла («тщательный компромисс»
    -> «компромисс») - это слово ради слова, убирай. Если оборот звучит
    по-книжному сложнее самой мысли («отвечает пределу бесконечной
@@ -61,6 +70,9 @@ The Russian word exists, but it renders the wrong sense of the English one.
 | in terms of X | в терминах X | в пересчете на X; по X |
 | candidates (design variants) | кандидаты | варианты |
 | aggressive (design/estimate) | агрессивный | жесткий, завышенный, интенсивный |
+| signature (of a shift / an effect) | подпись (сдвига) | признак, характерный признак |
+| bleaching (of absorption) | выцветание; выцветает | просветление; ослабевает, уменьшается |
+| time traces (pump-probe) | временные трассы | временные зависимости |
 
 ## Class 2 - invented calque adjectives and compounds
 
@@ -76,6 +88,7 @@ compound. Hyphenated participle compounds copied from English
 | full-wave | полно-волновой | полноволновой (одно слово); или «строгий численный» |
 | lossier | лоссовее | с большими потерями; потери выше |
 | failure-aware | отказоустойчивый (wrong sense) / файлур-эвер | с учетом областей неприменимости |
+| derivative-like (lineshape) | производноподобная форма | форма, напоминающая производную контура |
 
 What is NOT a calque here (do not "fix"):
 - established adverb+participle terms: «диэлектрически нагруженный
@@ -123,6 +136,9 @@ defect. Forbidden list to grep for, with replacements:
 | reduced-order / reduced model | приближенный (редуцированный) |
 | branch tracking | отслеживание модовой ветви |
 | hold-out, state-paired, failure-aware, phase-trend | rephrase in Russian |
+| Z-scan | Z-сканирование; при первом упоминании «Z-сканирование (Z-scan)» |
+| pump-probe | «накачка-зондирование» (pump-probe) при первом упоминании |
+| decoupled (approximation) | без самосогласования (НЕ «расцепленное (screening)» - скобка поясняет не то слово) |
 
 ## Deliberate keeps (do not over-correct)
 
@@ -147,7 +163,13 @@ defect. Forbidden list to grep for, with replacements:
    `расчетн\w* окн`, `мер\w* перекрытия`, `устойчивое наблюдение`,
    `программн\w* работ`, `балансир`, `област\w+ неприменимости`,
    `отвечает пределу`, `быстрый инструмент`, `локальн` (локально
-   называемый / локальное название - вне смысла «локализация поля»).
+   называемый / локальное название - вне смысла «локализация поля»),
+   `выцвет` (bleaching -> просветление), `производноподобн`,
+   `подпись\w*\s+(сдвига|эффекта)` (signature -> признак),
+   `временн\w*\s+трасс` (time traces -> временные зависимости),
+   `Z-scan`, `pump-probe` (сырые - раскрыть по-русски со скобкой);
+   согласование аббревиатур: `(ой|ая|ую|ого|ому)\s+(ПНЧ|ЭДП|ППП)`
+   при множественной расшифровке (strategic rule 6).
 3. For each hit: find the EN source phrase, resolve the intended sense
    (rule 2), fix with the tables above or rephrase.
 4. Fix in ALL title locations at once (working title, title block,

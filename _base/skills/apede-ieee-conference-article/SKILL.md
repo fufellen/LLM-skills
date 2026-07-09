@@ -264,6 +264,23 @@ of them; automate the checks where a recipe is given.
     For incomplete FEM validation, state the reference data as diagnostic and
     name the missing checks; do not imply that mesh/domain/PML convergence or
     wavelength-sweep validation was performed.
+16. **Visually verify every generated figure before embedding it, and verify
+    immediately - do not trust that the plotting code is right.** A matplotlib
+    schematic or chart can place cut lines, arrows, markers, or dimension
+    annotations off the features they mark even when the code reads correctly
+    (e.g. a cross-section cut line that should bisect a thin metal strip but
+    visibly misses it). After building a figure, RENDER it and LOOK before it
+    goes into the manuscript: confirm each annotation/line/marker sits on the
+    feature it represents, layers and labels do not overlap, thin layers are
+    visible, and in-figure text/axis labels are readable. When alignment is in
+    doubt, measure it in pixels instead of eyeballing: load the PNG, find the
+    colored line/feature columns (e.g. red = cut lines, the layer's fill color =
+    its extent) and assert the line falls at the target's center/region. Place
+    schematic cut lines at the CENTER of the region each one represents, and
+    exaggerate sub-resolution layers (a 10 nm film) enough to be visible while
+    keeping the true value in the dimension label. The same rule applies to any
+    generated image, table, or computed number: inspect the actual artifact
+    right after producing it, not after the whole DOCX is built.
 
 ## Where IEEE Differs From The Ioffe Journal Rules
 

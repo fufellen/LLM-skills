@@ -56,7 +56,12 @@ calques that mean nothing to an international reader. Watch for:
 - "referred to locally as" -> "known in the Russian-language literature as";
 - working-title jargon that was never introduced ("failure atlas" -> spell
   out the meaning);
-- compound shorthand ("COMSOL-side step" -> "a step on the FEM side").
+- compound shorthand ("COMSOL-side step" -> "a step on the FEM side");
+- ML working jargon in physics prose ("hold-out FEM points" ->
+  "confirmatory FEM checks");
+- in-figure text (legends, captions) drifting from the manuscript's own
+  terminology ("planar anchor" in the legend while the text says
+  "planar reference") - figures follow the text's terms.
 
 Also scan for British spellings (IEEE uses American English), "allows to /
 possibility to / it is necessary to note", doubled words, and "data is".

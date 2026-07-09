@@ -30,6 +30,18 @@ any model, including weaker ones, can apply it without judgment calls.
    by a script that asserts the expected occurrence count per file and
    verifies zero leftovers, then rebuild artifacts and re-verify inside
    the built DOCX/PDF text.
+6. **Убирай слова-филлеры и книжные обороты (заумность).** Если
+   прилагательное можно убрать без потери смысла («тщательный компромисс»
+   -> «компромисс») - это слово ради слова, убирай. Если оборот звучит
+   по-книжному сложнее самой мысли («отвечает пределу бесконечной
+   ширины», «обосновывают схему проектирования с учетом областей
+   неприменимости») - перепиши простым глаголом и существительным
+   («описывает бесконечно широкую структуру», «определяют границы
+   применимости»). Признак ставь при действии, а не при предмете:
+   «инструмент для быстрого предварительного отбора», а не «быстрый
+   инструмент предварительного отбора»; предмет не может БЫТЬ действием:
+   «модель для быстрого отбора», а не «модель как быстрый отбор»
+   (explicit user corrections, 2026-07-09).
 
 ## Class 1 - false friends and wrong-sense translations
 
@@ -37,8 +49,11 @@ The Russian word exists, but it renders the wrong sense of the English one.
 
 | English source | Calque (wrong) | Natural Russian |
 | --- | --- | --- |
-| careful balance | аккуратный баланс | тщательный компромисс; тонкий баланс |
+| careful balance / careful trade-off | аккуратный баланс; тщательный компромисс | компромисс (прилагательное не переводить - слово ради слова) |
 | balance / trade-off between X and Y | баланс между | компромисс между X и Y |
+| the design must balance X and Y | конструкция должна балансировать X и Y | геометрия должна давать X и удерживать малым Y (переформулировать) |
+| roadmap (papers) | программные работы | дорожные карты; обзорные работы |
+| fast screening tool | быстрый инструмент предварительного отбора | инструмент для быстрого предварительного отбора |
 | multilevel programming (PCM) | многоуровневое программирование | запись нескольких промежуточных состояний |
 | actual | актуальный | фактический, реальный |
 | performance | перформанс | характеристики, показатели работы |
@@ -58,6 +73,7 @@ compound. Hyphenated participle compounds copied from English
 | metal-free cut | бесметалльный / безметалльный срез | срез без металла |
 | PCM-loaded waveguide | PCM-нагруженный волновод | волновод с PCM-нагрузкой |
 | full-vector (FEM) | полно-векторный | полновекторный (одно слово) |
+| full-wave | полно-волновой | полноволновой (одно слово); или «строгий численный» |
 | lossier | лоссовее | с большими потерями; потери выше |
 | failure-aware | отказоустойчивый (wrong sense) / файлур-эвер | с учетом областей неприменимости |
 
@@ -73,7 +89,9 @@ What is NOT a calque here (do not "fix"):
 
 | English source | Calque (wrong) | Natural Russian |
 | --- | --- | --- |
-| anchor (reference solution) | якорь | эталон; эталонное решение |
+| anchor (reference solution) | якорь | эталон; эталонное решение (и в подписях/легендах фигур EN-текста - "reference", не "anchor") |
+| corresponds to the infinite-width limit | отвечает пределу бесконечной ширины | описывает бесконечно широкую структуру |
+| failure-aware / regions of inapplicability | с учетом областей неприменимости; карта областей неприменимости | границы применимости |
 | the first robust observation is | первое устойчивое наблюдение | «Первое: ...» (parallel enumeration) |
 | computational window | расчетное окно | расчетная область |
 | lateral substrate cladding | боковая подложечная | боковая оболочка из <материала> |
@@ -122,9 +140,12 @@ defect. Forbidden list to grep for, with replacements:
 2. Grep the body for, at minimum:
    `[a-zA-Z]{3,}` runs outside parentheses/abbreviations (Class 4);
    `нагруженн` preceded by a Latin/hyphen compound head (Class 2);
-   `полно-векторн`, `лоссов`, `якор`, `робастн`, `перформанс`,
-   `в терминах`, `кандидат`, `аккуратн\w* баланс`, `подложечн`,
-   `расчетн\w* окн`, `мер\w* перекрытия`, `устойчивое наблюдение`.
+   `полно-` (полно-векторный, полно-волновой - все слитно), `лоссов`,
+   `якор`, `робастн`, `перформанс`, `в терминах`, `кандидат`,
+   `аккуратн\w* баланс`, `тщательн\w* компромисс`, `подложечн`,
+   `расчетн\w* окн`, `мер\w* перекрытия`, `устойчивое наблюдение`,
+   `программн\w* работ`, `балансир`, `област\w+ неприменимости`,
+   `отвечает пределу`, `быстрый инструмент`.
 3. For each hit: find the EN source phrase, resolve the intended sense
    (rule 2), fix with the tables above or rephrase.
 4. Fix in ALL title locations at once (working title, title block,

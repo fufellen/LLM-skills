@@ -1,6 +1,6 @@
 ---
 name: knowledge-refactoring
-description: Refactor Obsidian vault notes and other knowledge bases into linked sources of truth, and keep the vault clean. Use when the user asks to remove duplicates, consolidate notes, choose canonical notes, replace repeated explanations with [[Obsidian links]], audit stale facts against source files or code, reorganize technical knowledge without moving files, delete junk/temporary/backup files, or resolve sync "(conflict ...)" duplicate files.
+description: Refactor Obsidian vault notes and other knowledge bases into linked sources of truth, and keep the vault clean. Use for "научный рефакторинг" of companion explanations, derivations, formula notes, and term notes around articles (not for rewriting the article argument), and when the user asks to remove duplicates, consolidate notes, choose canonical notes, replace repeated explanations with [[Obsidian links]], audit stale facts against source files or code, reorganize technical knowledge without moving files, delete junk/temporary/backup files, or resolve sync "(conflict ...)" duplicate files.
 ---
 
 # Knowledge Refactoring (Codex adapter)

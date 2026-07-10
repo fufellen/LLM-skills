@@ -13,6 +13,30 @@ Reusable scientific and technical term definitions should be canonical standalon
 
 Granularity is not the enemy of DRY: do not avoid creating a term note just because the concept is small, elementary, or seems minor — a focused note the reader can open beats an unexplained term, and many small non-overlapping notes are healthier than a few bloated ones. The only hard constraint is non-duplication: the same definition must live in exactly one canonical note. Before creating a new note, search the whole vault (not just the current folder) to confirm the definition does not already exist elsewhere; if it does, link or consolidate instead of writing a second copy.
 
+## Scientific Refactoring Scope
+
+When the user says `научный рефакторинг`, interpret it as refactoring the
+scientific knowledge layer around a project or article: explanatory notes,
+simple-language derivations, formula notes, term notes, source notes, and
+repeated definitions. It does **not** mean rewriting the article's argument,
+claim order, or manuscript structure under the label of refactoring.
+
+For an article-development workflow, apply scientific refactoring after the
+companion explanations have been written:
+1. keep the manuscript as its own reader-facing scientific artifact;
+2. create or update separate simple-language explanations of the physics,
+   mathematics, numerical method, figures, and limitations;
+3. extract reusable concepts into exact standalone term notes;
+4. choose canonical notes and replace repeated definitions in the companion
+   notes with Obsidian links plus only the needed local context;
+5. feed corrections back into the manuscript only when the note work exposes
+   an actual scientific error, ambiguity, missing limitation, or terminology
+   defect — never merely to make the manuscript mirror the note hierarchy.
+
+The result should be two coordinated but non-identical layers: a compact
+submission manuscript and a linked explanatory knowledge base that makes the
+science understandable and reusable.
+
 ## Self-Improvement And Publishing
 
 When knowledge-refactoring work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact canonicalization rules, anti-duplication heuristics, validation checks, or reusable search/refactor workflows in this skill or a focused reference file. Do not store private note content, customer material, credentials, generated logs, or one-off project facts in the skill.

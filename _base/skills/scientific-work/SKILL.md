@@ -83,6 +83,13 @@ Do not store secrets, credentials, private raw datasets, unpublished full measur
 
 - When reading or searching Russian-language Obsidian notes through PowerShell, set UTF-8 output explicitly before commands, for example `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8;`, and use `Get-Content -Encoding UTF8` for Markdown files. If Cyrillic output appears mojibake/garbled, immediately rerun the read with explicit UTF-8 before interpreting or editing the note.
 
+## HDL Verification On The User's PC
+
+- For the user's own FPGA/HDL projects, use ModelSim ALTERA STARTER EDITION 10.5b as the authoritative compiler and simulator. The verified installation is `C:\intelFPGA\18.1\modelsim_ase\win32aloem` (`vlog.exe`, `vcom.exe`, `vsim.exe`; version string `10.5b`, 2016.10).
+- A third-party repository may be reproduced with the simulator or build flow it explicitly specifies. Even then, any HDL selected, repaired, or ported for the user's project must receive its final compile/elaboration and relevant testbench run in ModelSim 10.5b.
+- Icarus Verilog, Verilator, GHDL, vendor lint, or another simulator may be used for fast preliminary triage when useful, but never report their result as the final verification of the user's HDL. Label it preliminary until ModelSim 10.5b passes.
+- Prefer deterministic batch checks: create/map a clean work library with `vlib`/`vmap`, compile SystemVerilog with `vlog -sv`, compile VHDL with the appropriate `vcom` standard flag, and run `vsim -c` with a finite `run` command or `run -all` followed by an explicit quit. Preserve the first ModelSim error and the exact source/tool version in the project checkpoint or verification note.
+
 ## Local Utility Scripts
 
 - Prefer the reusable scripts in `scripts/` over ad hoc PowerShell one-liners for routine vault work:

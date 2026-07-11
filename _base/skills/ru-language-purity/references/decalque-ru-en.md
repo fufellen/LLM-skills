@@ -116,6 +116,7 @@ The Russian word exists, but it renders the wrong sense of the English one.
 | signature (of a shift / an effect) | подпись (сдвига) | признак, характерный признак |
 | bleaching (of absorption) | выцветание; выцветает | просветление; ослабевает, уменьшается |
 | time traces (pump-probe) | временные трассы | временные зависимости |
+| preserve material ranking (model comparison) | модель сохраняет ранжирование материалов | модель даёт тот же порядок материалов по <явному критерию>, что и контрольный расчёт; порядок материалов по <критерию> совпадает с результатом контрольного расчёта |
 
 ## Class 2 - invented calque adjectives and compounds
 

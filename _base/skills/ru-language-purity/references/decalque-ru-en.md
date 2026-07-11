@@ -74,6 +74,26 @@ any model, including weaker ones, can apply it without judgment calls.
    шире запрещённая зона и поэтому мало межзонное поглощение на рабочей
    длине волны. Сохраняй специальный термин только там, где он определён
    или нужен как ключевое слово (explicit user correction, 2026-07-11).
+10. **После введения сокращения пользуйся им последовательно.** В пределах
+   самостоятельной части текста сначала дай полное название и сокращение в
+   скобках, затем используй сокращение, не чередуя его без причины с полным
+   названием или синонимами. Для частей, которые читаются отдельно,
+   сокращение вводи заново по требованиям издания: в статье IEEE аннотация
+   и основной текст являются отдельными областями. Если термин встречается
+   только один раз, не вводи лишнее сокращение. Заголовок, ключевые слова и
+   подписи проверяй отдельно по правилам издания (explicit user correction,
+   2026-07-11).
+11. **Не придумывай научную терминологию.** Перед переводом специального
+   термина сначала проверь `verified-russian-terminology.md`. Если записи
+   нет, ищи точную русскую форму в русскоязычных научных источниках в
+   интернете и проверяй употребление по полному тексту, а не по поисковому
+   фрагменту или машинному переводу. Подтверждённую форму сразу занеси в
+   реестр вместе с английским соответствием, сокращением, источником и
+   датой проверки. Если форма не подтверждена, не создавай буквальную
+   кальку: сохрани международное обозначение, при первом упоминании дай
+   английское раскрытие и объясни термин обычной русской фразой. Отрицательный
+   результат тоже занеси в реестр, чтобы не повторять тот же поиск без новой
+   причины (explicit user correction, 2026-07-11).
 
 ## Class 1 - false friends and wrong-sense translations
 
@@ -106,18 +126,21 @@ compound. Hyphenated participle compounds copied from English
 | English source | Coined calque (wrong) | Natural Russian |
 | --- | --- | --- |
 | metal-free cut | бесметалльный / безметалльный срез | срез без металла |
-| PCM-loaded waveguide | PCM-нагруженный волновод | волновод с PCM-нагрузкой |
+| PCM-loaded waveguide | PCM-нагруженный волновод | волновод с PCM; волновод с буферным слоем из PCM |
+| dielectric-loaded waveguide | диэлектрически нагруженный волновод (без проверки источника) | волновод с диэлектрической нагрузкой |
+| long-range / short-range mode | длиннопробежная / короткопробежная мода (без проверки источника) | мода с большой / малой длиной распространения |
+| metal-containing stack | металлсодержащая стопка | многослойная структура с металлическим слоем |
 | full-vector (FEM) | полно-векторный | полновекторный (одно слово) |
 | full-wave | полно-волновой | полноволновой (одно слово); или «строгий численный» |
 | lossier | лоссовее | с большими потерями; потери выше |
 | failure-aware | отказоустойчивый (wrong sense) / файлур-эвер | с учетом областей неприменимости |
 | derivative-like (lineshape) | производноподобная форма | форма, напоминающая производную контура |
 
-What is NOT a calque here (do not "fix"):
-- established adverb+participle terms: «диэлектрически нагруженный
-  волновод» (DLSPPW) - standard in Russian literature;
-- noun compounds with an abbreviation head: «PCM-нагрузка»,
-  «PCM-фазовращатель», «ВЧ-фильтр» - normal Russian word formation;
+What is NOT automatically a calque here (still check the terminology
+registry and venue usage):
+- established abbreviation compounds such as «ВЧ-фильтр»; an unfamiliar
+  abbreviation compound such as «PCM-нагрузка» or «PCM-фазовращатель» is not
+  justified by morphology alone and should default to «с PCM»;
 - spelling note: «бес-» is impossible before voiced consonants (б, в, г,
   д, ж, з, л, м, н, р) - a coined «бесметалльный» is misspelled twice over.
 
@@ -135,6 +158,10 @@ What is NOT a calque here (do not "fix"):
 | overlap measures | меры перекрытия | интегралы перекрытия |
 | visually compares | визуально сравнивает | наглядно сравнивает |
 | decision layer | слой принятия решений | уровень принятия решений |
+| planar limit (when it is a control calculation) | планарный предел | строгий планарный расчёт центрального среза |
+| horizontal reduction | горизонтальная редукция | замена поперечного сечения горизонтальной планарной моделью |
+| mode-branch tracking | отслеживание модовой ветви | подтверждение того, что при изменении параметра выбирается одна и та же физическая мода |
+| phase reconfiguration / phase trend | фазовая перестройка; направление фазовой перестройки | знак изменения действительной части эффективного показателя; изменение фазы при кристаллизации |
 
 ## Class 4 - raw English words in Russian prose (суржик)
 
@@ -147,17 +174,17 @@ defect. Forbidden list to grep for, with replacements:
 | --- | --- |
 | workflow | схема, методика |
 | screening | предварительный отбор |
-| sweep | серия параметрических расчетов |
+| sweep | расчёты для последовательных значений изменяемого параметра |
 | solver | решатель, программа поиска мод |
 | eigenmode solver | программа поиска собственных мод |
 | overlap | перекрытие |
 | insertion loss | вносимые потери |
 | lossy | с потерями, поглощающий |
-| leaky mode | вытекающая мода |
+| leaky mode | мода с излучательными потерями; «вытекающая мода» только после проверки по реестру |
 | near cutoff | вблизи отсечки |
 | claim | утверждение, заявляемый результат |
 | reduced-order / reduced model | приближенный (редуцированный) |
-| branch tracking | отслеживание модовой ветви |
+| branch tracking | подтверждение того, что при изменении параметра выбирается одна и та же физическая мода |
 | hold-out, state-paired, failure-aware, phase-trend | rephrase in Russian |
 | Z-scan | Z-сканирование; при первом упоминании «Z-сканирование (Z-scan)» |
 | pump-probe | «накачка-зондирование» (pump-probe) при первом упоминании |
@@ -170,8 +197,16 @@ defect. Forbidden list to grep for, with replacements:
   photonics texts. Modern usage accepts «метрики».
 - Established borrowings: «ранжирование», «диагностический»,
   «локализация», «валидация» (in methods context).
-- Domain terms verified in Russian literature: «длиннопробежный ППП»,
-  «вытекающая мода», «отсечка», «модовая ветвь».
+- Domain term retained in this workflow: «отсечка». Do not call it
+  literature-verified unless a source is
+  recorded in `verified-russian-terminology.md`.
+- Do not present a literal expansion such as «длиннопробежный
+  диэлектрически нагруженный плазмон-поляритонный волновод» as an
+  established Russian term without evidence from Russian-language primary
+  literature. For LR-SPP/LR-DLSPP, retain the international abbreviation and,
+  when explanation is needed, use a descriptive phrase such as «мода большой
+  длины распространения»; give the English expansion at first use if the
+  venue permits it.
 
 ## Automation recipe
 

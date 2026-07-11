@@ -44,6 +44,12 @@ truth for RU de-calque pairs and holds:
   «метрики», «вытекающая мода», «отсечка»);
 - the grep automation recipe and the count-asserted bulk-fix rule.
 
+When selecting or translating a specialized scientific term, also read
+`references/verified-russian-terminology.md`. Check its registry before
+searching. If the term is absent, verify it in Russian-language scientific
+sources and record the result there; never coin terminology from an English
+phrase and present it as established Russian usage.
+
 New caught calques are added to that file, not inlined here.
 
 ## EN Direction - Working-Vocabulary Leakage (mirror)

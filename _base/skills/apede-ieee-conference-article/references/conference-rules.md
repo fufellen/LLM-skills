@@ -117,6 +117,11 @@ if there are >=2 sub-topics.
 
 - Define abbreviations/acronyms at first use in the text, **even if already
   defined in the abstract**.
+- Treat the abstract and the body as separate abbreviation scopes: define an
+  abbreviation at its first use in each scope, then use the abbreviation
+  consistently instead of alternating it with the full term.
+- If a term occurs only once in a scope, prefer the full term and do not
+  introduce an unnecessary abbreviation.
 - Do NOT need defining: IEEE, SI, MKS, CGS, sc, dc, rms.
 - Do not use abbreviations in the title or headings unless unavoidable.
 

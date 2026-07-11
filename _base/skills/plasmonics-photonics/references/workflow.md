@@ -106,6 +106,13 @@ Before treating a solver result as reference:
 
 Mode numbers are only local labels. Avoid statements like "mode 20 is the same mode" unless the field/overlap evidence supports it.
 
+Distinguish three levels of mode selection and report the level actually used:
+- a fixed mode number or sorting by $Re(n_\mathrm{eff})$ provides no continuity evidence;
+- choosing the complex root nearest to a reference root is root continuation and can reject an obvious branch swap, but it is not field-based proof that two states contain the same physical mode;
+- physical mode tracking requires several candidate modes at each sufficiently small parameter step, consistent field normalization, maximum normalized field overlap, and checks of symmetry, confinement, and power distribution.
+
+For a large state change such as amorphous-to-crystalline PCM, introduce intermediate numerical continuation steps. If the best overlap is low or two candidates have comparable overlap, reduce the step and temporarily track both solutions instead of forcing a single assignment. Treat an interpolation used only for continuation as a numerical path, not as a physical model of partial crystallization unless an EMA or another material model has been defined.
+
 ## Literature And Article Claim Control
 
 For article drafts and literature reviews, maintain a reviewed-works register with:

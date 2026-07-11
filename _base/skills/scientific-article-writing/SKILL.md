@@ -145,6 +145,12 @@ Run these on every manuscript regardless of venue:
   no e-notation in prose (`9e-4` -> `0.0009` or a power of ten); real
   units symbols (`µm`, not `um`); dashes per venue (em/en for IEEE, plain
   hyphen for Ioffe journals - check the venue skill).
+- **Numerical precision claims.** Never write "to machine precision",
+  «с машинной точностью», "exact", or «точно» when the code only checks a
+  chosen tolerance. State the compared quantity, error definition, and
+  numerical threshold (for example, $|\Delta n_\mathrm{eff}|<10^{-6}$).
+  Reserve "machine precision" for an error demonstrably near the machine
+  epsilon of the stated numeric type; report that type and epsilon explicitly.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

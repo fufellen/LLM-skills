@@ -65,6 +65,7 @@ For EIM/ЭДП and other reduced-order models:
 - use them confidently for phase-trend checks only after confirming the mode branch is meaningful;
 - never present agreement in $L_\pi$ as proof of accurate absolute loss;
 - mark no-root or fallback values as `EIM-breakdown / no valid root`, not ordinary numerical results;
+- when a manuscript discusses a missing local EIM root and a fallback material index, state three facts explicitly: which local mode was not found, which numerical value was substituted, and that the resulting value is diagnostic rather than a physical mode. Do not compress this into phrases such as «the region is replaced by the cladding» or «not an ordinary operating point»;
 - retain negative examples as part of a failure atlas.
 
 For COMSOL/FEM/CST mode analysis:

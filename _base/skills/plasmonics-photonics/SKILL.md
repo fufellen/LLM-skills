@@ -78,6 +78,7 @@ For COMSOL/FEM/CST mode analysis:
   diagnostic or preliminary. Do not leave a manuscript placeholder for this
   inside the article body, and do not upgrade a fixed-mode-label run into a
   final FEM benchmark by wording alone.
+- Do not introduce PML, scattering-boundary, or other solver-implementation terminology into a manuscript that does not use that full-vector model. State the general validation requirement (mesh, domain size, and external-boundary sensitivity) in the paper; keep concrete future solver settings in the project checkpoint until they are actually used and reported.
 
 For manuscript and DOCX work in this domain:
 - protect the physical divisions in the standard guided-mode formulas:

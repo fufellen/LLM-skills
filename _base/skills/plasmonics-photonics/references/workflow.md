@@ -74,9 +74,11 @@ For PCM tasks, record:
 - switching metric: phase shift, amplitude modulation, trimming, memory, or resonator tuning;
 - electrical/thermal switching assumptions if the claim depends on energy, speed, endurance, or heater geometry.
 
-Never merge two approximations without naming them:
+When partial crystallization, intermediate PCM states, or an effective-medium material model is actually part of the task, never merge two approximations without naming them:
 - EIM/ЭДП is a waveguide cross-section reduction;
 - EMA is a material model for partial crystallization.
+
+Do not add this distinction to a manuscript that compares only amorphous and crystalline PCM states and never uses EMA; introducing an out-of-scope approximation creates an unsupported side topic.
 
 ## EIM/ЭДП Benchmarking
 

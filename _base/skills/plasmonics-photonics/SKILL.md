@@ -91,7 +91,7 @@ For manuscript and DOCX work in this domain:
 For literature and article claims:
 - do not claim a first PCM modulator, first PCM phase shifter, first plasmonic PCM device, or first EIM use for DLSPP unless primary literature verification supports it;
 - frame EIM/ЭДП work as a failure-aware screening workflow when loss metrics diverge from FEM;
-- distinguish EIM/effective-index waveguide reduction from EMA/effective-medium approximation for partially crystallized PCM;
+- distinguish EIM/effective-index waveguide reduction from EMA/effective-medium approximation only when partial crystallization, intermediate PCM states, or an EMA material model is actually in scope; do not introduce an EMA disclaimer into a paper that compares only amorphous and crystalline states;
 - cite primary papers or official solver documentation for claims about device performance, solver behavior, or method limitations.
 - before finalizing a plasmonics/photonics article or conference paper, follow the `scientific-work` final GPT/ChatGPT review rule; a final manuscript should not be treated as ready after Codex-only review.
 

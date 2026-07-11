@@ -135,6 +135,7 @@ Do not write meta-comments inside notes such as "removed duplication here". Make
 
 For technical refactors:
 
+- Treat a project-specific validator and Obsidian link validation as separate gates: after structural checks pass, run `Test-Note.ps1 -CheckLinks` or an equivalent vault-indexed resolver across every relevant Markdown file and require zero unresolved wiki links; verify non-Markdown attachments separately because note-only indexes can report them falsely.
 - cite source paths inside the note when they are useful for future checking;
 - distinguish verified facts from hypotheses;
 - remove or qualify stale statements that no longer match source code;

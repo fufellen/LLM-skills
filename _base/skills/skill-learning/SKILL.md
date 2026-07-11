@@ -29,7 +29,7 @@ The Obsidian and corporate skill set repeats these general rules:
 
 ## Learning Workflow
 
-1. Decide whether the new fact is durable. It should be likely to recur across future tasks, not merely explain the current artifact.
+1. Decide whether the new fact is durable. It should be likely to recur across future tasks, not merely explain the current artifact. Treat a direct user correction to wording, style, workflow, or tool choice as durable by default when it generalizes beyond the current artifact. If the user asks to save their corrections into skills, persist each reusable correction during the same task without waiting for another reminder; exclude clearly one-off edits and protected content.
 2. Classify the lesson:
    - domain behavior, style, or checklist rule: add a concise rule to the shared-base domain skill or a shared-base domain reference;
    - growing examples, lessons, or troubleshooting history: create or update `references/<topic>-lessons.md`;

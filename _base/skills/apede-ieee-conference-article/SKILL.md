@@ -273,7 +273,11 @@ of them; automate the checks where a recipe is given.
     schematic or chart can place cut lines, arrows, markers, or dimension
     annotations off the features they mark even when the code reads correctly
     (e.g. a cross-section cut line that should bisect a thin metal strip but
-    visibly misses it). After building a figure, RENDER it and LOOK before it
+    visibly misses it). Keep an explanatory schematic semantically minimal:
+    do not add an equation unless it explains a relationship shown in that
+    figure; put material names inside their layers whenever they fit; and move
+    dimension text beside the arrow so no line or arrowhead crosses the text.
+    After building a figure, RENDER it and LOOK before it
     goes into the manuscript: confirm each annotation/line/marker sits on the
     feature it represents, layers and labels do not overlap, thin layers are
     visible, and in-figure text/axis labels are readable. When alignment is in

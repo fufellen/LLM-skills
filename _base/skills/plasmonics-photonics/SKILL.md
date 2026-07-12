@@ -82,6 +82,7 @@ For COMSOL/FEM/CST mode analysis:
 
 For manuscript and DOCX work in this domain:
 - describe each planar reference by its actual layer stack and invariant direction before using a short label such as S3. If the planar model is invariant perpendicular to the slice plane, say so explicitly and state the resulting infinite layer width. Avoid undefined phrases such as «central active slice»: use «the vertical stack through the metal strip and ridge» at first mention, then the defined slice label;
+- do not call a reduced model a «strict planar calculation» without naming what is solved exactly and which approximation is omitted. If a dispersion equation is solved directly for S3 but finite strip width is still absent, write «calculation of the planar S3 structure without the horizontal EIM approximation», then shorten it to «S3 calculation». Never let «strict» imply a full-vector reference or an exact device model;
 - translate mesh refinement concretely as «последовательное уменьшение размера элементов расчётной сетки». Do not write «измельчение сетки» or imply that only one generic cell is reduced; mesh convergence requires repeated calculations on successively finer finite-element meshes;
 - protect the physical divisions in the standard guided-mode formulas:
   $n_\mathrm{eff}=\beta/k_0$, $k_0=2\pi/\lambda_0$,

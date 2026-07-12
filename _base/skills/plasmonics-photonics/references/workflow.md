@@ -115,6 +115,8 @@ Distinguish three levels of mode selection and report the level actually used:
 
 For a large state change such as amorphous-to-crystalline PCM, introduce intermediate numerical continuation steps. If the best overlap is low or two candidates have comparable overlap, reduce the step and temporarily track both solutions instead of forcing a single assignment. Treat an interpolation used only for continuation as a numerical path, not as a physical model of partial crystallization unless an EMA or another material model has been defined.
 
+When reconstructing a bound-mode field from transfer-matrix coefficients, enforce the forbidden growing-wave coefficient in each exterior half-space as exactly zero before normalizing or integrating the field. A small root residual can multiply an exponentially growing tail over the numerical padding and create false confinement jumps or low field overlaps. Verify the result by reducing the continuation step and increasing the field-integration padding.
+
 ## Literature And Article Claim Control
 
 For article drafts and literature reviews, maintain a reviewed-works register with:

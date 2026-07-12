@@ -130,15 +130,15 @@ Run these on every manuscript regardless of venue:
   (IEEE does). Also: one work = one number; every cited number exists in
   the list and vice versa. To renumber: build old->new map, apply in one
   regex pass, re-sort the list block, re-run the check.
-- **Abbreviations.** Every acronym is expanded exactly ONCE in the whole
-  manuscript, and the abstract COUNTS as that one introduction (explicit
-  user rule, 2026-07-09, overriding the common "re-expand in the body"
-  convention): if the abstract already expanded it, the body just uses the
-  abbreviation. Never keep two variant forms of one abbreviation in one
-  document (DLSPP vs DLSPPW; FEM vs МКЭ vs spelled-out «методом конечных
+- **Abbreviations.** Follow the venue's scope rule. For IEEE conference
+  papers, the abstract and the main text are independent scopes: expand an
+  acronym at its first use in the abstract and expand it again at its first
+  use in the body. Within each scope, use the abbreviation consistently
+  after its definition. Never keep two variant forms of one abbreviation in
+  one document (DLSPP vs DLSPPW; FEM vs МКЭ vs spelled-out «методом конечных
   элементов») - pick one form per language and unify it everywhere by
-  count-asserted replace. QA: grep expansion patterns `(\w+\)`-style and
-  assert one introduction per acronym; grep known variant pairs.
+  count-asserted replace. QA: check first use separately in every scope and
+  grep known variant pairs (explicit user correction, 2026-07-11).
 - **Placeholders.** Grep for `УТОЧНИТЬ`, `TODO`, `FIXME`, `XXX`, `???` -
   each hit must be intentional and reported.
 - **Typography.** Decimal points with leading zeros (`0.25`, never `.25`);

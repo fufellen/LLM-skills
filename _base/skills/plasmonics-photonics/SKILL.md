@@ -81,6 +81,8 @@ For COMSOL/FEM/CST mode analysis:
 - Do not introduce PML, scattering-boundary, or other solver-implementation terminology into a manuscript that does not use that full-vector model. State the general validation requirement (mesh, domain size, and external-boundary sensitivity) in the paper; keep concrete future solver settings in the project checkpoint until they are actually used and reported.
 
 For manuscript and DOCX work in this domain:
+- describe each planar reference by its actual layer stack and invariant direction before using a short label such as S3. If the planar model is invariant perpendicular to the slice plane, say so explicitly and state the resulting infinite layer width. Avoid undefined phrases such as «central active slice»: use «the vertical stack through the metal strip and ridge» at first mention, then the defined slice label;
+- translate mesh refinement concretely as «последовательное уменьшение размера элементов расчётной сетки». Do not write «измельчение сетки» or imply that only one generic cell is reduced; mesh convergence requires repeated calculations on successively finer finite-element meshes;
 - protect the physical divisions in the standard guided-mode formulas:
   $n_\mathrm{eff}=\beta/k_0$, $k_0=2\pi/\lambda_0$,
   $L_\mathrm{power}=1/(2\operatorname{Im}\beta)=

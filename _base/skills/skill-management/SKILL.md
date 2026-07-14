@@ -189,6 +189,12 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\skill-learni
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\skill-authoring
 ```
 
+- `google-drive-local-files` currently lives at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\google-drive-local-files
+```
+
 - `obsidian-canvas` currently lives at:
 
 ```text
@@ -283,6 +289,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - PDF textbook to Markdown workflows: `pdf-textbook-to-markdown` in the personal repo, mirrored to `nto-formatting/pdf-textbook-to-markdown` in the corporate repo when requested;
 - shared self-learning and reusable-lesson policy for skills: `skill-learning`;
 - user-owned skill creation/update workflow and default self-improvement/publishing policy: `skill-authoring`;
+- local synced Google Drive filesystem search, cleanup, storage audit, and Drive-backed skill/file access: `google-drive-local-files`;
 - Obsidian `.canvas` creation, validation, and visual tree layout: `obsidian-canvas`;
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;

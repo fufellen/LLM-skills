@@ -1,0 +1,4 @@
+interface:
+  display_name: "Google Drive Local Files"
+  short_description: "Use synced PC files for Google Drive"
+  default_prompt: "Use $google-drive-local-files to inspect my synced Google Drive folder on this PC."

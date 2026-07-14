@@ -81,6 +81,7 @@ else {
 # title and reserve #### for topical sections. Ignore fenced code examples so a
 # Markdown snippet does not trigger a false positive.
 $headingViolations = New-Object System.Collections.Generic.List[string]
+$duplicateTitleViolations = New-Object System.Collections.Generic.List[string]
 $insideFence = $false
 for ($i = 0; $i -lt $lines.Count; $i++) {
     $line = $lines[$i]
@@ -91,17 +92,35 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
     if (-not $insideFence -and $line -match '^(#{1,3})[ \t]+(.+)$') {
         $headingViolations.Add("line $($i + 1): $line")
     }
+    if (-not $insideFence -and $line -match '^#{1,6}[ \t]+(.+?)[ \t]*$') {
+        $headingText = $Matches[1] -replace '[ \t]+#+[ \t]*$', ''
+        if ([string]::Equals($headingText.Trim(), $item.BaseName, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $duplicateTitleViolations.Add("line $($i + 1): $line")
+        }
+    }
 }
 
+$styleViolationFound = $false
 if ($headingViolations.Count -gt 0) {
     Write-Warning "Heading levels # through ### are not allowed; use #### and do not repeat the filename as a heading:"
     $headingViolations | ForEach-Object { Write-Warning "  $_" }
-    if ($Strict) {
-        exit 5
-    }
+    $styleViolationFound = $true
 }
 else {
     Write-Output "[ok] No heading levels # through ### found"
+}
+
+if ($duplicateTitleViolations.Count -gt 0) {
+    Write-Warning "The note filename is already displayed by Obsidian and must not be repeated as a heading at any level:"
+    $duplicateTitleViolations | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] Note filename is not repeated as a heading"
+}
+
+if ($Strict -and $styleViolationFound) {
+    exit 5
 }
 
 $openCount = ([regex]::Matches($text, "\[\[")).Count

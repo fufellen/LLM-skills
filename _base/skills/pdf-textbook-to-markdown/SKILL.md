@@ -25,11 +25,18 @@ python ".\scripts\extract_pdf_textbook.py" inspect "input.pdf"
 3. Choose the extraction route:
    - Born-digital text: use the bundled script for a page-anchored draft and extracted images.
    - Scanned or low-text PDF: create a separate OCR copy first, then extract from the OCR PDF.
+   - Layout-, formula-, or figure-heavy born-digital PDF: compare the default PyMuPDF draft with `--engine pymupdf4llm`. Use the better structure from PyMuPDF4LLM and the complete text/embedded images from PyMuPDF as a hybrid when neither route is sufficient alone.
    - Math-heavy or table-heavy book: read `references/pdf-tooling.md` and choose a specialized route; keep screenshots or image fallbacks for content that cannot be converted safely.
 4. Extract a first-pass Markdown draft:
 
 ```powershell
 python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --output "book.md" --media-dir "book_media"
+```
+
+For a layout-aware comparison:
+
+```powershell
+python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --engine pymupdf4llm --output "book.layout.md" --media-dir "book.layout_media"
 ```
 
 5. Restructure the draft into textbook notes. Use the PDF table of contents, bookmarks, or visible headings to create stable chapter/section boundaries. Keep page markers such as `<!-- source-page: 42 -->` near converted content.
@@ -59,9 +66,10 @@ Use `scripts/extract_pdf_textbook.py` for repeatable local work:
 
 - `inspect` reports page count, metadata, text-layer coverage, pages with little or no extractable text, and PDF outline entries when available.
 - `extract` writes a page-anchored Markdown draft and, with PyMuPDF available, extracts embedded images.
-- `check` verifies local Markdown image links and reports page-anchor counts.
+- `extract --engine pymupdf4llm` optionally preserves headings, reading order, and page-region image/formula crops more effectively for complex born-digital pages. Treat converted equations as candidates for visual verification, not as authoritative transcription.
+- `check` verifies Markdown and Obsidian image embeds and reports page-anchor counts.
 
-The script prefers PyMuPDF (`pymupdf`) and falls back to `pypdf`/`PyPDF2` for text-only extraction when possible. If dependencies are missing, install the relevant package in the active Python environment instead of rewriting the workflow.
+The default route prefers PyMuPDF (`pymupdf`) and falls back to `pypdf`/`PyPDF2` for text-only extraction when possible. PyMuPDF4LLM (`pymupdf4llm`) is an optional comparison engine, not a mandatory dependency. Install only the package needed for the selected route.
 
 ## Self-Improvement And Publishing
 

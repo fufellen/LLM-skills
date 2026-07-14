@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime as _dt
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -29,6 +31,14 @@ def import_fitz():
     except ImportError:
         return None
     return fitz
+
+
+def import_pymupdf4llm():
+    try:
+        import pymupdf4llm  # type: ignore
+    except ImportError:
+        return None
+    return pymupdf4llm
 
 
 def import_pdf_reader():
@@ -90,6 +100,16 @@ def ensure_can_write(path: Path, overwrite: bool) -> None:
     if path.exists() and not overwrite:
         raise FileExistsError(f"{path} already exists; pass --overwrite to replace it")
     path.parent.mkdir(parents=True, exist_ok=True)
+
+
+@contextlib.contextmanager
+def working_directory(path: Path):
+    previous = Path.cwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(previous)
 
 
 def iter_pypdf_pages(pdf_path: Path) -> Iterator[str]:
@@ -266,6 +286,78 @@ def extract_with_pypdf(
     output_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
+def extract_with_pymupdf4llm(
+    pdf_path: Path,
+    output_path: Path,
+    media_dir: Path | None,
+    pages: list[int],
+    title: str,
+    overwrite: bool,
+    extract_images: bool,
+) -> None:
+    pymupdf4llm = import_pymupdf4llm()
+    if pymupdf4llm is None:
+        raise RuntimeError(
+            "PyMuPDF4LLM is unavailable; install pymupdf4llm or use --engine pymupdf"
+        )
+    ensure_can_write(output_path, overwrite)
+    output_path = output_path.resolve()
+    pdf_path = pdf_path.resolve()
+    if extract_images:
+        if media_dir is None:
+            raise RuntimeError("A media directory is required when image extraction is enabled")
+        media_dir = media_dir.resolve()
+        if media_dir.parent != output_path.parent:
+            raise ValueError(
+                "With --engine pymupdf4llm, --media-dir must be a direct sibling "
+                "of the output Markdown file"
+            )
+        media_dir.mkdir(parents=True, exist_ok=True)
+
+    kwargs = {
+        "pages": pages,
+        "page_chunks": True,
+        "page_separators": False,
+        "write_images": extract_images,
+        "show_progress": True,
+    }
+    if extract_images and media_dir is not None:
+        kwargs.update(
+            {
+                "image_path": media_dir.name,
+                "image_format": "png",
+                "dpi": 160,
+            }
+        )
+
+    # A short relative image_path avoids a PyMuPDF4LLM path-normalization
+    # failure observed on Windows with absolute paths containing spaces or Cyrillic.
+    with working_directory(output_path.parent):
+        chunks = pymupdf4llm.to_markdown(str(pdf_path), **kwargs)
+
+    lines: list[str] = [
+        f"# {title}",
+        "",
+        f"> Source: [[{pdf_path.name}]]",
+        f"> Extracted: {_dt.date.today().isoformat()}",
+        "> Method: PyMuPDF4LLM layout-aware extraction",
+        "",
+    ]
+    for fallback_page_index, chunk in zip(pages, chunks):
+        metadata = chunk.get("metadata") or {}
+        page_number = int(metadata.get("page_number") or fallback_page_index + 1)
+        text = normalize_text(chunk.get("text") or "")
+        lines.extend([f"## Page {page_number}", "", f"<!-- source-page: {page_number} -->", ""])
+        lines.append(
+            text
+            if text
+            else "<!-- No extractable text on this page. OCR or manual review may be required. -->"
+        )
+        lines.append("")
+
+    output_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+
+
 def cmd_extract(args: argparse.Namespace) -> int:
     pdf_path = Path(args.pdf).expanduser()
     if not pdf_path.exists():
@@ -289,7 +381,17 @@ def cmd_extract(args: argparse.Namespace) -> int:
     pages = parse_pages(args.pages, total_pages)
     media_dir = Path(args.media_dir).expanduser() if args.media_dir else output_path.with_name(f"{output_path.stem}_media")
 
-    if fitz is not None:
+    if args.engine == "pymupdf4llm":
+        extract_with_pymupdf4llm(
+            pdf_path=pdf_path,
+            output_path=output_path,
+            media_dir=media_dir,
+            pages=pages,
+            title=title,
+            overwrite=args.overwrite,
+            extract_images=not args.no_images,
+        )
+    elif args.engine in {"auto", "pymupdf"} and fitz is not None:
         extract_with_fitz(
             pdf_path=pdf_path,
             output_path=output_path,
@@ -299,16 +401,19 @@ def cmd_extract(args: argparse.Namespace) -> int:
             overwrite=args.overwrite,
             extract_images=not args.no_images,
         )
-    else:
+    elif args.engine in {"auto", "pypdf"}:
         if not args.no_images:
             print("PyMuPDF is unavailable; falling back to text-only extraction.", file=sys.stderr)
         extract_with_pypdf(pdf_path, output_path, pages, title, args.overwrite)
+    else:
+        raise RuntimeError(f"Requested extraction engine is unavailable: {args.engine}")
 
     print(f"Wrote {output_path}")
     return 0
 
 
 IMAGE_LINK_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+OBSIDIAN_IMAGE_RE = re.compile(r"!\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")
 SOURCE_PAGE_RE = re.compile(r"<!--\s*source-page:\s*(\d+)\s*-->")
 
 
@@ -326,14 +431,36 @@ def cmd_check(args: argparse.Namespace) -> int:
         raise FileNotFoundError(md_path)
     text = md_path.read_text(encoding="utf-8")
     missing = []
+    ambiguous = []
     for link in iter_image_links(text):
         clean = link.split("#", 1)[0].replace("%20", " ")
         target = (md_path.parent / clean).resolve()
         if not target.exists():
             missing.append(link)
+    for match in OBSIDIAN_IMAGE_RE.finditer(text):
+        link = match.group(1).strip()
+        direct = (md_path.parent / link).resolve()
+        if direct.exists():
+            continue
+        candidates = list(md_path.parent.rglob(Path(link).name))
+        if not candidates:
+            missing.append(link)
+        elif len(candidates) > 1:
+            ambiguous.append(link)
     pages = SOURCE_PAGE_RE.findall(text)
-    print(json.dumps({"file": str(md_path), "source_page_markers": len(pages), "missing_image_links": missing}, ensure_ascii=False, indent=2))
-    return 1 if missing else 0
+    print(
+        json.dumps(
+            {
+                "file": str(md_path),
+                "source_page_markers": len(pages),
+                "missing_image_links": missing,
+                "ambiguous_obsidian_image_links": ambiguous,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 1 if missing or ambiguous else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -350,6 +477,12 @@ def build_parser() -> argparse.ArgumentParser:
     extract_parser.add_argument("--media-dir", help="Directory for extracted images")
     extract_parser.add_argument("--pages", help="1-based pages or ranges, for example 1-12,45,80-96")
     extract_parser.add_argument("--title", help="Markdown H1 title")
+    extract_parser.add_argument(
+        "--engine",
+        choices=("auto", "pymupdf", "pymupdf4llm", "pypdf"),
+        default="auto",
+        help="Extraction engine; use pymupdf4llm for a layout-aware comparison",
+    )
     extract_parser.add_argument("--no-images", action="store_true", help="Skip embedded image extraction")
     extract_parser.add_argument("--overwrite", action="store_true", help="Replace an existing output file")
     extract_parser.set_defaults(func=cmd_extract)

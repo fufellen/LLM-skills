@@ -7,6 +7,7 @@ Use this reference when a textbook PDF is scanned, math-heavy, table-heavy, mult
 | PDF condition | Preferred route | Notes |
 | --- | --- | --- |
 | Born-digital text layer, ordinary layout | `scripts/extract_pdf_textbook.py extract` | Start with page anchors and images, then clean structure. |
+| Born-digital, complex headings/figures/equations | Compare default extraction with `extract --engine pymupdf4llm` | PyMuPDF4LLM often improves reading order and useful page-region crops; PyMuPDF can preserve more raw text and embedded figures. Merge the verified strengths of both. |
 | Text layer exists but line breaks are poor | Try `pdftotext -layout`, then compare with the script output | Use whichever preserves paragraphs, lists, and equations better. |
 | Scanned pages or low text coverage | OCR a copy with OCRmyPDF/Tesseract, then extract | Keep the original and OCR PDF separately. |
 | Formula-heavy textbook | Use page images or a math-aware converter for formulas; manually verify KaTeX | Do not guess equations from noisy OCR. |
@@ -33,6 +34,12 @@ Extract selected pages:
 python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --pages "1-12,45,80-96" --output "sample.md"
 ```
 
+Compare layout-aware extraction on representative pages:
+
+```powershell
+python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --engine pymupdf4llm --pages "4-9,17-19,23-28" --output "sample.layout.md" --media-dir "sample.layout_media"
+```
+
 Check image links and page anchors:
 
 ```powershell
@@ -50,6 +57,13 @@ Fallback line-preserving extraction when Poppler is available:
 ```powershell
 pdftotext -layout -enc UTF-8 "input.pdf" "book.txt"
 ```
+
+## PyMuPDF4LLM Caveats
+
+- Treat generated Markdown equations and OCR-like text inside figures as provisional. Verify every important formula against a rendered source page.
+- Keep the default PyMuPDF draft when it contains text or embedded figures omitted by the layout-aware route.
+- On Windows, an absolute `image_path` containing spaces or Cyrillic can be normalized incorrectly by some PyMuPDF4LLM versions. The bundled script avoids this by changing to the Markdown output directory temporarily and passing a short sibling media-directory name.
+- The `--media-dir` used with `--engine pymupdf4llm` must therefore be a direct sibling of the output Markdown file.
 
 ## Cleanup Checklist
 

@@ -107,7 +107,7 @@ Do not store secrets, credentials, private raw datasets, unpublished full measur
 - When a helper command or one-off script for vault, note, search, encoding, validation, or AI-tooling work is reusable, promote it into this Google Drive skill's `scripts/` directory instead of leaving it only in chat history. Keep reusable helpers in this canonical skill, test them, then add or update the corresponding bullet in this section so future runs discover and use them.
 - If direct `.ps1` execution is blocked by Windows Execution Policy, run scripts with `powershell -NoProfile -ExecutionPolicy Bypass -File <script> ...` rather than changing the user's global policy.
 - Use these scripts especially when answering term questions, candidate-exam-ticket questions, or any task that requires searching Russian-language notes.
-- After creating or materially editing an Obsidian `.md` note, run `scripts/Test-Note.ps1 <path> -First 24`; add `-CheckLinks` when link targets should be verified.
+- After creating or materially editing an Obsidian `.md` note, run `scripts/Test-Note.ps1 <path> -First 24 -Strict`; add `-CheckLinks` when link targets should be verified. Strict validation rejects heading levels `#` through `###`, so generated notes cannot silently violate the vault's `####`-only topical-heading rule.
 - For filesystem-only work, these scripts are the preferred lightweight tooling. For live Obsidian metadata, API, or MCP workflows, use the Obsidian Local REST API bridge described in `references/obsidian-ai-integration.md`; read the synced API key from `.codex/secrets/scientific-work/obsidian-local-rest-api.json` when configured.
 
 ## Load References

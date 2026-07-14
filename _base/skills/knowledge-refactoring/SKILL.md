@@ -49,6 +49,8 @@ If publishing encounters remote changes or merge conflicts, resolve them autonom
 
 ## Workflow
 
+When the target is a scientific or technical Obsidian note, use `scientific-work` alongside this skill and read `../scientific-work/references/obsidian-style.md` before the first edit, including for small standalone term notes. After editing, run `../scientific-work/scripts/Test-Note.ps1 <path> -First 24 -Strict`; add `-CheckLinks` when the note contains Obsidian links. This style load and strict validation are mandatory, not optional cleanup after writing.
+
 1. Search the relevant folder first, then widen the search only as needed.
 2. Identify duplicated claims, tables, code layouts, procedures, and checklists.
 3. Assign a role to each note before editing:

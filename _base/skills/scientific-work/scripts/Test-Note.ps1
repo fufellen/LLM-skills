@@ -77,6 +77,33 @@ else {
     Write-Output "[ok] No common mojibake markers found"
 }
 
+# Scientific and technical notes in this vault use the filename as the visible
+# title and reserve #### for topical sections. Ignore fenced code examples so a
+# Markdown snippet does not trigger a false positive.
+$headingViolations = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if (-not $insideFence -and $line -match '^(#{1,3})[ \t]+(.+)$') {
+        $headingViolations.Add("line $($i + 1): $line")
+    }
+}
+
+if ($headingViolations.Count -gt 0) {
+    Write-Warning "Heading levels # through ### are not allowed; use #### and do not repeat the filename as a heading:"
+    $headingViolations | ForEach-Object { Write-Warning "  $_" }
+    if ($Strict) {
+        exit 5
+    }
+}
+else {
+    Write-Output "[ok] No heading levels # through ### found"
+}
+
 $openCount = ([regex]::Matches($text, "\[\[")).Count
 $closeCount = ([regex]::Matches($text, "\]\]")).Count
 $linkMatches = [regex]::Matches($text, "\[\[([^\]]+)\]\]")

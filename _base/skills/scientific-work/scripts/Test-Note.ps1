@@ -119,6 +119,59 @@ else {
     Write-Output "[ok] Note filename is not repeated as a heading"
 }
 
+$formulaNotationViolations = New-Object System.Collections.Generic.List[string]
+$whereLabel = -join @([char]0x0413, [char]0x0434, [char]0x0435, [char]0x003A)
+$insideFence = $false
+$insideDisplayMath = $false
+$displayMathStartLine = 0
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    $trimmed = $line.Trim()
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if ($insideFence) {
+        continue
+    }
+
+    $isSingleLineDisplay = $trimmed.Length -gt 4 -and $trimmed.StartsWith('$$') -and $trimmed.EndsWith('$$')
+    if ($isSingleLineDisplay) {
+        $nextLine = if ($i + 1 -lt $lines.Count) { $lines[$i + 1] } else { '' }
+        if ($nextLine -ne $whereLabel) {
+            $formulaNotationViolations.Add("line $($i + 1): display formula is not followed immediately by the required notation label")
+        }
+        continue
+    }
+
+    if ($trimmed -eq '$$') {
+        if (-not $insideDisplayMath) {
+            $insideDisplayMath = $true
+            $displayMathStartLine = $i + 1
+        }
+        else {
+            $insideDisplayMath = $false
+            $nextLine = if ($i + 1 -lt $lines.Count) { $lines[$i + 1] } else { '' }
+            if ($nextLine -ne $whereLabel) {
+                $formulaNotationViolations.Add("line $($i + 1): display formula is not followed immediately by the required notation label")
+            }
+        }
+    }
+}
+
+if ($insideDisplayMath) {
+    $formulaNotationViolations.Add(('line {0}: display formula has no closing $$ delimiter' -f $displayMathStartLine))
+}
+
+if ($formulaNotationViolations.Count -gt 0) {
+    Write-Warning "Every display formula must be followed immediately by a locally complete notation block:"
+    $formulaNotationViolations | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] Every display formula is followed immediately by the required notation block"
+}
+
 if ($Strict -and $styleViolationFound) {
     exit 5
 }

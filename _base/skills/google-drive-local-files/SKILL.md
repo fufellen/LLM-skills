@@ -1,105 +1,81 @@
 ---
 name: google-drive-local-files
-description: Work with the user's Google Drive through the local synced Windows filesystem, especially `C:\Users\User\Мой диск`, instead of the native Google Drive connector. Use when the user asks about Google Drive, "Мой диск", Google storage, Drive cleanup, junk files, duplicates, large files, local Drive organization, or skills/files stored in Google Drive, unless the user explicitly asks for cloud-native Drive metadata, sharing, comments, revisions, or connector/API access.
+description: Work with the user's Google Drive through the local synced filesystem rooted at `C:\Users\User\Мой диск`, not through the native Google Drive/Docs/Sheets/Slides connector. Use when the user asks to inspect, search, clean, organize, audit, delete, move, deduplicate, inventory, or find junk in Google Drive, My Drive, `Мой диск`, `гугл диск`, or `гугл хранилище`, especially when they say to work through files on the PC.
 ---
 
 # Google Drive Local Files
 
-## Default Access Mode
+## Operating Rule
 
-Treat the user's Google Drive as a local synced filesystem on this PC.
+Use the local Google Drive Desktop sync folder as the default source of truth:
 
-Default roots:
-
-- Drive root: `C:\Users\User\Мой диск`
-- Obsidian vault: `C:\Users\User\Мой диск\Obsidian`
-- Personal skill repository: `C:\Users\User\Мой диск\Obsidian\.codex\skills`
-
-Prefer filesystem tools such as `rg`, `Get-ChildItem`, `Get-Item`, `Select-String`, file metadata, and hashes. Do not use the native Google Drive connector for ordinary Drive search, cleanup, organization, local file inspection, or skill edits.
-
-Use the native Drive connector only when the user explicitly asks for cloud-native Drive behavior, or when the task truly requires data unavailable from the synced filesystem: sharing permissions, comments, revisions, Drive labels, ownership metadata, cloud-only files that are not present locally, or direct Google Workspace edits.
-
-## Workflow
-
-1. Ground the target root first. If the user says "Google Drive", "Мой диск", or "хранилище", start from `C:\Users\User\Мой диск` unless they gave a narrower path.
-2. Inspect before judging. Use `Get-ChildItem -Force`, `rg --files`, sizes, timestamps, extensions, and nearby folder context before calling anything junk.
-3. Report candidates, not verdicts, when user asks for cleanup. Group findings by confidence and explain why each category looks disposable or worth review.
-4. Do not delete, move, rename, or bulk-edit Drive files unless the user explicitly asks for that action after seeing the candidates.
-5. Before recursive delete or move, resolve absolute paths and verify every target stays inside the intended Drive subtree. Avoid touching active sync temp files while Google Drive is currently downloading or uploading.
-
-## Junk Heuristics
-
-Usually safe to flag as likely junk:
-
-- Office lock files: `~$*`, especially zero-byte `.doc`, `.docx`, `.pptx`, `.xlsx` files left after editing.
-- Temporary download/upload remnants: `.tmp.drivedownload`, `.tmp.driveupload`, `.crdownload`, `.part`, `.tmp`, `.temp`, after checking they are stale and sync is not active.
-- Cache/build byproducts: `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.ruff_cache`, `.ipynb_checkpoints`, `.cache`, `dist`, `build`, when they are not the only copy of source work.
-- Logs and recoveries: `.log`, `.class.recovery`, compiler clean logs, empty `.old` solution/project backups, when context shows they are generated artifacts.
-- Obsidian `.trash` contents, but still report before deleting because the user may intentionally keep recoverable notes there.
-
-Flag as review candidates, not automatic junk:
-
-- Large archives and installers: `.zip`, `.rar`, `.7z`, `.tar`, `.gz`, `.tgz`, `.iso`, `.exe`, `.msi`.
-- Duplicate-looking names: `copy`, `Copy`, `копия`, `дубликат`, `duplicate`, `(1)`, `(2)`, ` - Copy`, `_copy`.
-- Big media, raw captures, datasets, COMSOL models, CSV captures, or photos. These may be valuable research or personal records even when huge.
-
-Treat as harmless system noise unless the user asks to remove all of it:
-
-- `desktop.ini` and `Thumbs.db`. `desktop.ini` in Google Drive/Windows folders can store folder icon/view metadata and may be regenerated.
-
-## Useful Commands
-
-List root items:
-
-```powershell
-Get-ChildItem -LiteralPath 'C:\Users\User\Мой диск' -Force | Select-Object Name,Mode,Length,LastWriteTime
+```text
+C:\Users\User\Мой диск
 ```
 
-Find largest files:
+Do not use the native Google Drive, Docs, Sheets, or Slides connector by default for this user's Drive file work. Use those connectors only when the user explicitly asks for native Google Drive access, when Drive-only metadata is required, or when a Google-native file has no useful local content and the user accepts that limitation.
 
-```powershell
-Get-ChildItem -LiteralPath 'C:\Users\User\Мой диск' -Recurse -Force -File -ErrorAction SilentlyContinue |
-  Sort-Object Length -Descending |
-  Select-Object -First 50 @{n='SizeMB';e={[math]::Round($_.Length/1MB,2)}}, LastWriteTime, FullName
-```
+Important local roots:
 
-Find common junk candidates:
+- `C:\Users\User\Мой диск` - synced My Drive root.
+- `C:\Users\User\Мой диск\Obsidian` - synced Obsidian vault.
+- `C:\Users\User\Мой диск\Obsidian\.codex\skills` - synced user-owned skill repository.
 
-```powershell
-$root = 'C:\Users\User\Мой диск'
-$rx = '(?i)(^desktop\.ini$|^thumbs\.db$|^\.ds_store$|\.tmp$|\.temp$|\.bak$|\.old$|\.orig$|\.crdownload$|\.part$|^~\$|~$|\.log$)'
-Get-ChildItem -LiteralPath $root -Recurse -Force -File -ErrorAction SilentlyContinue |
-  Where-Object { $_.Name -match $rx } |
-  Sort-Object Length -Descending
-```
+For shell work on this Windows machine, prefer PowerShell with `-LiteralPath` for paths under `Мой диск`. Prefer `rg` / `rg --files` for text and filename search; use `Get-ChildItem` for metadata, size, time, and recursive filesystem inspection.
 
-Find duplicate-looking names:
+If a file is cloud-only, locked, partially synced, or represented locally only as a Google shortcut/placeholder, report that local access is limited instead of silently switching to a native connector.
 
-```powershell
-$root = 'C:\Users\User\Мой диск'
-$rx = '(?i)(copy|копия|дубликат|duplicate|\(\d+\)| - Copy|_copy|backup|резерв|old|untitled|без названия|tmp|temp|test)'
-Get-ChildItem -LiteralPath $root -Recurse -Force -File -ErrorAction SilentlyContinue |
-  Where-Object { $_.Name -match $rx } |
-  Sort-Object Length -Descending
-```
+## Safety
+
+Start read-only for audits, cleanup planning, duplicate checks, and "what is junk?" requests.
+
+Before deleting, moving, or bulk-renaming Drive-synced files:
+
+1. Present exact candidate paths with size, last write time, reason, and confidence.
+2. Separate "obvious trash" from "probably redundant" and "needs human review".
+3. Wait for explicit user approval for the destructive action.
+4. Use exact `Remove-Item -LiteralPath` or `Move-Item -LiteralPath` targets. Before recursive operations, verify resolved absolute paths stay under `C:\Users\User\Мой диск` or another explicitly named target.
+5. Verify the result afterward.
+
+Treat these cases carefully:
+
+- `.tmp.drivedownload` and `.tmp.driveupload` are Google Drive Desktop temporary folders. They may be junk only when sync is idle/stale; do not delete recently modified contents while Drive may still be syncing.
+- `desktop.ini` files in Drive-synced folders are usually harmless Windows/Drive folder metadata and may be regenerated.
+- Obsidian `.trash` contains user-deleted notes and attachments; it is a cleanup candidate, not an automatic deletion target.
+- Conflict copies from Google Drive, Obsidian Sync, or other sync tools may contain edits that exist nowhere else. Never delete conflict files in bulk by name or size heuristic alone.
+- Google-native `.gdoc`, `.gsheet`, `.gslides`, or shortcut-like files may not contain document content locally.
+
+## Junk Audit Workflow
+
+For "junk", "trash", "мусор", "почистить диск", "что удалить", and similar requests, scan for candidates in groups:
+
+- **Obvious temporary/system files:** `~$*`, `*.tmp`, `*.temp`, `*.part`, `*.crdownload`, `Thumbs.db`, `.DS_Store`, stale Drive temp folders.
+- **Generated caches/build outputs:** `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.ruff_cache`, `.ipynb_checkpoints`, `dist`, `build`, local virtual environments, and package-manager caches inside Drive.
+- **Duplicates and copies:** names containing `copy`, `копия`, `duplicate`, `(1)`, `(2)`, ` - Copy`, `_copy`, or repeated imported folder names. Confirm duplicates by size and hash before recommending deletion with high confidence.
+- **Large low-value payloads:** installers, old archives, downloaded toolchains, ISO images, zipped backups, and duplicated exported media. Large files are not automatically junk; explain why each looks disposable or ask for review.
+- **Empty or near-empty artifacts:** zero-byte Office lock files, logs, old backups, placeholder exports, and abandoned generated files.
+- **Existing trash folders:** `.trash`, `Trash`, `Корзина`, and app-specific trash folders.
+
+Report results as a practical cleanup list: path, size, last modified date, reason, and recommendation. Avoid calling something "safe to delete" unless the evidence is strong and the file is not user content.
 
 ## Skill Files
 
-When the user says that skills are on Google Drive, use the synced skill repository at `C:\Users\User\Мой диск\Obsidian\.codex\skills`. Do not switch to local plugin caches or non-synced bootstrap copies for durable user-owned skill edits.
+When the task is about the user's skills, work with the synced skill repository under:
 
-For creating or updating user-owned skills, also use `skill-authoring`, `skill-management`, and `skill-learning` as applicable. Store durable behavior in `_base/skills/<skill-name>/` and keep AI-specific adapters thin.
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills
+```
 
-## Reporting
+Do not treat plugin caches under `C:\Users\User\.codex\plugins\cache` or system skills under `C:\Users\User\.codex\skills\.system` as the durable source for user-owned skill behavior. Use local cache/system copies only as references when explicitly needed.
 
-In cleanup reports, separate:
+For creating, updating, validating, committing, and pushing skills, use `skill-authoring`, `skill-management`, and `skill-learning` as applicable.
 
-- likely disposable generated junk;
-- large files to review;
-- duplicates or suspected duplicates;
-- items that are not junk by default but may be storage-heavy.
+## Self-Improvement And Publishing
 
-Mention that the result reflects the locally synced Drive view. Cloud-only metadata, sharing state, comments, and revision history are outside this filesystem-only view.
+When local Google Drive filesystem work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact domain rules, command patterns, validation checks, reusable examples, or tooling notes in this shared-base skill or a focused shared-base reference file. Do not store secrets, credentials, private content, copyrighted source text, generated logs, raw project/customer material, or one-off facts in the skill.
 
-## Learning
+Before materially editing this skill, applying self-learning updates, or publishing changes, run the owning repository's freshness check: fetch `origin main`, compare local `HEAD` with `origin/main`, fast-forward if local is behind and the relevant working tree is clean, and inspect dirty/ahead/diverged states before continuing.
 
-When work reveals a durable Google Drive filesystem preference, cleanup heuristic, safety rule, or reusable command, use the `skill-learning` policy and save the compact rule here or in a focused reference file. Do not store personal file contents, secrets, private data, or one-off cleanup lists.
+After materially updating this skill, validate the shared base and adapters when feasible, then commit and push the relevant skill changes to the owning repository by default unless the user explicitly says not to. Stage only relevant skill files and repository metadata.
+
+If publishing encounters remote changes or merge conflicts, resolve them autonomously when the intended final meaning can be determined from the files, commit history, nearby rules, and the user's instruction. Preserve compatible rules from both sides, consolidate duplicates, rerun validation, commit the resolved result, and push. Stop only when resolution would require guessing unavailable technical meaning, exposing protected content, discarding user work, or using unavailable repository permissions.

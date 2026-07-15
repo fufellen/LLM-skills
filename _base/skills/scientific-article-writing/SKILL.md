@@ -204,6 +204,14 @@ Run these on every manuscript regardless of venue:
   class has a defined criterion, and the classification is used later. Never
   mix calculated quantities, failure cases, and validation actions as
   coequal members of one artificial hierarchy.
+- **Write short-paper conclusions as a synthesis, not a result inventory.**
+  Unless the venue explicitly requires numbered conclusions or the item
+  numbers are used later, prefer one to three connected paragraphs. Start
+  with the compared object or method and the main physical finding, follow
+  with only the decisive quantitative comparisons, and end with their
+  interpretation, applicability, or the next validation stage. Do not repeat
+  each Results sentence as an isolated numbered item or reuse the same
+  sentence frame across a list of findings.
 - **State the contribution positively; do not pre-emptively devalue it.**
   Remove unsolicited disclaimers such as “this is not a new theory,” “we do
   not claim the first device,” or “the values are not ready-made device

@@ -179,6 +179,13 @@ Run these on every manuscript regardless of venue:
   approximation, boundary condition, or diagnostic substitution. Mention
   manual entry or a specific software action only when it affects
   reproducibility or interpretation.
+- **Name physical inputs instead of vague data labels.** Do not leave phrases
+  such as «материальные данные», “material parameters,” or “input data” when
+  the comparison depends on a defined subset of properties. Name the actual
+  quantities, wavelength or frequency, materials, and relevant states. In an
+  optical model this may mean the complex refractive index or complex
+  permittivity for every medium; do not imply that unrelated thermal or
+  mechanical properties are part of the calculation.
 - **Compare parallel objects.** In captions, headings, aims, and comparison
   sentences, keep the alternatives at the same level of abstraction: results
   with results, methods with methods, and models with models. If one

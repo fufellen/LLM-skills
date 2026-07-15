@@ -233,9 +233,12 @@ Run these on every manuscript regardless of venue:
   sparse, and light-gray so fills do not read as bold dirt in print.
   Text labels must not touch or overlap the lines/graphics they annotate -
   offset or stagger them (user correction 2026-07-09: bold hatching and
-  S-labels sitting on cut lines). In-figure wording (legends, annotations)
-  must use the manuscript text's own terminology in that language - a
-  legend saying "anchor" while the text says "reference" is a defect.
+  S-labels sitting on cut lines). Place legends in an empty data-free region
+  or outside the axes; a legend covering a bar, curve, marker, or error bar is
+  a defect even when its text remains readable. In-figure wording (legends,
+  annotations) must use the manuscript text's own terminology in that
+  language - a legend saying "anchor" while the text says "reference" is a
+  defect.
   Verify all of this on the rendered page (rule 7), including a mental
   grayscale check.
 - **Wikilinks and vault artifacts.** `[[...]]`, Obsidian frontmatter,

@@ -186,6 +186,17 @@ Run these on every manuscript regardless of venue:
   or model calculation, introduce a common head such as “results of two ways
   of calculation” and name both alternatives in parallel. Do not grammatically
   compare “calculation by method X” with “structure Y”.
+- **Do not manufacture a taxonomy to organize conclusions.** Reject generic
+  openers such as «Полученные результаты позволяют разделить ... на три
+  уровня» followed by bold labels («пригодно / требует проверки / нельзя»)
+  when the categories merely compress unlike findings. Write evidence-led
+  paragraphs instead: state the observed agreement and a concrete result;
+  then the condition under which the result ceases to be decisive; then the
+  quantity or physical question that requires a stronger method. Use a
+  numbered classification only when its items are genuinely parallel, each
+  class has a defined criterion, and the classification is used later. Never
+  mix calculated quantities, failure cases, and validation actions as
+  coequal members of one artificial hierarchy.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

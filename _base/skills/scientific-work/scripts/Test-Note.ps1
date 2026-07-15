@@ -62,7 +62,11 @@ Write-Output "Size: $($item.Length) bytes"
 Write-Output "Lines: $($lines.Count)"
 Write-Output "LastWriteTime: $($item.LastWriteTime)"
 
-$mojibakeRegex = [regex]'[\u00C2\u00D0\u00D1\uFFFD]|\u0420[\u00A0-\u00BF\u0400-\u040F\u0450-\u045F\u2010-\u203F]|\u0421[\u00A0-\u00BF\u0400-\u040F\u0450-\u045F\u2010-\u203F]'
+# A single Cyrillic \u0420/\u0421 followed by punctuation from the suspicious ranges is
+# legitimate Russian (\u00AB\u041D\u043E\u043A\u0434\u0430\u0443\u043D-\u0420\u00BB, \u00AB...\u0413\u041E\u0421\u0422 \u0420\u00BB, word ending in \u0421 before \u00BB).
+# Genuine UTF-8-as-cp1251 mojibake is a dense run of such pairs, so require at
+# least two consecutive pairs before flagging.
+$mojibakeRegex = [regex]'[\u00C2\u00D0\u00D1\uFFFD]|(?:[\u0420\u0421][\u00A0-\u00BF\u0400-\u040F\u0450-\u045F\u2010-\u203F]){2}'
 $hits = $mojibakeRegex.Matches($text) |
     Select-Object -First 12 |
     ForEach-Object { $_.Value }

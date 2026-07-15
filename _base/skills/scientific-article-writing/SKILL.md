@@ -165,6 +165,12 @@ Run these on every manuscript regardless of venue:
   no interpretation beyond an already reported refinement ratio and result,
   move it to a detailed method note or supplement, or omit it. Do not remove
   a setting that is the only evidence for a convergence or robustness claim.
+  When several diagnostics support the same robustness conclusion, keep one
+  reader-interpretable threshold and the refinement outcome in the main text;
+  move extra residuals and higher-precision repeats to the data, supplement,
+  or project checkpoint. Do not list multiple near-unity overlaps or
+  discrepancies far below the manuscript's reported precision unless they
+  change the scientific interpretation.
 - **Compare parallel objects.** In captions, headings, aims, and comparison
   sentences, keep the alternatives at the same level of abstraction: results
   with results, methods with methods, and models with models. If one

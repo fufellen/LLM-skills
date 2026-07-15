@@ -171,6 +171,14 @@ Run these on every manuscript regardless of venue:
   or project checkpoint. Do not list multiple near-unity overlaps or
   discrepancies far below the manuscript's reported precision unless they
   change the scientific interpretation.
+- **Describe scientific choices, not operator actions.** In reader-facing
+  prose, replace program/GUI narration such as «программе вручную задано» or
+  «программа не находит моду» with the modeled fact and its scientific status:
+  «для области условно принято значение ...» or «расчёт не выявил связанную
+  моду». State whether a value is a calculated result, initial condition,
+  approximation, boundary condition, or diagnostic substitution. Mention
+  manual entry or a specific software action only when it affects
+  reproducibility or interpretation.
 - **Compare parallel objects.** In captions, headings, aims, and comparison
   sentences, keep the alternatives at the same level of abstraction: results
   with results, methods with methods, and models with models. If one

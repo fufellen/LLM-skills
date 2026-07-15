@@ -165,6 +165,13 @@ Run these on every manuscript regardless of venue:
   no interpretation beyond an already reported refinement ratio and result,
   move it to a detailed method note or supplement, or omit it. Do not remove
   a setting that is the only evidence for a convergence or robustness claim.
+- **Compare parallel objects.** In captions, headings, aims, and comparison
+  sentences, keep the alternatives at the same level of abstraction: results
+  with results, methods with methods, and models with models. If one
+  alternative is named as a method and the other as a direct equation solution
+  or model calculation, introduce a common head such as “results of two ways
+  of calculation” and name both alternatives in parallel. Do not grammatically
+  compare “calculation by method X” with “structure Y”.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

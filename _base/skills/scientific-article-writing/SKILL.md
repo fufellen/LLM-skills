@@ -156,6 +156,15 @@ Run these on every manuscript regardless of venue:
   discrepancy. Reserve "machine precision" for an error demonstrably near
   the machine epsilon of the stated numeric type; report that type and epsilon
   explicitly.
+- **Implementation details need a scientific role.** Do not leave isolated
+  counts of continuation steps, iterations, initial guesses, mesh elements,
+  or similar program settings in reader-facing prose without saying what they
+  test. Keep the exact count when reproducibility requires it, but attach the
+  purpose and outcome: for example, «устойчивость результата проверена при
+  четырёхкратном уменьшении шага; вывод не изменился». If the raw count adds
+  no interpretation beyond an already reported refinement ratio and result,
+  move it to a detailed method note or supplement, or omit it. Do not remove
+  a setting that is the only evidence for a convergence or robustness claim.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

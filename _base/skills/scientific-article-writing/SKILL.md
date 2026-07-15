@@ -241,6 +241,14 @@ Run these on every manuscript regardless of venue:
 - **Wikilinks and vault artifacts.** `[[...]]`, Obsidian frontmatter,
   local-note sections ("Локальные источники", GPT notes, edit logs) must
   never leak into the submission artifact.
+- **Keep internal file inventories outside reader-facing drafts.** Lists of
+  script names, CSV files, figure builders, checkpoints, and local
+  reproduction paths belong in a companion project note, not in a manuscript
+  being read by a supervisor or reviewer. In an Obsidian working draft,
+  replace such an inventory with one short wikilink when navigation is useful;
+  remove or convert that link before producing the submission artifact. Keep a
+  genuine public code- or data-availability statement in the paper when the
+  venue requires one or public materials are actually available.
 - **Names.** Cyrillic-to-Latin transliteration is verified per author
   (щ -> shch, ч -> ch, ж -> zh); author-preferred spellings win over
   standard transliteration - ask if unknown.

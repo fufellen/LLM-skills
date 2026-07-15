@@ -61,6 +61,8 @@ python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --engine pymupdf4
 
 Read `references/pdf-tooling.md` when OCR is needed, formulas/tables are important, the PDF has weak text extraction, or the best toolchain is not obvious.
 
+Read `references/pdf-textbook-lessons.md` before converting Word-printed PDFs (theses, NTO reports), formula-heavy documents, or 200+ page books — it holds verified artifact patterns (broken REF fields, per-glyph formula scatter) and the parallel per-chapter subagent workflow.
+
 ## Extraction Script
 
 Use `scripts/extract_pdf_textbook.py` for repeatable local work:

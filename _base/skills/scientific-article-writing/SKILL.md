@@ -147,10 +147,15 @@ Run these on every manuscript regardless of venue:
   hyphen for Ioffe journals - check the venue skill).
 - **Numerical precision claims.** Never write "to machine precision",
   «с машинной точностью», "exact", or «точно» when the code only checks a
-  chosen tolerance. State the compared quantity, error definition, and
-  numerical threshold (for example, $|\Delta n_\mathrm{eff}|<10^{-6}$).
-  Reserve "machine precision" for an error demonstrably near the machine
-  epsilon of the stated numeric type; report that type and epsilon explicitly.
+  chosen tolerance. Do not use an unexplained storage-format label such as
+  «на уровне округления вычислений двойной точности» as a substitute for an
+  error bound. State the compared quantity, error definition, and numerical
+  threshold (for example, $|\Delta n_\mathrm{eff}|<10^{-6}$). If the numeric
+  type itself matters, define it separately (for example, IEEE 754 binary64,
+  about 15–16 significant decimal digits); otherwise report only the actual
+  discrepancy. Reserve "machine precision" for an error demonstrably near
+  the machine epsilon of the stated numeric type; report that type and epsilon
+  explicitly.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

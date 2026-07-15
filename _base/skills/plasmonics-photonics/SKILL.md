@@ -97,7 +97,7 @@ For manuscript and DOCX work in this domain:
   `lambda04piImn_eff`.
 
 For literature and article claims:
-- do not claim a first PCM modulator, first PCM phase shifter, first plasmonic PCM device, or first EIM use for DLSPP unless primary literature verification supports it;
+- do not claim a first PCM modulator, first PCM phase shifter, first plasmonic PCM device, or first EIM use for DLSPP unless primary literature verification supports it. Do not turn this caution into an unsolicited manuscript sentence denying priority; when priority is not part of the contribution, omit priority language and state the actual scientific or methodological result positively;
 - frame EIM/ЭДП work as a failure-aware screening workflow when loss metrics diverge from FEM;
 - distinguish EIM/effective-index waveguide reduction from EMA/effective-medium approximation only when partial crystallization, intermediate PCM states, or an EMA material model is actually in scope; do not introduce an EMA disclaimer into a paper that compares only amorphous and crystalline states;
 - cite primary papers or official solver documentation for claims about device performance, solver behavior, or method limitations.

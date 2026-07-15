@@ -204,6 +204,16 @@ Run these on every manuscript regardless of venue:
   class has a defined criterion, and the classification is used later. Never
   mix calculated quantities, failure cases, and validation actions as
   coequal members of one artificial hierarchy.
+- **State the contribution positively; do not pre-emptively devalue it.**
+  Remove unsolicited disclaimers such as “this is not a new theory,” “we do
+  not claim the first device,” or “the values are not ready-made device
+  specifications.” If priority is not part of the claim, omit priority
+  language. Lead with what was calculated, validated, or learned. Preserve
+  limitations that affect interpretation, but express them as the scope of a
+  supported conclusion or as a specific next validation step, not as a
+  detached inventory of everything the study did not do. Use a separate
+  limitations list only when the venue requires it or when every item is
+  essential, nonredundant, and tied to a stated conclusion.
 - **Floats.** Every table/figure is cited in text BEFORE it appears;
   table captions above tables, figure captions below figures (IEEE
   convention; venue skill may differ). Figure axis labels are

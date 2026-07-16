@@ -157,17 +157,21 @@ Run these on every manuscript regardless of venue:
   no e-notation in prose (`9e-4` -> `0.0009` or a power of ten); real
   units symbols (`µm`, not `um`); dashes per venue (em/en for IEEE, plain
   hyphen for Ioffe journals - check the venue skill).
-- **Numerical precision claims.** Never write "to machine precision",
-  «с машинной точностью», "exact", or «точно» when the code only checks a
-  chosen tolerance. Do not use an unexplained storage-format label such as
-  «на уровне округления вычислений двойной точности» as a substitute for an
-  error bound. State the compared quantity, error definition, and numerical
-  threshold (for example, $|\Delta n_\mathrm{eff}|<10^{-6}$). If the numeric
-  type itself matters, define it separately (for example, IEEE 754 binary64,
-  about 15–16 significant decimal digits); otherwise report only the actual
-  discrepancy. Reserve "machine precision" for an error demonstrably near
-  the machine epsilon of the stated numeric type; report that type and epsilon
-  explicitly.
+- **Numerical precision claims.** Do not report a residual merely because
+  the code produces it. First decide whether it has physical or methodological
+  meaning at the precision of the model, material data, and reported results.
+  If validation against an analytical solution gives a discrepancy many
+  orders of magnitude below those limits and controlled only by numerical
+  rounding, omit the number from reader-facing prose. Write, for example,
+  «Результаты численного расчёта согласуются с аналитическими решениями»,
+  and keep the exact residual in tests or reproducibility materials. Never
+  replace such a number with "to machine precision", «с машинной точностью»,
+  "exact", «точно», or «на уровне округления вычислений двойной точности».
+  State the compared quantity, error definition, and numerical threshold only
+  when that threshold constrains a scientific conclusion or is itself part of
+  the numerical-method study. In that case, choose precision consistent with
+  the source data and displayed significant digits. Mention the numeric type
+  only when it materially affects the method.
 - **Implementation details need a scientific role.** Do not leave isolated
   counts of continuation steps, iterations, initial guesses, mesh elements,
   or similar program settings in reader-facing prose without saying what they

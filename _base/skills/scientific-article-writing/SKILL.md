@@ -137,8 +137,22 @@ Run these on every manuscript regardless of venue:
   after its definition. Never keep two variant forms of one abbreviation in
   one document (DLSPP vs DLSPPW; FEM vs МКЭ vs spelled-out «методом конечных
   элементов») - pick one form per language and unify it everywhere by
-  count-asserted replace. QA: check first use separately in every scope and
-  grep known variant pairs (explicit user correction, 2026-07-11).
+  count-asserted replace. Avoid introducing an abbreviation that is used
+  only once or a few times when the unabbreviated term remains readable.
+  QA: build a pass/fail first-use inventory of acronym-like Latin and
+  Cyrillic tokens separately for the title, abstract, and main text; then
+  inspect headings, keywords, captions, and table headings in reading order.
+  Exclude chemical formulae, standard SI units, and universally understood
+  element symbols. Do not rely on a global occurrence grep: the first
+  occurrence in each independent scope must either define the abbreviation
+  or use the unabbreviated term. Also grep known variant pairs (explicit
+  user corrections, 2026-07-11 and 2026-07-16).
+- **Mathematical notation.** Audit every nonstandard symbol, index, state
+  label, and derived quantity at its first displayed equation or first use.
+  Define it before the reader must infer it, and keep the notation identical
+  in prose, equations, figures, and tables. Record a pass/fail inventory for
+  indices and symbols rather than checking only that they occur somewhere in
+  the manuscript (explicit user correction, 2026-07-16).
 - **Keep the abstract self-contained.** Do not refer from the abstract to
   `Fig. 1`, a table, a section, an appendix, or another internal part of the
   manuscript. State the essential geometry, compared methods, and result in

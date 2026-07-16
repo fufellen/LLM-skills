@@ -204,11 +204,13 @@ Run these on every manuscript regardless of venue:
 - **Describe scientific choices, not operator actions.** In reader-facing
   prose, replace program/GUI narration such as «программе вручную задано» or
   «программа не находит моду» with the modeled fact and its scientific status:
-  «для области условно принято значение ...» or «расчёт не выявил связанную
-  моду». State whether a value is a calculated result, initial condition,
-  approximation, boundary condition, or diagnostic substitution. Mention
-  manual entry or a specific software action only when it affects
-  reproducibility or interpretation.
+  «для области принято значение ... в качестве диагностической замены» or
+  «расчёт не выявил связанную моду». State whether a value is a calculated
+  result, initial condition, approximation, boundary condition, or diagnostic
+  substitution. Do not add a vague hedge such as «условно» when the sentence
+  and its context already state the status of the adopted value precisely.
+  Mention manual entry or a specific software action only when it affects
+  reproducibility or interpretation (explicit user correction, 2026-07-16).
 - **Name physical inputs instead of vague data labels.** Do not leave phrases
   such as «материальные данные», “material parameters,” or “input data” when
   the comparison depends on a defined subset of properties. Name the actual

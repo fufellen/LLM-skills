@@ -261,6 +261,19 @@ Run these on every manuscript regardless of venue:
   interpretation, applicability, or the next validation stage. Do not repeat
   each Results sentence as an isolated numbered item or reuse the same
   sentence frame across a list of findings.
+- **Audit paragraph structure, not only suspicious words.** Treat a generic
+  opener («Полученные результаты показывают...», «Следует отметить...»),
+  several similarly shaped one-sentence claims, and a closing
+  «таким образом / следовательно / поэтому» that merely repeats them as a
+  warning sign of generated prose. Give each paragraph one argumentative
+  center: a result followed by its interpretation, physical cause, or
+  limitation. Replace the generic opener with the actual quantity, method,
+  or phenomenon; vary sentence structure only where it improves the logic.
+  Do not copy the same numerical inventory through Results, Discussion, and
+  Conclusion: Results reports the evidence, Discussion explains its meaning
+  or cause, and Conclusion keeps only the decisive comparison and scope.
+  Transitional words are not forbidden; revise repeated scaffolding, not
+  every isolated use (explicit user correction, 2026-07-16).
 - **State the contribution positively; do not pre-emptively devalue it.**
   Remove unsolicited disclaimers such as “this is not a new theory,” “we do
   not claim the first device,” or “the values are not ready-made device

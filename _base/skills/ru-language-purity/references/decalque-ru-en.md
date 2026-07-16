@@ -65,7 +65,7 @@ any model, including weaker ones, can apply it without judgment calls.
    «вытекающих мод» напиши о проверке удержания поля в волноводе или об
    излучении энергии в окружающую среду; вместо «окончательного выбора
    модовой ветви» - о подтверждении того, что при изменении параметра
-   сравнивается одна и та же физическая мода (explicit user corrections,
+   сравнивается одна и та же мода (explicit user corrections,
    2026-07-11).
    Не используй количественные оценки «значительный», «существенный» или
    «заметный» без числа либо явно названного критерия. Если данные есть,
@@ -101,6 +101,16 @@ any model, including weaker ones, can apply it without judgment calls.
    английское раскрытие и объясни термин обычной русской фразой. Отрицательный
    результат тоже занеси в реестр, чтобы не повторять тот же поиск без новой
    причины (explicit user correction, 2026-07-11).
+12. **Разделяй перегруженные предложения по логическим действиям.** Одно
+    предложение должно преимущественно описывать одно действие, результат
+    или ограничение. Если фраза одновременно сообщает последовательность
+    расчёта, объект сравнения и отличие контрольной модели, раздели её.
+    Отдельно проверяй причастные обороты между подлежащим и сказуемым,
+    цепочки из нескольких придаточных и точки с запятой в сплошном тексте.
+    После разбиения сохраняй связность: повторяй точное существительное
+    вместо неясного местоимения, но не превращай абзац в телеграфный
+    перечень. Длину от 25–30 слов используй как сигнал для проверки, а не
+    как автоматический запрет (explicit user correction, 2026-07-16).
 
 ## Class 1 - false friends and wrong-sense translations
 
@@ -123,7 +133,7 @@ The Russian word exists, but it renders the wrong sense of the English one.
 | signature (of a shift / an effect) | подпись (сдвига) | признак, характерный признак |
 | bleaching (of absorption) | выцветание; выцветает | просветление; ослабевает, уменьшается |
 | time traces (pump-probe) | временные трассы | временные зависимости |
-| preserve material ranking (model comparison) | модель сохраняет ранжирование материалов; модель даёт порядок материалов | для всех ли пар материалов меньшая <величина> получена для одного и того же материала в обоих расчётах; в двух расчётах меньшая <величина> получена для разных материалов |
+| preserve material ranking (model comparison) | модель сохраняет ранжирование материалов; модель даёт порядок материалов | совпадает ли в двух расчётах материал с меньшей <величиной>; в двух расчётах меньшая <величина> получена для разных материалов |
 | switching characteristics / switching metrics (static comparison of PCM states) | переключательные характеристики; переключательные метрики | назвать рассчитанные величины: «длина фазового сдвига и потери»; при необходимости — «характеристики перехода между аморфным и кристаллическим состояниями». Форму «характеристики переключения» оставлять только для расчёта самого процесса переключения: времени, энергии, импульса управления и т. п. |
 
 ## Class 2 - invented calque adjectives and compounds
@@ -199,7 +209,7 @@ defect. Forbidden list to grep for, with replacements:
 | near cutoff | при первом упоминании: «параметры волновода близки к границе исчезновения связанной моды; небольшое изменение геометрии, длины волны или показателя преломления может привести к исчезновению моды»; далее допустимо «вблизи отсечки» |
 | claim | утверждение, заявляемый результат |
 | reduced-order / reduced model | приближенный (редуцированный) |
-| branch tracking | подтверждение того, что при изменении параметра выбирается одна и та же физическая мода |
+| branch tracking | подтверждение того, что при изменении параметра выбирается одна и та же мода |
 | hold-out, state-paired, failure-aware, phase-trend | rephrase in Russian |
 | Z-scan | Z-сканирование; при первом упоминании «Z-сканирование (Z-scan)» |
 | pump-probe | «накачка-зондирование» (pump-probe) при первом упоминании |
@@ -263,14 +273,18 @@ defect. Forbidden list to grep for, with replacements:
    `Z-scan`, `pump-probe` (сырые - раскрыть по-русски со скобкой);
    согласование аббревиатур: `(ой|ая|ую|ого|ому)\s+(ПНЧ|ЭДП|ППП)`
    при множественной расшифровке (strategic rule 6).
-3. For each hit: find the EN source phrase, resolve the intended sense
+3. Просмотри предложения длиной от 25–30 слов, с точкой с запятой или
+   четырьмя и более запятыми. Считай это эвристикой, а не автоматической
+   ошибкой; не включай в такую проверку формулы, таблицы, списки и
+   библиографию.
+4. For each hit: find the EN source phrase, resolve the intended sense
    (rule 2), fix with the tables above or rephrase.
-4. Fix in ALL title locations at once (working title, title block,
+5. Fix in ALL title locations at once (working title, title block,
    Russian metadata in every language version, build-script fallbacks) -
    count-asserted.
-5. Rebuild every DOCX artifact and verify inside the artifact text that
+6. Rebuild every DOCX artifact and verify inside the artifact text that
    the calques are absent and the new wording is present.
-6. Add a dated entry to the draft's edit log listing what changed.
+7. Add a dated entry to the draft's edit log listing what changed.
 
 ## Maintenance
 

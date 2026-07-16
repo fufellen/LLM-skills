@@ -215,6 +215,14 @@ Run these on every manuscript regardless of venue:
   clarification from the abstract when that consequence is already explicit.
   Mention manual entry or a specific software action only when it affects
   reproducibility or interpretation (explicit user corrections, 2026-07-16).
+- **Name fabrication operations instead of vague process stages.** Do not
+  write «на завершающем этапе изготовления», “during post-processing,” or
+  similar labels unless the stage is defined and its order matters to the
+  claim. State what was actually done: for example, a functional layer was
+  deposited after the silicon photonic structures had been formed, or the
+  material was integrated into foundry-manufactured circuits. If the process
+  order is not important, omit it and state the demonstrated platform and
+  wafer size. Trace both the sequence and dimensions to the cited source.
 - **Name physical inputs instead of vague data labels.** Do not leave phrases
   such as «материальные данные», “material parameters,” or “input data” when
   the comparison depends on a defined subset of properties. Name the actual

@@ -139,6 +139,18 @@ Run these on every manuscript regardless of venue:
   элементов») - pick one form per language and unify it everywhere by
   count-asserted replace. QA: check first use separately in every scope and
   grep known variant pairs (explicit user correction, 2026-07-11).
+- **Keep the abstract self-contained.** Do not refer from the abstract to
+  `Fig. 1`, a table, a section, an appendix, or another internal part of the
+  manuscript. State the essential geometry, compared methods, and result in
+  words that remain understandable when the abstract is indexed separately.
+  If a specialized but established component name may be unfamiliar, retain
+  the term and explain its position or shape briefly instead of defining it
+  only by a figure reference.
+- **Match the scope noun to the work performed.** A study that evaluates a
+  calculation method is about «расчёт», not automatically about
+  «проектирование». Do not add «предварительный» as a generic qualifier; keep
+  it only when a preliminary stage is explicitly distinguished from a later
+  verification, refinement, or optimization stage.
 - **Placeholders.** Grep for `УТОЧНИТЬ`, `TODO`, `FIXME`, `XXX`, `???` -
   each hit must be intentional and reported.
 - **Typography.** Decimal points with leading zeros (`0.25`, never `.25`);

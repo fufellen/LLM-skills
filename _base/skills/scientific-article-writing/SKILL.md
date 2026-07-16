@@ -209,8 +209,12 @@ Run these on every manuscript regardless of venue:
   result, initial condition, approximation, boundary condition, or diagnostic
   substitution. Do not add a vague hedge such as «условно» when the sentence
   and its context already state the status of the adopted value precisely.
+  Do not append an isolated negative clarification that merely says what the
+  adopted value is not («значение не получено из расчёта...»). Instead state
+  how the substitution changes the model or limits interpretation; omit the
+  clarification from the abstract when that consequence is already explicit.
   Mention manual entry or a specific software action only when it affects
-  reproducibility or interpretation (explicit user correction, 2026-07-16).
+  reproducibility or interpretation (explicit user corrections, 2026-07-16).
 - **Name physical inputs instead of vague data labels.** Do not leave phrases
   such as «материальные данные», “material parameters,” or “input data” when
   the comparison depends on a defined subset of properties. Name the actual

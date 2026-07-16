@@ -228,7 +228,12 @@ Run these on every manuscript regardless of venue:
   alternative is named as a method and the other as a direct equation solution
   or model calculation, introduce a common head such as “results of two ways
   of calculation” and name both alternatives in parallel. Do not grammatically
-  compare “calculation by method X” with “structure Y”.
+  compare “calculation by method X” with “structure Y”. In Russian prose, use
+  «сравнить» or «сравнение» for results, quantities, methods, models, and field
+  distributions. When identifying which solution represents the same mode,
+  write «выбрать соответствующую моду», «проверить непрерывность выбранной
+  моды», or «подтвердить, что выбирается одна и та же мода» instead of using
+  «сопоставить» or «сопоставление» for both operations.
 - **Do not manufacture a taxonomy to organize conclusions.** Reject generic
   openers such as «Полученные результаты позволяют разделить ... на три
   уровня» followed by bold labels («пригодно / требует проверки / нельзя»)

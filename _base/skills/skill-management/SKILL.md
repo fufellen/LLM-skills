@@ -241,6 +241,8 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-w
 
 - `ru-language-purity` is the shared source of truth for де-кальке (RU/EN language purity: English calques, false friends, суржик, invented compounds, plus the mirror EN-from-RU check). Personal safety copy at `.codex/skills/ru-language-purity` (shared base `_base/skills/ru-language-purity/`, checklist in `references/decalque-ru-en.md`), mirrored into the corporate checkout at `.codex/skills/nto-formatting/ru-language-purity`. Referenced by `scientific-article-writing`, `nto-formatting`, `optics-spectroscopy-article`, and `apede-ieee-conference-article` instead of each embedding its own copy.
 
+- `jlink-mcp-runtime` is the Google Drive safety mirror of the complete portable J-Link Codex plugin from `C:\workspace\ToF-LIDAR-R\.codex\jlink-mcp-runtime`. Its thin Codex adapter lives at `.codex/skills/jlink-mcp-runtime`, while the shared workflow and full runnable plugin snapshot live at `_base/skills/jlink-mcp-runtime/`.
+
 ## Creating New Skills
 
 When creating a new skill from scratch:

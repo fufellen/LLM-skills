@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "jlink": {
+      "title": "J-Link MCP Runtime",
+      "description": "Expose SEGGER J-Link debugging tools through the bundled jlink_mcp Python runtime.",
+      "cwd": ".",
+      "command": "python",
+      "args": [
+        "./launcher.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}

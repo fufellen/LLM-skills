@@ -1,0 +1,5 @@
+.source
+logs/
+site/**/__pycache__/
+site/**/*.pyc
+site/jlink_mcp/.svd_cache/

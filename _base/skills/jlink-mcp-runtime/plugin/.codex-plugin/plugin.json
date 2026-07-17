@@ -1,0 +1,37 @@
+{
+  "name": "jlink-mcp-runtime",
+  "version": "0.1.0",
+  "description": "Portable Codex MCP plugin for SEGGER J-Link target access using the bundled jlink_mcp runtime.",
+  "author": {
+    "name": "ToF-LIDAR-R maintainers"
+  },
+  "license": "Unspecified",
+  "keywords": [
+    "jlink",
+    "segger",
+    "mcp",
+    "stm32",
+    "embedded",
+    "debug"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "J-Link MCP Runtime",
+    "shortDescription": "Debug embedded targets through SEGGER J-Link.",
+    "longDescription": "Run a bundled jlink_mcp server as a portable Codex plugin. The runtime exposes J-Link device discovery, target connection, CPU control, memory and register access, flash operations, RTT helpers, SVD helpers, and project defaults for STM32H723ZG over SWD. It is intended to be copied as a complete folder into another project or local plugin marketplace.",
+    "developerName": "ToF-LIDAR-R maintainers",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Check the J-Link MCP runtime setup.",
+      "Connect to the project MCU over SWD.",
+      "Read target status and CPU registers."
+    ],
+    "brandColor": "#0F766E"
+  }
+}

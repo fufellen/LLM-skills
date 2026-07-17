@@ -1,0 +1,4 @@
+interface:
+  display_name: "J-Link MCP Runtime"
+  short_description: "Отладка встроенных целей через SEGGER J-Link"
+  default_prompt: "Use $jlink-mcp-runtime to check the J-Link setup and safely inspect the configured MCU."

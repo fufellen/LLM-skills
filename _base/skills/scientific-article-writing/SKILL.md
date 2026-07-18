@@ -160,6 +160,13 @@ Run these on every manuscript regardless of venue:
   If a specialized but established component name may be unfamiliar, retain
   the term and explain its position or shape briefly instead of defining it
   only by a figure reference.
+- **Write the entire abstract impersonally.** Describe the object, method,
+  calculation, and result rather than the authors' actions. Reject first-person
+  and indefinite-personal narration such as «мы рассчитали», «рассчитали»,
+  «определяли», «проверили», «сделал», or “we calculated/show/present.” Use
+  passive or impersonal forms such as «рассчитано», «определены», «проверена»,
+  «получено», “is investigated,” or “was calculated.” Apply this check to
+  every sentence of the abstract, not only to its opening sentence.
 - **Match the scope noun to the work performed.** A study that evaluates a
   calculation method is about «расчёт», not automatically about
   «проектирование». Do not add «предварительный» as a generic qualifier; keep

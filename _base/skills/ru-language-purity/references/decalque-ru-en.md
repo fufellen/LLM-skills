@@ -140,6 +140,11 @@ any model, including weaker ones, can apply it without judgment calls.
     для целевой аудитории термины оставляй без пояснения, если они не
     определяют ход рассуждения и не вызывают неоднозначности (explicit user
     correction, 2026-07-16).
+15. **В русских рукописях пользователя используй только короткое пунктуационное тире.**
+    Записывай его как пробел, знак ASCII `-` и пробел. Не используй Unicode
+    U+2014 в аннотации, основном тексте, подписях и таблицах. Это правило не
+    заменяет математический минус внутри формул и дефис внутри слова
+    (explicit user correction, 2026-07-18).
 
 ## Class 1 - false friends and wrong-sense translations
 
@@ -268,6 +273,7 @@ defect. Forbidden list to grep for, with replacements:
 1. Slice the manuscript body (cut references, edit logs, service
    sections, backup-title lists).
 2. Grep the body for, at minimum:
+   `\x{2014}` (пунктуационное длинное тире U+2014 заменить на ` - `),
    `[a-zA-Z]{3,}` runs outside parentheses/abbreviations (Class 4);
    `нагруженн` preceded by a Latin/hyphen compound head (Class 2);
    `полно-?вектор|полновектор|полно-?волнов|полноволнов`

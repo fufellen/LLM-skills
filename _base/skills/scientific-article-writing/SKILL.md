@@ -167,6 +167,13 @@ Run these on every manuscript regardless of venue:
   passive or impersonal forms such as «рассчитано», «определены», «проверена»,
   «получено», “is investigated,” or “was calculated.” Apply this check to
   every sentence of the abstract, not only to its opening sentence.
+- **Prefer direct physical wording in the abstract.** Do not introduce a
+  specialized label when a familiar physical term states the same claim. For
+  intrinsic material absorption, prefer «оптические потери малы» or «материал
+  слабо поглощает излучение» to «коэффициент экстинкции мал». When the numeric
+  value of $k$ is needed, identify it as the imaginary part of the refractive
+  index. Retain the specialized term in the methods only when it is needed for
+  a definition or distinction.
 - **Match the scope noun to the work performed.** A study that evaluates a
   calculation method is about «расчёт», not automatically about
   «проектирование». Do not add «предварительный» as a generic qualifier; keep

@@ -231,6 +231,12 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\christian-pr
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\presentation-creation
 ```
 
+- `conference-paper-formatting` is the personal shared skill for compact conference-proceedings manuscripts that start directly with the introduction, omit the title and author block, use the stored two-column CJE_KB_CMP visual baseline, and end with the reference list. It lives at:
+
+```text
+C:\Users\User\Мой диск\Obsidian\.codex\skills\conference-paper-formatting
+```
+
 - Presentation workflow rules for scientific/popular-science decks currently live at:
 
 ```text
@@ -296,6 +302,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
+- compact conference-proceedings manuscript formatting based on the user's stored two-column example: `conference-paper-formatting`;
 - Christian, church, Bible, Sunday school, youth, sermon, camp, and devotional deck content rules: `christian-presentations`, used alongside `presentation-creation`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`, used alongside `presentation-creation` when relevant;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

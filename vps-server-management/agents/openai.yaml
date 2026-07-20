@@ -1,0 +1,4 @@
+interface:
+  display_name: "VPS Server Management"
+  short_description: "Rent, secure, set up, and operate Linux VPS servers and deploy apps"
+  default_prompt: "Use $vps-server-management to set up and secure this VPS and deploy the app."

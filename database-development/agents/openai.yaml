@@ -1,0 +1,4 @@
+interface:
+  display_name: "Database Development"
+  short_description: "Design, build, and deploy databases with ТЗ, SQL schema, server, and client apps"
+  default_prompt: "Use $database-development to design the data model and development plan for this database project."

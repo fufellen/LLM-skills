@@ -249,6 +249,8 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-w
 
 - `database-development` (design, specify, build, and deploy databases plus their server deployment and client apps) lives in the personal skills repository: shared base `_base/skills/database-development/`, Codex adapter `.codex/skills/database-development`, Claude adapter `.claude/skills/database-development`.
 
+- `vps-server-management` (rent, secure, set up, and operate Linux VPS servers; SSH keys, ufw, swap, HTTPS reverse proxy, systemd services, backups; encodes the user's Windows+VPN connection quirks — native OpenSSH, not plink) lives in the personal skills repository: shared base `_base/skills/vps-server-management/` (with `references/connection-lessons.md`), Codex adapter `.codex/skills/vps-server-management`, Claude adapter `.claude/skills/vps-server-management`.
+
 - `jlink-mcp-runtime` is the Google Drive safety mirror of the complete portable J-Link Codex plugin from `C:\workspace\ToF-LIDAR-R\.codex\jlink-mcp-runtime`. Its thin Codex adapter lives at `.codex/skills/jlink-mcp-runtime`, while the shared workflow and full runnable plugin snapshot live at `_base/skills/jlink-mcp-runtime/`.
 
 ## Creating New Skills
@@ -303,6 +305,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - Obsidian `.canvas` creation, validation, and visual tree layout: `obsidian-canvas`;
 - reproducible PhD/Lerer calculation-code repository work: `phd-lerer-repo`;
 - database design, ТЗ, SQL schemas, server deployment, and client apps over a database: `database-development`;
+- renting, securing, configuring, and operating Linux VPS servers, and deploying apps onto them (SSH, ufw, swap, HTTPS, systemd, backups): `vps-server-management`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
 - compact conference-proceedings manuscript formatting based on the user's stored two-column example: `conference-paper-formatting`;

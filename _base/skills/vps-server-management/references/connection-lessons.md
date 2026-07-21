@@ -35,6 +35,23 @@ Fix: move sshd to a non-standard port (e.g. 2222). Bonus: the bot brute-force no
 
 Client side afterwards: `ssh -p 2222 root@<ip>`.
 
+## SSH throttling can be per-PROTOCOL and per-source-IP, not per-port
+
+After moving sshd to a non-standard port, the same `banner exchange timeout` on the new port means the filter recognizes the SSH protocol itself (DPI on the banner), keyed to the **source IP** (a shared VPN exit that got flagged — retry storms accelerate this). Definitive test: `journalctl -u ssh --no-pager -n 8` on the server (via provider console) right after a client attempt — **no log entry = packets filtered upstream**, nothing on the server will fix it. Working fix: change the VPN server/location (new exit IP). Port change is still worth keeping — it silences bot brute-force noise.
+
+## Driving the provider noVNC console programmatically (via browser JS)
+
+When the user logs the provider panel in inside the assistant's browser pane, the noVNC page exposes a global `rfb` object; `rfb.sendKey(keysym, down)` injects keys straight into the VNC protocol — the only reliable input path (synthetic DOM typing does not reach the canvas; the panel's Paste clipboard mangles input).
+
+- **QEMU drops the implicit Shift of keysyms**: sending `>` yields `.`, `#`→`3`, `_`→`-`, `|`→`\` (this is the root cause of all console mangling). Fix: for shifted symbols send `sendKey(0xFFE1,1)` (Shift down) → base-key keysym (`.` for `>`, `3` for `#`, `-` for `_`, `\` for `|`, etc.) → `sendKey(0xFFE1,0)`.
+- **Uppercase letters**: send their own keysym directly (works); do NOT wrap lowercase in Shift (stays lowercase).
+- Enter = keysym `0xFF0D`. Verify every command by screenshot BEFORE relying on its effect; echo-probe the risky symbols first.
+- `window`-attached helpers (`vncType`) disappear on page reload — redefine per call or check existence.
+
+## Port migration safety
+
+Multiple `Port` directives across `sshd_config` and `sshd_config.d/*.conf` make sshd listen on ALL of them — during a port move this is a feature: keep 22+2222 both listening until the new port is confirmed from the client, then optionally remove 22.
+
 ## Do not hammer a throttled port
 
 Retry loops against a filtered/throttled SSH port make the filtering worse and pollute the picture. After 2 failures, stop and change the diagnosis (path test, VNC console, different port) instead of retrying harder. One careful attempt per hypothesis.

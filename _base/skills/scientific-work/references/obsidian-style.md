@@ -49,6 +49,7 @@ Use this reference before creating or editing Obsidian notes.
 
 ## Term Notes
 
+- Name new standalone term notes for searchability as `Primary Russian term (Russian synonym, English term).md` when an established synonym and English equivalent exist. For example, use `Промежуточная таблица (связующая таблица, junction table).md` instead of `Промежуточная таблица.md`. Include only useful established forms that the user is likely to search; if a term has no meaningful synonym or English equivalent, keep the shorter title (explicit user requirement, 2026-07-21).
 - Start with a short definition.
 - Add physical or engineering meaning.
 - Add key formula, packet field, geometry, applicability, or limitation when relevant.

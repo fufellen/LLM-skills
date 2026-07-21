@@ -83,6 +83,23 @@ ssh -p <port> -o BatchMode=yes root@<ip> "<command>"
 
 `BatchMode=yes` fails fast instead of hanging on a password prompt — good for verifying key install.
 
+## MTU blackhole: transfers that authenticate but hang on data
+
+`git clone` (or any bulk transfer) that stalls right after "Cloning into ..." while `ssh -T git@github.com` authenticates fine = **PMTU blackhole**: small packets pass, large ones are dropped. One-line fix, then persist it:
+
+```bash
+sysctl -w net.ipv4.tcp_mtu_probing=1
+printf 'net.ipv4.tcp_mtu_probing=1\n' > /etc/sysctl.d/99-mtu.conf
+```
+
+Try this BEFORE suspecting the remote service. Related workaround if outbound port 22 itself is filtered: GitHub over 443 — in `~/.ssh/config` under `Host github.com` add `HostName ssh.github.com` + `Port 443`.
+
+## Private-repo deploy without workstation SSH
+
+- Server generates its own keypair (`ssh-keygen -q -t ed25519 -N '' -f ~/.ssh/ghdep`); the PUBLIC key goes into GitHub repo Settings → Deploy keys (read-only). `~/.ssh/config`: `Host github.com` / `IdentityFile ...` / `StrictHostKeyChecking accept-new`. Verify: `ssh -T git@github.com` → "Hi <user>/<repo>!".
+- Extracting the pubkey through a console screen without external paste services: `od -An -tx1 file` (hex is far less ambiguous than base64), transcribe, decode locally, verify against `md5sum` from the server; brute-force 1–2 hex-digit errors against the md5 if needed (i/l and 0/O misreads are common — one search found the exact key).
+- systemd unit files build cleanly over a console as sequential `printf '...' >>` appends (each under ~100 chars), then `cat` to verify, `systemctl daemon-reload && systemctl enable --now <svc>`, and `curl -s localhost/<path>` as the smoke test.
+
 ## Russian VPS + Ubuntu mirrors
 
 - `security.ubuntu.com` / `archive.ubuntu.com` are often unreachable or crawling from Russian VPS: `apt-get update` warns `Connection failed`, `apt upgrade` hangs for many minutes, and boot-time `apt-daily`/unattended-upgrades can wedge a 1 GB box (SSH unresponsive while console works).

@@ -47,6 +47,11 @@ When the user logs the provider panel in inside the assistant's browser pane, th
 - **Uppercase letters**: send their own keysym directly (works); do NOT wrap lowercase in Shift (stays lowercase).
 - Enter = keysym `0xFF0D`. Verify every command by screenshot BEFORE relying on its effect; echo-probe the risky symbols first.
 - `window`-attached helpers (`vncType`) disappear on page reload — redefine per call or check existence.
+- **Long commands get truncated**: ~200-char strings lose tail characters in flight. Keep each console command under ~100 chars, split chained commands, and screenshot-verify the typed line before trusting the result. An Enter can also get lost — if the screen freezes on a typed line, resend keysym 0xFF0D alone.
+
+## When SSH from the workstation is impossible: console-only operation
+
+A server can be fully set up and deployed with NO working SSH from the workstation: the provider console (driven via `rfb.sendKey`) executes commands, and the **server's own outbound internet** does the heavy lifting — `git clone` from GitHub delivers the code (no SCP needed), apt pulls from the mirror. Check outbound first: `curl -sm 8 -o /dev/null -w code:%{http_code} <url>` against the mirror and github.com. For private GitHub repos use a server-side deploy key. Sed one-liners with `s+old+new+g` (no quotes, no spaces) are the console-safest file edits; beware partial hostname replacements leaving prefixes like `ru.` — verify with `grep` after.
 
 ## Port migration safety
 

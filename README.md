@@ -2,13 +2,71 @@
 
 Shared AI skills synchronized from the user's Obsidian vault. The repository contains durable shared-base skills, thin Codex and Claude adapters, and a corporate skills submodule.
 
-Canonical local path on the owner's PC:
-
-```text
-C:\Users\User\Мой диск\Obsidian\.codex\skills
-```
+Local paths are machine-specific. On a new PC, do not copy an example path from
+another machine: ask the user where to clone the skills repository and where the
+local Obsidian vault is located.
 
 The repository intentionally excludes `secrets/`, credentials, caches, and generated logs.
+
+## First-time Codex setup on another PC
+
+This is a setup procedure for a person, not a list of paths that are assumed to
+exist. Choose the repository clone URL, open Codex, and send the prompt below.
+The agent must ask for the two local paths before it makes changes.
+
+Codex's supported agent-writable equivalent of persistent user instructions is
+the global `AGENTS.md`: `$CODEX_HOME/AGENTS.md`, or `~/.codex/AGENTS.md` when
+`CODEX_HOME` is not set (`%USERPROFILE%\.codex\AGENTS.md` on Windows). The agent
+may create or update that file when the setup prompt authorizes it. It must
+preserve existing instructions and change only its marked block. A non-empty
+global `AGENTS.override.md` takes precedence, so the agent must report it instead
+of silently writing instructions that Codex will not currently load.
+
+Copy this prompt and replace `<clone URL selected by the user>` with the chosen
+HTTPS or SSH clone URL:
+
+```text
+Настрой выбранный репозиторий навыков для Codex на этом ПК.
+
+URL для клонирования: <clone URL selected by the user>
+
+1. До клонирования спроси меня, в какую локальную папку поместить репозиторий.
+   Не предполагай, что путь совпадает с путём на другом ПК. Если папка уже
+   существует, сначала безопасно проверь её и не перезаписывай чужие файлы.
+2. Клонируй репозиторий вместе с подмодулями либо, если это уже корректный clone,
+   безопасно обнови его и инициализируй подмодули.
+3. Спроси меня, где на этом ПК находится Obsidian vault, и проверь существование
+   выбранной папки.
+4. Определи путь к глобальным инструкциям Codex: используй
+   $CODEX_HOME/AGENTS.md, если CODEX_HOME задан, иначе ~/.codex/AGENTS.md.
+   Не пытайся изменять поле «Пользовательские инструкции» в интерфейсе приложения.
+5. Сохрани существующее содержимое AGENTS.md и создай или обнови только блок
+   между маркерами <!-- llm-skills:start --> и <!-- llm-skills:end -->. В блоке
+   запиши абсолютный путь к клонированному репозиторию навыков и указание
+   загружать из него релевантные навыки; также запиши абсолютный путь к Obsidian
+   vault и указание использовать его во всех задачах с Obsidian.
+6. Не записывай один фиксированный способ публикации. Укажи, что перед каждым
+   push или PR для этого репозитория агент обязан запустить из корня репозитория
+   _base/skills/skill-management/scripts/Get-GitHubContributionMode.ps1 -AsJson
+   и выбрать маршрут по фактическому доступу:
+   - администратор с действующим bypass: прямой push в origin/main разрешён,
+     pull request необязателен;
+   - участник с правом записи без bypass: ветка main_<github-login> в исходном
+     репозитории и pull request в main;
+   - внешний пользователь без права записи: fork, ветка main_<github-login>,
+     push в fork и pull request в fufellen/LLM-skills:main;
+   - если доступ нельзя надёжно определить: не push в main, а сначала сообщить
+     о проблеме с аутентификацией и повторить проверку после её устранения.
+7. Если рядом с глобальным AGENTS.md есть непустой AGENTS.override.md, сообщи,
+   что он временно перекрывает AGENTS.md, и не изменяй override без моего согласия.
+8. Покажи мне итоговые пути, файл с инструкциями, результат проверки доступа и
+   выбранный для текущей учётной записи способ публикации. После этого предложи
+   начать новую задачу Codex, чтобы инструкции гарантированно загрузились.
+```
+
+The access check must be repeated before publication because the authenticated
+account, repository permissions, or branch rules may change later. The detailed
+decision table and commands are documented below.
 
 ## Mandatory contribution workflow for AI agents
 

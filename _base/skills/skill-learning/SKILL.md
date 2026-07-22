@@ -69,3 +69,9 @@ Before finishing a learning update:
 - run the skill validator when feasible;
 - report exactly which skill or reference changed;
 - commit and push only under the owning repository's rules.
+
+## Coverage Audit
+
+After adding, importing, or broadly updating skills, run `scripts/Test-SkillLearningCoverage.ps1` from this shared base. The script finds every canonical `_base/skills/<skill-name>/SKILL.md` under the selected repository, including initialized nested repositories, and verifies that each one either points to the shared `skill-learning` policy or has an actionable learning section with durable or reusable lesson language.
+
+Thin Codex, Claude, and plugin adapters inherit behavior from their canonical shared base and should not duplicate the learning policy. Fix a reported gap in the canonical shared base, then rerun the audit until it exits successfully.

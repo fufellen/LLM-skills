@@ -7,6 +7,12 @@ description: "Use when work requires the portable SEGGER J-Link MCP plugin from 
 
 This shared skill preserves a synchronized, runnable snapshot of the J-Link Codex plugin from the ToF-LIDAR MCU firmware repository. The complete plugin is under `plugin/`; resolve paths below relative to this file.
 
+## Self-Improvement And Publishing
+
+When J-Link runtime work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact rules about probe discovery, connection diagnostics, safe read workflows, launcher checks, portable configuration, mirror validation, or recurring failure modes in this shared-base skill or a focused reference. Do not store probe serial numbers, credentials, private firmware data, generated logs, memory dumps, or one-off target state.
+
+Before materially changing the runtime workflow or applying a self-learning update, inspect the authoritative firmware checkout and the owning repository state. Runtime or bundled-plugin changes must be made in the authoritative source first, validated there, and then copied into this mirror; never let a mirror-only fix silently diverge. Validate and publish the relevant repository changes under each owning repository's contribution policy.
+
 ## Startup
 
 1. Read `plugin/skills/jlink-mcp-runtime/SKILL.md` completely for the runtime's current tool workflow and safety rules.

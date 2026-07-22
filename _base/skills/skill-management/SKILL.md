@@ -42,14 +42,19 @@ Local git repository path:
 C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills
 ```
 
-After materially creating or updating user-owned skills, commit and push the skill changes to this repository by default unless the user explicitly says not to. These user-owned skill repositories have no pull-request review, so push directly to the default branch `main`; do not open a feature branch or PR for skill changes. Before committing:
+After materially creating or updating user-owned skills, commit and publish the skill changes to this repository by default unless the user explicitly says not to. For `fufellen/LLM-skills`, follow the root `README.md` contribution workflow. An authenticated repository owner or administrator with a confirmed active bypass may push directly to `origin/main`; a branch and pull request are optional for that account. Every other account must use `main_<github-login>` and a pull request: push the branch to the source repository when write access exists, or create a fork and push it there when write access is absent or unknown. If administrator bypass cannot be confirmed, do not push to `main`. GitHub CLI is not required for plain Git operations when a configured credential helper can authenticate the push; create any required pull request through an available connector, REST API, website, or `gh`. Before committing:
+
+Before choosing among those workflows, run `_base/skills/skill-management/scripts/Get-GitHubContributionMode.ps1` from the repository root. Use its machine-readable `AccessClass`, `DirectMainAllowed`, `RequiresFork`, `RequiresPullRequest`, and `WorkingBranch` fields. The script checks the authenticated GitHub account, effective repository permissions, active default-branch rulesets, and the administrator bypass without printing the credential. Do not infer access from a clone, login name, or public read access. If the check cannot authenticate or complete, fail closed: do not push to `main` and treat source-repository write access as unconfirmed.
 
 1. Check `git status --short`.
 2. Make sure `secrets/`, API keys, tokens, local credentials, caches, and generated logs are not staged.
 3. Stage only relevant skill files and repo metadata.
 4. Split commits by semantic block when the update contains independent concerns; avoid vague rollups such as "skill update" when separate commits like "document commit policy" and "refresh skill inventory" would be clearer.
 5. Use concise commit messages that briefly describe the concrete change.
-6. Push to `origin main`.
+6. Keep `origin` pointed at the canonical repository, including when a separate `fork` remote is needed.
+7. Run `scripts/Get-GitHubContributionMode.ps1`; if it reports `administrator` with `DirectMainAllowed = True`, the account may push directly to `origin/main`.
+8. Otherwise push only `main_<github-login>` to `origin` when write access exists, or to `fork` when it does not.
+9. For non-administrator contributions, open a pull request to `main` and do not merge it unless the owner explicitly asks. An administrator may use a pull request voluntarily.
 
 If push fails because credentials, network, or remote permissions are unavailable, keep the local commit if it was created and report the exact blocker.
 

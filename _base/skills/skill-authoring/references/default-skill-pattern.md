@@ -49,7 +49,7 @@ Use this checklist before committing user-owned skill changes:
 7. Stage only relevant skill files.
 8. Run `git diff --cached --check`.
 9. Commit with concise messages that each describe one semantic block.
-10. Push to `origin main`.
+10. Follow the owning repository's contribution policy. For `fufellen/LLM-skills`, first run `_base/skills/skill-management/scripts/Get-GitHubContributionMode.ps1`. An authenticated owner or administrator for which it returns `DirectMainAllowed = True` may push directly to `main`. Every other account must push `main_<github-login>` to the source repository when write access exists or to the user's fork otherwise, then open a pull request to `main`.
 
 ## Useful Commands
 
@@ -60,10 +60,18 @@ git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" rev-parse origin/m
 git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" status --short
 python "C:\Users\User\.codex\skills\.system\skill-creator\scripts\quick_validate.py" "C:\Users\User\Мой диск\Obsidian\.codex\skills\<skill-name>"
 git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" diff --cached --check
+$access = powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\User\Мой диск\Obsidian\.codex\skills\_base\skills\skill-management\scripts\Get-GitHubContributionMode.ps1" -AsJson | ConvertFrom-Json
+$access | Format-List
+# Owner or administrator with a confirmed active bypass:
 git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" push origin main
+# Every other account:
+$githubLogin = 'replace-with-login'
+$branch = "main_$githubLogin"
+git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" switch -c $branch origin/main
+git -C "C:\Users\User\Мой диск\Obsidian\.codex\skills" push -u origin $branch
 ```
 
-Use `git merge --ff-only origin/main` only after confirming local `HEAD` is behind and the relevant working tree is clean.
+Use `git merge --ff-only origin/main` only after confirming local `HEAD` is behind and the relevant working tree is clean. If administrator bypass cannot be confirmed, do not use the direct-main command. When the account has no source-repository write access, add its fork as the `fork` remote and replace the branch push destination with `fork`; keep `origin` pointed at `fufellen/LLM-skills`. GitHub CLI is optional when plain Git can authenticate through a configured credential helper.
 
 ## Frontmatter Description Rule
 

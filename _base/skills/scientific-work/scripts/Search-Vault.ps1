@@ -131,8 +131,14 @@ $files = foreach ($target in $targetPaths) {
         }
 }
 
+if (-not $files) {
+    exit 0
+}
+
+# LiteralPath, not Path: vault filenames contain [] () and other wildcard
+# characters, and Select-String -Path fails on them with WildcardPatternException.
 $selectArgs = @{
-    Path = $files.FullName
+    LiteralPath = $files.FullName
     Pattern = $Query
     Encoding = "UTF8"
 }

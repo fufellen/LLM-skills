@@ -176,6 +176,33 @@ else {
     Write-Output "[ok] Every display formula is followed immediately by the required notation block"
 }
 
+$mathAliasViolations = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if ($insideFence) {
+        continue
+    }
+
+    $matches = [regex]::Matches($line, '\[\[[^\]\r\n]*\|[^\]\r\n]*\$[^\]\r\n]*\]\]')
+    foreach ($match in $matches) {
+        $mathAliasViolations.Add("line $($i + 1): $($match.Value)")
+    }
+}
+
+if ($mathAliasViolations.Count -gt 0) {
+    Write-Warning "LaTeX delimiters are not allowed inside aliased Obsidian wikilink display text; use a plain-text/Unicode alias such as [[Note|S11]] or keep the formula outside the link:"
+    $mathAliasViolations | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] No LaTeX delimiters found inside Obsidian wikilink aliases"
+}
+
 if ($Strict -and $styleViolationFound) {
     exit 5
 }

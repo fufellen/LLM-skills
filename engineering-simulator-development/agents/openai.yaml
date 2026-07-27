@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Simulator Development"
+  short_description: "Build source-faithful engineering simulators"
+  default_prompt: "Use $engineering-simulator-development to build and validate a source-faithful simulator for this engineering system."

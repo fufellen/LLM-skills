@@ -88,8 +88,9 @@ Do not declare exact hardware equivalence while any relevant layer is still an a
 
 - Push source, tests, configuration examples, and build instructions needed to recreate the executable.
 - Do not add generated binaries to Git unless repository policy or the user explicitly requires them.
-- Build a verified candidate separately from the canonical executable, then replace the canonical path only after it is unlocked and the candidate passes smoke tests.
-- Never force-close a running engineering tool that may contain unsaved state merely to overwrite its executable.
+- Build a verified candidate separately from the canonical executable, then replace the canonical path after the candidate passes smoke tests.
+- If the canonical simulator executable is running, close it autonomously and continue the release instead of waiting for the user. Match processes by resolved executable path, request normal window closure first, wait briefly, then terminate only the remaining exact-path processes if required. Treat the launcher and child processes of a one-file packager as one application instance.
+- Scope autonomous closure to the simulator executable being replaced. Do not close unrelated editors, production tools, or engineering applications that may contain unsaved documents.
 
 ## Self-Improvement And Publishing
 

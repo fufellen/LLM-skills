@@ -22,10 +22,13 @@ Use this workflow when delivering a Windows executable for an engineering simula
 
 ## Locked Executable
 
-- Never force-close a running simulator that may contain unsaved configuration.
+- Do not wait for the user merely because the canonical simulator executable is running.
+- Resolve every matching process by its full executable path. A one-file packager such as PyInstaller can expose a launcher and a child process for one visible application; close the whole exact-path group.
+- Request normal closure first (`CloseMainWindow` or the platform-equivalent) so close handlers can persist settings, wait for a short bounded interval, then terminate only the exact-path processes that remain. Recheck that the canonical path is unlocked before copying.
+- Apply autonomous closure only to the simulator artifact being replaced. Never use a broad process-name kill and do not close unrelated editors or engineering tools that may contain unsaved documents.
 - Do not silently publish a permanent `.new.exe` as the final artifact.
-- Keep the verified candidate separately, ask the user to close the old application, then replace the canonical path.
-- Report clearly when replacement remains blocked by a running process.
+- Keep the verified candidate separately until the canonical copy and hash verification succeed, then replace the canonical path during the same task.
+- Report a blocker only if the verified exact-path processes cannot be closed or the file remains locked after the bounded close-and-terminate sequence.
 
 ## Qt And Visual Smoke Tests
 

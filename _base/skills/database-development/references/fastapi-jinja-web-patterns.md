@@ -202,3 +202,17 @@ desktop/.venv/
 ```
 
 Ship a build recipe (`desktop/README.md`) instead; the maintainer rebuilds locally.
+
+## Pre-handoff QA (three independent passes)
+
+Before letting a real user touch the app for the first time, run all three passes on an empty database (`TRUNCATE ... RESTART IDENTITY CASCADE`, keep only auth). Each pass catches a different class of bug; skipping any of them ships that class:
+
+1. **GET sweep** — script logs in as owner, hits every listed URL (including edge cases: `/thing/999`, filters with no matches, months with no data, static files, PWA manifest and `/sw.js`). Fail any that: return ≥400 (except intended 404s); contain `Internal Server Error`, `Traceback`, or `UndefinedError` in the body. Fast (~30 s) and catches server crashes and Jinja variable typos but is blind to missing functionality.
+
+2. **End-to-end creation flow with reconciliation** — POST-through the full business chain: subject → professional → client → per-relationship pricing → planned event → held event, then read every summary page (time sheet, salary, finance) and *check the numbers agree with each other to the kopeck*. Catches: no UI to create dictionary rows (very common — you built the client-facing pages but forgot the admin-side CRUD for reference data); one report updated when a new pricing component landed but sibling reports still using the old formula.
+
+3. **Role check** — log in as the most restricted role, hit ~7 URLs with `-MaximumRedirection 0`. Assert the exact expected 200/303 for each. Middleware edits are easy to break silently for one role while everything looks fine for owner.
+
+When a bug shows up in pass 2 or 3, fix it and rerun the pass — the bug you find is usually the entry point to a family of related ones.
+
+After all three pass, wipe test data (`TRUNCATE ... RESTART IDENTITY CASCADE` + `DELETE FROM users WHERE login IN ('test%')`) before handing over.

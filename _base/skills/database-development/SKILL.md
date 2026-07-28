@@ -44,6 +44,8 @@ Options are ordered; take the first unless the project dictates otherwise:
 2. **Backend:** Python + FastAPI + SQLAlchemy/Alembic exposing a REST API; the DB port itself is never exposed to the internet.
 3. **Client for ПК + телефон:** one responsive web app (server-rendered or SPA) behind HTTPS — covers desktop and phone with one codebase; wrap as PWA if an "app icon" is wanted. Native/Flutter apps only if offline work or device APIs are truly required.
 
+For a FastAPI + Jinja2 + PostgreSQL admin app specifically, read [references/fastapi-jinja-web-patterns.md](references/fastapi-jinja-web-patterns.md) once at the start of the session — it collects the recurring traps (TemplateResponse signature, `body > nav` selector, `.box.stack` vertical forms, PWA/Web-Push setup, per-enrollment pricing, role ≠ job title, time-sheet-as-a-query, `TRUNCATE … RESTART IDENTITY CASCADE`, deploy-script env loading) so you don't rediscover them on every rebuild.
+
 ## Deployment And Operations
 
 - VPS hardening basics: SSH keys only, firewall allowing SSH+HTTPS, DBMS listening on localhost/private network only, application connects via a least-privilege DB user.

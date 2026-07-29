@@ -30,7 +30,58 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
 
 4. Make scoped changes.
    - Prefer existing project modules, IP wrappers, helpers, and known-good implementations before writing new HDL. Add new modules only when no suitable reusable block exists or reuse would make the change riskier.
+   - Before hand-writing a local edge detector, synchronizer, pulse generator,
+     timer, counter, FIFO, CRC, serializer, or similar helper, search the
+     repository with `rg` by both function and likely module names and inspect
+     its existing call sites. A private implementation is not justified merely
+     because it takes only a register and an `assign`: reuse the canonical
+     module when its latency, reset, clock-domain, and synthesis semantics fit.
+     If they do not fit, record the concrete mismatch and cover the new helper
+     with a focused TB. When correcting this pattern, audit and replace the
+     obvious duplicates in the same functional scope instead of fixing only
+     the first quoted occurrence.
+   - Define every FSM state set with a SystemVerilog enum such as
+     `typedef enum { ... } state_t`, and declare both current- and next-state
+     registers with that enum type. Do not specify an explicit base type or
+     packed width such as `logic [N-1:0]` for an FSM enum; leave its
+     representation to the compiler and synthesis tool. Do not model an FSM
+     with state `localparam` values plus an untyped `logic [N-1:0]` register.
+     Preserve explicit enumerator values when an encoding is externally
+     observed, used for diagnostics, or must remain stable; otherwise allow
+     the enum to assign sequential values. When correcting legacy code, audit
+     the obvious FSM copies in the same functional scope and prove the typed
+     version with the affected TB and synthesis/PnR flow.
+   - For a configurable serial or protocol engine, derive phase-counter widths
+     from the longest legal phase across its public parameters, not only from
+     the largest current default. Its focused TB must check wire order,
+     per-phase output-enable/turnaround, exact cycle count, completion-strobe
+     width, reset during a transaction, and safe illegal-state recovery. The
+     recovery path must release bus ownership (`busy`, chip-select, clock, and
+     output-enable as applicable), not merely assign the idle enum value.
+   - Do not describe QSPI as one universal transaction protocol. State the
+     exact verified lane/edge contract in the module name and documentation,
+     for example mode-0 `1-4-4 SDR`: command on one lane, address and data on
+     four lanes. Opcode meaning, address width, dummy/turnaround selection,
+     register layout, SDR/DDR choice, and device setup are separate contracts.
+     Put the reusable wire transaction in a transport module and bind the
+     device-specific values in a thin wrapper.
+   - Do not generalize a serial transport beyond its known consumers merely
+     because a parameter can be added. Search current call sites first and
+     implement the narrowest reusable contract that they actually require.
+     Add runtime commands, additional address widths, lane modes, or DDR only
+     with a real consumer and a focused protocol test for that variant.
+     Parameterized indexed part-selects and shift serializers can infer more
+     logic than a fixed proven path in Gowin, even when behavioral simulation
+     is identical.
+   - Accept a protocol-engine extraction only after the transport TB, the
+     device-wrapper TB, affected integration TBs, and synthesis/PnR all pass.
+     Compare registers, logic, Fmax, setup/hold, and bitstream freshness with a
+     build of the exact pre-refactor commit. When a global PnR delta obscures
+     the cause, compare primitive counts for the affected modules in the two
+     synthesized netlists. A file-boundary refactor should not silently buy
+     unused flexibility with LUTs.
    - Preserve existing module style, naming, reset polarity, clock-domain conventions, and package/interface structure.
+   - Indent Verilog and SystemVerilog with four spaces per nesting level. Do not use literal tab characters or two-space indentation. Keep continuation indentation on four-space boundaries. For an indentation-only change, confirm that the diff is whitespace-only and rerun the relevant testbench before committing.
    - Follow these HDL naming rules in new and edited module contracts:
      - Prefix ordinary input ports with `in_` and output ports with `out_`; `clk`, `rst`, and interface ports are exceptions.
      - Prefix every interface port and interface instance with `if_`; use `if_lcl_<name>` for a local interface.
@@ -60,6 +111,15 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      ```
 
      The bit width is part of the shared declaration head, so group variables by width: one `logic[23:0]` block for all 24-bit signals instead of a separate declaration per name. The same applies to the port list — one `input` / `output` keyword, then the ports in a column, with a nested type keyword only where the type actually changes. Reference implementation: `src/ref_encoder/ref_encoder_v4/ref_encoder_v4/ref_encoder_v4.sv`.
+   - Prefer a SystemVerilog streaming concatenation over a generate loop for
+     pure static packing, unpacking, or element reordering when it expresses
+     the mapping directly. Specify both direction and slice size explicitly
+     (for example, `{<<8{bytes}}`), document which element occupies the least-
+     significant slice, and verify the order in a focused TB with distinct,
+     non-symmetric element values. Compile and synthesize the expression with
+     the target toolchain before adopting it; fall back to explicit indexed
+     assignments when streaming support or the mapping is ambiguous.
+   - Do not bury product, calibration, or conversion thresholds as numeric literals in leaf-module instantiations. Expose them as named parameters at the owning configuration boundary and thread the same values through every intermediate module to the consumer. Until the real source of a threshold is defined, keep the current value only as a clearly documented default; do not invent runtime detection or calibration logic ahead of that decision. A verification test must override the parameter with a non-default value and assert the changed functional result. Checking only the default behavior, the elaborated parameter value, or a hierarchical constant does not prove that the parameter is actually propagated and consumed.
    - Keep FPGA board firmware split into a strict file-layer hierarchy when creating or substantially changing a target:
      1. CST/XDC/QSF constraints are the first and lowest physical layer: package pins, IO standards, pullups, and raw package/connector names only.
      2. The board-interface wrapper translates constraint-level port names into meaningful hardware interfaces, `wire`, and `logic` signals; keep pin directions, tri-state behavior, straps, and board-role comments here.

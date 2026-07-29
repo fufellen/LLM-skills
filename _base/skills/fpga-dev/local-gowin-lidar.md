@@ -1034,3 +1034,25 @@ lconf сам отключает шаг JmpBoot (`Runtime profile: JmpBoot step d
 - ПО собирается из ветки `dev` репозитория `ak-tech-electronics/TOF_lidar_GUI`
   (`MSBuild lconf.vcxproj /p:Configuration=Release /p:Platform=x64`), exe —
   `C:\workspace\lidar\lconf\bin\Release\lconf.exe`.
+
+## `front_detector` public port contract (verified 2026-07-29)
+
+- Treat `src/front_detector/front_detector.sv` as a shared module. Keep `clk`
+  as the clock-name exception; name its sampled signal input `in_raw_wire`.
+  The three event outputs are one-cycle strobes and are named
+  `out_change_detected_stb`, `out_front_detected_stb`, and
+  `out_backfront_detected_stb`.
+- Do not reintroduce the legacy public names `i_raw_wire`,
+  `needle_change_detected`, `needle_front_detected`, or
+  `needle_backfront_detected`, and do not add compatibility aliases. A shared
+  port rename must update all named maps and the focused self-checking TB in
+  the same change.
+- The focused TB must cover both `is_fast=1` and `is_fast=0`, a multibit bus,
+  rising edges, falling edges, simultaneous per-bit transitions, and a
+  no-change sample.
+- Commit `5adcd525` updated all repository consumers. Acceptance passed the
+  focused `front_detector_tb` and the full LTDC integration TB (two 2006-byte
+  packets, 509 fires, 509 interrupt falls). The post-change Gowin build kept
+  the captured pre-change implementation metrics: UserCode `0x00003DFA`,
+  setup/hold violated endpoints 0/0, Fmax 72.202 MHz at 50 MHz, logic
+  10716/20736, and registers 9757/16173.

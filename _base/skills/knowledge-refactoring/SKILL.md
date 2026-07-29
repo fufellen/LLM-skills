@@ -120,6 +120,7 @@ Config conflict copies under `.obsidian/` (`app (conflict ...).json`, `core-plug
 - Bare short filenames like `1.md` collide across the vault (e.g. an Excalidraw plugin `1.md`), making `[[1]]` ambiguous; qualify such links with a folder or full vault path (`[[Folder/1|...]]`), and verify with a duplicate-basename scan (`find ... -printf '%f\n' | sort | uniq -d`).
 - Distributed-but-linked is not duplication: a concept split into a general note plus a specialization (e.g. `TE волны` + `TE волны … в прямоугольном волноводе`), or a term web spread across `PhD/Термины`, the vault root, and a section folder, is correct DRY structure when each note covers a distinct facet and they cross-link. Do not merge these; only merge true same-concept duplicates.
 - The `Test-Note.ps1` validator indexes only `.md`, so it reports `.pdf`/image/`.canvas` attachment links as missing — false positives. Confirm the attachment exists before treating such a link as broken.
+- `Test-Note.ps1` bracket balancing does not strip fenced code blocks, so Tcl/shell code containing `]]` (e.g. `[file rootname [file tail $path]]`) false-positives as an unbalanced wiki link. Verify with a real `[[`/`]]` count outside code fences before "fixing" valid code (learned 2026-07-29 on ModelSim notes).
 
 ## Obsidian Links
 

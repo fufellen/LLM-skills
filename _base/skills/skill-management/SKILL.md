@@ -317,6 +317,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
 - compact conference-proceedings manuscript formatting based on the user's stored two-column example: `conference-paper-formatting`;
+- efficient ModelSim (Intel FPGA Starter Edition 10.5b) simulation workflows — vsim/vlog/.do automation, batch runs, WLF/dataset comparison, modelsim.ini tuning, error diagnosis: `modelsim` (project-specific ModelSim facts for `C:\workspace\verilog` stay in `fpga-dev`);
 - Christian, church, Bible, Sunday school, youth, sermon, camp, and devotional deck content rules: `christian-presentations`, used alongside `presentation-creation`;
 - presentation-specific behavior for research talks: `scientific-work/references/presentation-workflow.md`, used alongside `presentation-creation` when relevant;
 - Obsidian REST/MCP bridge details: `scientific-work/references/obsidian-ai-integration.md`.

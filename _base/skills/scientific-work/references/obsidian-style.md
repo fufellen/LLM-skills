@@ -68,7 +68,7 @@ Use this reference before creating or editing Obsidian notes.
 
 - In Mermaid labels for Obsidian, never start label text with a Markdown list marker - ordered `1.`/`1)` or unordered `-`/`*`/`+`: Mermaid parses label text as Markdown, and Obsidian renders the whole node as `Unsupported markdown: list` instead of the text (violated again 2026-07-29 on the lidar startup diagram despite this rule - rely on the validator, not memory). The rule applies to every fragment that begins a rendered line: the label start, the text right after each `<br/>`, and edge labels (`-- "..." -->`, `|...|`), not only node labels. Use wording such as `Шаг 1 - ...` instead of `1. ...`.
 - `Test-Note.ps1` flags Markdown list markers inside ```mermaid fences (strict mode fails with the other style checks), so always run it after creating or editing a note that contains a Mermaid diagram.
-- Make flowchart edges clearly visible: end every ```mermaid flowchart with `linkStyle default stroke-width:3px` on its own line. The default 1px edges are barely visible in the Obsidian dark theme (explicit user request, 2026-07-29).
+- Make flowchart edges clearly visible: start every ```mermaid flowchart with the directive line `%%{init: {"themeVariables": {"lineColor": "#999999"}} }%%` (before `flowchart TD`; `lineColor` recolors both the edge lines and the arrowheads) and end the block with `linkStyle default stroke-width:3px` on its own line. Width alone is not enough: 3px edges in the default dark stroke are still nearly invisible on the Obsidian dark theme, so both the width and the contrast color are required (explicit user request, 2026-07-29).
 
 ## Safety
 

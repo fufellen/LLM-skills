@@ -1,0 +1,4 @@
+interface:
+  display_name: "ModelSim Productivity"
+  short_description: "Efficient ModelSim 10.5b simulation workflows"
+  default_prompt: "Use $modelsim to run or debug this simulation task efficiently in ModelSim."

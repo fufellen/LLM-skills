@@ -279,6 +279,53 @@ Two rules that come with this:
 
 If you skip the lock, the failure looks like «твой exe не запускается», you spend 40 minutes debugging why, then discover the user has 5 hidden copies. Been there.
 
+### Destructive endpoints: guard by three walls, not one
+
+Any endpoint that can wipe or overwrite user data (DB restore, mass delete, reset, drop-table migration) is worth building with **three independent barriers**, all server-side. Missing any one and the failure mode is «директор кликнул не туда → месяц данных пропал». Live example: `POST /settings/restore` in the tutoring-center project (commit `a2e43ae`).
+
+**Wall 1 — role check.** `require(request, "owner")`. Never «admin can do it too, they know what they're doing» — you're saying that until the day admin doesn't.
+
+**Wall 2 — phrase confirmation.** Not a checkbox «я согласен», not a red button labeled «точно уверен». Force the user to **type a specific word** into a text field:
+
+```python
+if (form.get("confirm") or "").strip() != "ВОССТАНОВИТЬ":
+    return _render_result(ok=False, log="Не введено слово ВОССТАНОВИТЬ — защита от случайного клика.")
+```
+
+```html
+<label>Подтверждение:
+  <input name="confirm" placeholder="введите слово ВОССТАНОВИТЬ"
+         autocomplete="off" required></label>
+```
+
+Reasoning: a checkbox can be ticked by mistake, a button with a scary label can be clicked while reading — but nobody types out «ВОССТАНОВИТЬ» accidentally.
+
+**Wall 3 — safety snapshot BEFORE any change.** The very first side-effect of the endpoint MUST be a snapshot of the current state to a rollback file. If snapshot fails — abort, don't touch anything. If the destructive operation later returns weird results, the snapshot is your rollback in one command.
+
+```python
+stamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+pre_path = AUTO_BACKUP_DIR / f"pre-restore-{stamp}.dump"
+r = subprocess.run(["pg_dump", "-Fc", "-f", str(pre_path), db_url],
+                   capture_output=True, text=True, timeout=120)
+if r.returncode != 0:
+    return _render_result(ok=False, log=f"Не удалось сделать страховочный бэкап — восстановление отменено:\n{r.stderr}")
+# only NOW do the destructive thing
+```
+
+The filename prefix (`pre-restore-*`, `pre-migration-*`, `pre-wipe-*`) matters: makes rollback obvious 6 months later when nobody remembers what happened.
+
+**Bonus — restart the process after DDL / schema-level operations.** The app's connection pool caches table metadata; if you `pg_restore --clean` under a running FastAPI, first queries through cached connections fail weirdly («relation does not exist», column-type mismatches). Fire the restart via `BackgroundTask` so the HTTP response reaches the user first:
+
+```python
+background_tasks.add_task(_restart_service)
+return _render_result(ok=True, ...)
+
+def _restart_service():
+    subprocess.Popen(["systemctl", "restart", "my-app"])
+```
+
+A JS `onsubmit="return confirm(...)"` is fine as a nice-to-have — but it's an **extra** wall, not one of the three. JS can be bypassed, users can Enter-through without reading; the three server-side walls above must hold on their own.
+
 ## Pre-handoff QA (three independent passes)
 
 Before letting a real user touch the app for the first time, run all three passes on an empty database (`TRUNCATE ... RESTART IDENTITY CASCADE`, keep only auth). Each pass catches a different class of bug; skipping any of them ships that class:

@@ -203,6 +203,37 @@ desktop/.venv/
 
 Ship a build recipe (`desktop/README.md`) instead; the maintainer rebuilds locally.
 
+### PySide6 tray-app: MUST have a single-instance lock
+
+A tray-only Qt application has no visible window on startup. If the user runs the `.exe` twice, they get two silent tray icons — and Windows helpfully hides both of them in the collapsed overflow area (arrow `^` next to the clock). A non-technical user then thinks «it doesn't launch» while five copies are quietly holding RAM in the background, none configured, none doing anything.
+
+Every PySide6 tray app MUST guard its `main()` with a lock:
+
+```python
+from PySide6.QtCore import QLockFile, QStandardPaths
+from pathlib import Path
+
+app = QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
+
+lock_dir = Path(QStandardPaths.writableLocation(QStandardPaths.TempLocation))
+lockfile = QLockFile(str(lock_dir / "my-app.lock"))
+lockfile.setStaleLockTime(0)  # crashed → previous lock is stale, take it
+if not lockfile.tryLock(100):
+    QMessageBox.information(None, "My App",
+        "Приложение уже запущено — ищите иконку в трее "
+        "(в Windows её часто прячет стрелочка ^ слева от часов).")
+    return 0
+# ... build tray, exec, then lockfile.unlock() in finally
+```
+
+Two rules that come with this:
+
+- **Tell the user where to look.** The message MUST mention the collapsed-tray arrow explicitly — that's the whole failure mode. Don't just say «уже запущено».
+- **`setStaleLockTime(0)`** — otherwise a hard-killed previous process leaves the lock forever and a legitimate restart also gets rejected.
+
+If you skip the lock, the failure looks like «твой exe не запускается», you spend 40 minutes debugging why, then discover the user has 5 hidden copies. Been there.
+
 ## Pre-handoff QA (three independent passes)
 
 Before letting a real user touch the app for the first time, run all three passes on an empty database (`TRUNCATE ... RESTART IDENTITY CASCADE`, keep only auth). Each pass catches a different class of bug; skipping any of them ships that class:

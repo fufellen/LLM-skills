@@ -119,6 +119,13 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      non-symmetric element values. Compile and synthesize the expression with
      the target toolchain before adopting it; fall back to explicit indexed
      assignments when streaming support or the mapping is ambiguous.
+   - Keep acquisition depth and exported result count as separate contracts.
+     A parameter such as `HITS_PER_CHANNEL` describes the hit-buffer depth in
+     each physical channel; it must not be interpreted as the number of
+     logical echoes at the protocol output. Name the output count separately,
+     document the channel/hit-to-output mapping, and verify it with distinct
+     per-channel values at the final serialized interface. Checking only an
+     internal array or configuration register is not sufficient.
    - Do not bury product, calibration, or conversion thresholds as numeric literals in leaf-module instantiations. Expose them as named parameters at the owning configuration boundary and thread the same values through every intermediate module to the consumer. Until the real source of a threshold is defined, keep the current value only as a clearly documented default; do not invent runtime detection or calibration logic ahead of that decision. A verification test must override the parameter with a non-default value and assert the changed functional result. Checking only the default behavior, the elaborated parameter value, or a hierarchical constant does not prove that the parameter is actually propagated and consumed.
    - Keep FPGA board firmware split into a strict file-layer hierarchy when creating or substantially changing a target:
      1. CST/XDC/QSF constraints are the first and lowest physical layer: package pins, IO standards, pullups, and raw package/connector names only.

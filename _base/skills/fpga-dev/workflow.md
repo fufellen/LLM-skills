@@ -40,6 +40,33 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      with a focused TB. When correcting this pattern, audit and replace the
      obvious duplicates in the same functional scope instead of fixing only
      the first quoted occurrence.
+   - Before duplicating a non-trivial arithmetic converter for several values
+     from one transaction, compare its worst-case latency with the required
+     transaction interval. When one instance has sufficient throughput,
+     time-multiplex it with latched transaction inputs, explicit result
+     association state, and a bounded completion contract. Prove distinct
+     per-value results, configuration snapshot semantics, and the real
+     integration rate in TB; then compare PnR resources and timing against the
+     parallel baseline. Keep parallel instances when throughput evidence
+     requires them, not merely because the port mapping is shorter.
+   - Use `edge_detector` as the canonical generic helper for sampled signal
+     transitions. Its public event strobes are `out_edge_detected_stb`,
+     `out_rising_edge_detected_stb`, and
+     `out_falling_edge_detected_stb`. Do not introduce `front_detector`,
+     `front_detected`, or `backfront_detected` in generic helper, port,
+     instance, or directly connected local-signal names. Established
+     domain-event names such as `start_transaction_stb` may remain when they
+     describe the consumer's meaning rather than the detector implementation.
+   - Rename a shared HDL helper as one repository-wide contract change: rename
+     its directory, source file, module, include guard, focused TB and `.do`
+     file, include/build/project references, instance names, related
+     configuration fields, public ports, and directly connected implementation
+     signals. Audit active and legacy consumers, scripts, and documentation
+     with `rg`; do not stop after the current top compiles. List every public
+     named port at every touched instance and write an intentionally unused
+     output as `.out_name()` so elaboration does not report it as missing.
+     Acceptance requires the focused self-checking TB, affected integration
+     TBs, synthesis/PnR, and a zero-result stale-name audit before commit.
    - Define every FSM state set with a SystemVerilog enum such as
      `typedef enum { ... } state_t`, and declare both current- and next-state
      registers with that enum type. Do not specify an explicit base type or
@@ -63,8 +90,12 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      for example mode-0 `1-4-4 SDR`: command on one lane, address and data on
      four lanes. Opcode meaning, address width, dummy/turnaround selection,
      register layout, SDR/DDR choice, and device setup are separate contracts.
-     Put the reusable wire transaction in a transport module and bind the
-     device-specific values in a thin wrapper.
+     Put the reusable wire transaction in a transport module and bind
+     device-specific values at the integration boundary. Add a thin adapter
+     only when it owns a meaningful reusable device contract, translation, or
+     behavior. If a module only forwards the same ports and binds constants
+     already known by its consumer, delete it and instantiate the transport
+     directly.
    - Do not generalize a serial transport beyond its known consumers merely
      because a parameter can be added. Search current call sites first and
      implement the narrowest reusable contract that they actually require.
@@ -73,8 +104,10 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      Parameterized indexed part-selects and shift serializers can infer more
      logic than a fixed proven path in Gowin, even when behavioral simulation
      is identical.
-   - Accept a protocol-engine extraction only after the transport TB, the
-     device-wrapper TB, affected integration TBs, and synthesis/PnR all pass.
+   - Accept a protocol-engine extraction only after the transport TB, any
+     meaningful adapter TB, affected integration TBs, and synthesis/PnR all
+     pass. Remove a pass-through wrapper and its wrapper-only TB; prove the
+     fixed command/address/dummy binding in every affected integration TB.
      Compare registers, logic, Fmax, setup/hold, and bitstream freshness with a
      build of the exact pre-refactor commit. When a global PnR delta obscures
      the cause, compare primitive counts for the affected modules in the two
@@ -89,7 +122,7 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      - Mark internal interconnects that do not cross the current module boundary with the `lcl_` prefix (`lcl_<name>`), and do not give them `in_` or `out_` prefixes. `lcl` goes at the front of the name, never at the end: the trailing `_lcl` form found in older code (`crc_lcl`, `if_rmii_lcl`, `real_rib_detected_lcl_stb`) is legacy and must not be used in new or edited declarations; rename it when the surrounding lines are being reworked anyway, not as a standalone sweep.
      - For a local strobe, use `lcl_<name>_stb` so `lcl_` stays the prefix and `_stb` remains the final suffix.
      - Prefix every module instance name with `obj_`, normally `obj_<module_name>` (`ref_encoder_z_rib_detector #() obj_ref_encoder_z_rib_detector (...)`); add a distinguishing suffix when one module is instantiated several times. Short forms such as `o_<module_name>` are legacy and must not be used in new code. Interface instances keep the `if_` prefix instead.
-     - Update every named port map and relevant testbench in the same change when renaming a port.
+     - Update every named port map and relevant testbench in the same change when renaming a port. Keep intentionally unused ports explicit with an empty named connection.
    - Declare parameters, ports, and variables in column form whenever the language allows one keyword/type to introduce several names: write the keyword (`parameter`, `input`, `output`, `logic[23:0]`, ...) once, then put each name on its own indented line, one comma-separated item per line. Do not repeat the type keyword on every line and do not pack a long list onto one line. Alternative values kept for bench work stay as commented-out lines inside the same block, next to the active one, and a trailing `//` comment belongs on the line of the name it describes. Two closely related names may share a line only when they are a pair (a value and its copy).
 
      ```systemverilog
@@ -126,7 +159,16 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      document the channel/hit-to-output mapping, and verify it with distinct
      per-channel values at the final serialized interface. Checking only an
      internal array or configuration register is not sufficient.
-   - Do not bury product, calibration, or conversion thresholds as numeric literals in leaf-module instantiations. Expose them as named parameters at the owning configuration boundary and thread the same values through every intermediate module to the consumer. Until the real source of a threshold is defined, keep the current value only as a clearly documented default; do not invent runtime detection or calibration logic ahead of that decision. A verification test must override the parameter with a non-default value and assert the changed functional result. Checking only the default behavior, the elaborated parameter value, or a hierarchical constant does not prove that the parameter is actually propagated and consumed.
+   - Preserve every field of every exported logical result end to end. Reading
+     a complete device result window is not sufficient: parse, latch, convert,
+     qualify, and serialize the dedicated TOF and PW/intensity of each logical
+     echo. Never reuse a protocol payload field, especially `intensity1` or
+     `intensity2`, as hidden storage for mirror, channel, sector, or other
+     association metadata; keep that metadata in dedicated state. Acceptance
+     must use distinct, non-symmetric PW/intensity values for the echoes,
+     change the association metadata independently, and check the final
+     serialized payload bytes across a packet boundary.
+   - Do not encode product, calibration, or conversion thresholds as elaboration-time parameters when they must change while the FPGA is running. Parameters are for immutable structural choices and, at most, reset/default values; the consuming datapath must receive a `logic` or interface field through ordinary ports. Put the field at the owning configuration boundary and thread it through every intermediate module to the consumer. Until the real write source is defined, keep the current value only as a documented startup default; do not invent a command address, runtime detector, or calibration algorithm ahead of that decision. Acceptance must change the field at least once in the same elaborated DUT and assert the changed functional result. A parameter override, default-only check, hierarchical constant, or `force` by itself does not prove a synthesizable runtime write source; when that source is deferred, distinguish verified RTL plumbing from live-hardware writability.
    - Keep FPGA board firmware split into a strict file-layer hierarchy when creating or substantially changing a target:
      1. CST/XDC/QSF constraints are the first and lowest physical layer: package pins, IO standards, pullups, and raw package/connector names only.
      2. The board-interface wrapper translates constraint-level port names into meaningful hardware interfaces, `wire`, and `logic` signals; keep pin directions, tri-state behavior, straps, and board-role comments here.
@@ -174,6 +216,16 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - For bench-board firmware tasks, do not stop at simulation and `.fs` generation. After a clean build, verify on the actual hardware unless the user explicitly asks for build-only work or the board/tool is unavailable.
    - Step zero of hardware bring-up: do NOT start debugging configuration or RTL for a stuck function until every required signal is confirmed physically present and correct on the wires. Probe/scope each stimulus, clock, trigger, the stimulus SOURCE, and the DUT response along the whole signal path, and confirm the bench top actually drives the pin a bench cable is wired to. An undriven pin, a top-level port the wrapper never declared/drove, an unconstrained pin, or a dead source masquerades as a config/logic bug and can burn an entire debug session. (Concrete: an LTDC-X3 bring-up returned only `no_hit` for a long time while config was repeatedly changed — the real cause was that the bench top never drove `FPGA_HF` (K12/K13), the pin the STOP cable was wired to, so the STOP source had no signal at all.)
    - For hardware verification, program volatile memory when possible, then capture real observable evidence such as UART terminal output, packet capture, LEDs, link state, logic-analyzer/DSView bytes, or user-confirmed physical behavior.
+   - When the user confirms that an exact Git state works on hardware, record
+     the result in a tracked project reference before committing it: date,
+     full tested commit SHA, board/top and image fingerprint when known,
+     evidence class, verified scope, and `PASS`. Do not invent missing capture
+     or telemetry details; a bare "works" is a user-confirmed functional
+     hardware smoke pass. Name the tested parent SHA explicitly because the
+     documentation commit that records the result was not itself programmed.
+     Follow an existing tag or release convention when one exists; otherwise
+     do not invent a tag name or create an empty commit when the tracked
+     verification record can make the hardware milestone visible in Git.
    - Treat DSView and other logic-analyzer screenshots or exported captures as hardware evidence. If an image or capture file is available, inspect it directly instead of asking the user to transcribe bytes. Record the probe-to-signal mapping, sample rate, decoder settings, and which lines are expected to be active for the selected protocol mode.
    - Summarize errors by root cause and cite the log/report file paths.
 
@@ -182,6 +234,43 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - Include target device, top module, build command, result path, and whether timing/build passed.
    - State when programming or hardware verification was not performed, and do not present a hardware-targeted task as complete if only simulation/build passed.
    - Create a local git commit after each meaningful intermediate milestone that passed verification. A milestone is commit-worthy when there is feedback from real hardware, a packet/UART/LED/capture observation, or correct simulator/tool output that proves the current stage. Treat the whole task as complete only after hardware observation, terminal/capture evidence, simulator evidence for simulation-only work, or user confirmation proves it worked. Do not push unless explicitly asked.
+
+## Hardware Session Log
+
+Log every hardware session, not only the ones that changed the design. The log
+is what later answers an outside proposal ("switch TR_MODE", "run the HighRes
+test", "verify the register map") and what a report is assembled from. An
+undocumented measurement is a measurement that will be demanded again.
+
+Log a session whenever the board was programmed and something was observed:
+bring-up, a measurement sweep, a tuning run, a hardware regression, or a change
+that was tried and rolled back.
+
+Record, per session:
+
+- date, the exact commit SHA that was built, the bitstream fingerprint (Gowin
+  UserCode), board, and top module;
+- the configuration that was actually loaded — device register values, HDL
+  parameters, clock/divider settings, IO drive strengths — not only the fields
+  that were edited this time;
+- stimulus and physical conditions: target distance or cable delay, echo count,
+  shot rate, pulse width/amplitude, probe points;
+- the measured number with units and sample size (`σ = 83 ps over 20000 shots`),
+  never a bare verdict such as "стало лучше";
+- evidence class and where the artifact lives: oscilloscope/analyzer capture,
+  UART dump, packet capture, `.fs` and report paths;
+- **variants tried and rejected, together with the number that rejected them.**
+  Rejected settings are the most reusable part of the log: they are what answers
+  a later proposal to try exactly that setting again.
+
+Log negative and null results with the same rigor as successes. "No effect" is a
+result: proving that UART activity and shot rate do not move σ is what later
+removes a whole branch of an outside checklist from consideration.
+
+Keep the running journal in the project's Obsidian notes, and promote only
+stable verified facts into the reference files next to this one
+(`local-gowin-lidar.md`, `ltdc-x3.md`, and similar). A hardware result must not
+exist only in chat history or only in a commit message.
 
 ## Commit Handling
 

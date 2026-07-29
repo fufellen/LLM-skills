@@ -7,7 +7,8 @@ description: FPGA development workflow for Verilog/SystemVerilog and soft-MCU fi
 
 Entry point: read `workflow.md` in this folder and follow it fully. It carries the
 whole procedure — project discovery, HDL naming and layout rules, the
-simulate-before-hardware rule, progressive verification, and commit handling.
+simulate-before-hardware rule, progressive verification, the hardware session
+log, and commit handling.
 
 ## Load References
 

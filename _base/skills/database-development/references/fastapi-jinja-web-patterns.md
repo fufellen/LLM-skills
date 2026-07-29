@@ -203,6 +203,51 @@ desktop/.venv/
 
 Ship a build recipe (`desktop/README.md`) instead; the maintainer rebuilds locally.
 
+### Web Push: two silent-failure traps that cost hours
+
+Both of these fail without a red exception — the UI just… waits. Skip them and you'll spend the debug session on the wrong file.
+
+**Trap 1 — `pywebpush` cannot parse a PEM string.**
+`webpush(vapid_private_key=<pem_string>)` internally calls `Vapid.from_string()`, which expects **raw base64**, not a PEM with `-----BEGIN/END-----`. You get `ValueError: Could not deserialize key data … ASN.1 parsing error: invalid length` on every send — the *keypair* is fine (`cryptography` and `Vapid.from_pem()` both load it), only the string entrypoint chokes.
+
+Fix: write the PEM into a temp file at startup and pass the **file path**. `pywebpush` recognises paths and internally routes through `from_pem()`:
+
+```python
+_VAPID_TMP_PEM_PATH = None
+
+def _vapid_pem_path() -> str | None:
+    global _VAPID_TMP_PEM_PATH
+    if _VAPID_TMP_PEM_PATH is not None:
+        return _VAPID_TMP_PEM_PATH
+    if not VAPID_PRIVATE_KEY_PEM:
+        return None
+    f = tempfile.NamedTemporaryFile(mode="w", suffix=".pem", delete=False, prefix="vapid-")
+    f.write(VAPID_PRIVATE_KEY_PEM); f.close()
+    try: os.chmod(f.name, 0o600)
+    except Exception: pass
+    _VAPID_TMP_PEM_PATH = f.name
+    return _VAPID_TMP_PEM_PATH
+
+# then:
+webpush(subscription_info=..., data=..., vapid_private_key=_vapid_pem_path(),
+        vapid_claims={"sub": VAPID_SUBJECT}, ttl=300)
+```
+
+**Trap 2 — `navigator.serviceWorker.ready` hangs forever on first visit.**
+Standard UI pattern on a `/notifications` page: on load, `refresh()` reads the current subscription and shows either «Включить» or «Отключить». If the user has never registered the SW on this origin yet, `await navigator.serviceWorker.ready` **never resolves** — the status stays on «проверяю…», no button appears, user thinks the page is broken.
+
+Use `getRegistration()` instead — it returns `undefined` immediately when nothing is registered:
+
+```js
+async function currentSubscription() {
+  const reg = await navigator.serviceWorker.getRegistration();
+  if (!reg) return null;
+  return reg.pushManager.getSubscription();
+}
+```
+
+**`.ready` is only safe AFTER you've called `.register()` at least once in this session.** For a status probe on page load — always `getRegistration()`.
+
 ### PySide6 tray-app: MUST have a single-instance lock
 
 A tray-only Qt application has no visible window on startup. If the user runs the `.exe` twice, they get two silent tray icons — and Windows helpfully hides both of them in the collapsed overflow area (arrow `^` next to the clock). A non-technical user then thinks «it doesn't launch» while five copies are quietly holding RAM in the background, none configured, none doing anything.

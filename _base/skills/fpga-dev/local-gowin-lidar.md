@@ -787,10 +787,135 @@ New board revision R120M.BM2BF1X1; board layer files (branch
   Setup/Hold violated endpoints = 0, PLL clk Fmax 73.6 MHz @ 50 MHz,
   all 101 ports Constraint=Y.
 
-## R120M: повтор функционала старого лидара на 2x TDC7201 (сим PASS 2026-07-06)
+## R120M.BF2: LTDC-only branch boundary (verified 2026-07-28)
+
+- The active `R120M.BF2` branch uses LTDC-X3 only. The preserved 2x TDC7201
+  implementation belongs to the separate `R120M.BF2_TDC7201` branch.
+- Do not carry `interface_TDC7201`, `USE_LTDC`, `tdc_processing`, or the
+  TDC7201 fallback through `TDC_4_1` and `main` in `R120M.BF2`.
+- Keep the physical TDC7201 pins in `R120M_BM2BF1X1_brd_ifm`/CST while the
+  board pinout still exposes them, but drive them to a tested safe state:
+  `EN=0`, `MOSI=0`, `SCLK=0`, `CS_N=1`, `TDC7201_FIRE=0`.
+- Verify this boundary with
+  `src/main/R120M_BM2BF1X1_cmd_spi_tb.do`; the TB must assert the safe pin
+  levels in addition to compiling the full active hierarchy.
+- Keep `TDC_4_1` as the coordination layer for `ltdc_processing`,
+  `encoder_processing`, and `msop_tcp_pipeline`. Point correlation, MSOP
+  frame-boundary selection, stuffing, packet filling, and SPI transmission
+  belong to `src/TDC/msop_tcp_pipeline/msop_tcp_pipeline.sv`, not back in
+  `TDC_4_1`.
+- The former large tail of `TDC_4_1` was not an unused TDC-driver fallback:
+  it is the active MSOP path that drives `if_mcu_fpga.if_SPI2` to the MCU.
+  Commit `8d9ecebe` records why its point/angle association and short-gap
+  stuffing are required at 80 mdeg resolution and includes hardware evidence.
+  Do not delete that behavior while MSOP-over-SPI2 is part of the product.
+  The synthesis-dead `shot_pending` state from the old block was removed when
+  the path moved into `msop_tcp_pipeline`.
+- Focused MSOP regressions live next to that functional node:
+  `msop_tcp_pipeline_mirror_packet_tb.do` checks that a ready point keeps its
+  mirror through the packet boundary, and `msop_tcp_pipeline_echo_count_tb.do`
+  checks that the requested point format changes only at a packet boundary.
+  Both passed with ModelSim Errors=0 on 2026-07-28; the full active hierarchy
+  also passed `R120M_BM2BF1X1_cmd_spi_tb.do`, including the safe TDC7201 pin
+  assertions.
+- Verified post-refactor Gowin build:
+  `20k/LDR_20K/build_r120m_bm2bf1x1.tcl`, top
+  `R120M_BM2BF1X1_brd_ifm`, device `GW2A-LV18PG256C8/I7`. Result:
+  bitstream generated, 0 setup/hold violated endpoints, Fmax 63.656 MHz at
+  50 MHz, logic 11434/20736 (55%), registers 10375/16173 (64%). The
+  pre-refactor baseline was Fmax 66.220 MHz with the same rounded logic and
+  register utilization; the refactor still meets the 50 MHz constraint, but
+  report this timing delta rather than presenting it as a timing improvement.
+- Production debug cleanup is recorded by commit `14d1fe81`. The active
+  hierarchy no longer exports `virtual_enc_ch`, Z-rejection, stale-drop, or
+  behind-drop debug strobes and no longer instantiates the board UART reporter,
+  event counters, encoder-rate meter, or MSOP SPI sniffer. The functional
+  encoder PLL event path, Z rejection, stale/behind scheduling guards, and
+  multi/last-echo packet behavior remain. Physical X1/X14 service outputs stay
+  in the board/CST contract but are driven to defined static idle levels.
+  Dedicated bring-up tops still own their isolated UART diagnostics.
+- Behavioral acceptance after that cleanup:
+  `R120M_BM2BF1X1_cmd_spi_tb.do` passed the full active hierarchy and safe
+  TDC7201-pin assertions; both focused `msop_tcp_pipeline_*_tb.do` tests passed;
+  `encoder_processing_guard_tb` reproduced the baseline false-pair bug and
+  proved zero guarded false pairs with recovery (all ModelSim Errors=0).
+  `shot_scheduler_tb.do` is not a release gate in its current form: its
+  endpoint-count expectations are stale (expects 8/9 fires while the unchanged
+  scheduler produces 9/10) and it reports four TB errors. Fix that TB before
+  using it as scheduler acceptance evidence.
+- Verified post-cleanup Gowin build on 2026-07-29 with the same TCL/top/device:
+  bitstream generated at `impl/pnr/R120M_BM2BF1X1.fs`, UserCode
+  `0x000074CB`, setup/hold violated endpoints 0/0, Fmax 66.702 MHz at 50 MHz,
+  logic 10694/20736 (51%), registers 9825/16173 (60%), and all 101 ports
+  `Constraint=Y`. Relative to the immediately preceding build, the cleanup
+  removed 740 logic cells and 550 registers while improving Fmax by 3.046 MHz.
+- LTDC processing cleanup is recorded by commit `33230329`.
+  `ltdc_processing` is now a thin coordinator over
+  `ltdc_measurement_engine` and `ltdc_point_builder`. The measurement contract
+  is scalar and quad-LTDC-only; the inactive fallback, the then-unconsumed
+  second intensity converter, pulse-width outputs, and propagated LTDC
+  debug-error chain were removed. The later two-echo payload correction is
+  recorded below; do not infer from this historical cleanup that PW2 may be
+  discarded.
+- Verification of that LTDC split passed at all required levels. The focused
+  point-builder TB passed delay compensation, two echoes, no-hit and saturation
+  cases. The full LTDC integration TB produced two 2006-byte packets, 509 fires
+  and 509 interrupt falls, with the first distance at 44968 mm. The 100 ms
+  sector regression finished `[OK]`: 9 frames, 6344 fires, projection
+  `ok=8`, `bad=0`, ModelSim Errors=0.
+- The exact post-refactor Gowin build generated UserCode `0x0000B57F`, with
+  0 setup/hold violated endpoints, Fmax 63.142 MHz at 50 MHz, logic
+  10693/20736, registers 9755/16173, and all 101 pin constraints present.
+  Against the captured baseline this is -1 logic cell, -70 registers, and
+  -3.560 MHz Fmax; timing still meets the constraint, but this is a timing
+  regression and must be reported as such.
+
+## `edge_detector` public port contract (verified 2026-07-29)
+
+- Treat `src/edge_detector/edge_detector.sv` as the shared canonical helper.
+  Keep `clk` as the clock-name exception and use `in_raw_wire` for the sampled
+  signal. Its one-cycle event outputs are `out_edge_detected_stb`,
+  `out_rising_edge_detected_stb`, and
+  `out_falling_edge_detected_stb`.
+- Do not reintroduce the legacy module/path `front_detector`, legacy generic
+  terms `front_detected` or `backfront_detected`, or compatibility aliases.
+  A shared-helper rename must update the directory, file, module, guard,
+  focused TB/`.do`, include and project files, configuration fields, instance
+  names, all named port maps, and directly connected implementation signals.
+  Keep domain-event names only when they describe the consumer semantics.
+- Make every output connection explicit at all `edge_detector` instances.
+  Use an empty named connection for an intentionally unused output; this keeps
+  elaboration free of missing-port warnings and makes repository-wide contract
+  audits deterministic.
+- The focused TB must cover both `is_fast=1` and `is_fast=0`, a multibit bus,
+  rising edges, falling edges, simultaneous per-bit transitions, and a
+  no-change sample.
+- Commit `24d2dfca` renamed the complete contract and all 34 repository
+  instances. The stale-name audit returned zero references. The focused TB,
+  standalone MSOP TB, and full active LTDC integration TB passed; the full TB
+  produced two 2006-byte packets from 509 fires/interrupt falls with both
+  echoes at 44968 mm and 89937 mm.
+- The fresh active Gowin PnR was bit-identical to the pre-rename build:
+  UserCode `0x0000F5D8`, setup/hold violated endpoints `0/0`, Fmax
+  `63.596 MHz` at 50 MHz, logic `10805/20736`, registers `9783/16173`,
+  BSRAM `56%`, PLL `1/4`, and all 101 pin constraints present.
+- Hardware acceptance on 2026-07-29: the user confirmed that the exact
+  pre-verification branch tip
+  `f76b8223fbd2868fd873cd82fb507602d72d8fae` works on the current
+  `R120M.BF2` hardware target. That tree contains the functional
+  `edge_detector` change in
+  `24d2dfcaa93b1614c58e3191f4c8d4ddbb7b8c90`; its active Gowin image
+  fingerprint is UserCode `0x0000F5D8`. Evidence class: user-confirmed
+  physical behavior. No packet, UART, or analyzer details were supplied, so
+  this is a functional hardware smoke `PASS` for the tested tree, not proof
+  of unspecified per-signal or protocol metrics.
+
+## R120M TDC7201 branch history (sim PASS 2026-07-06)
 
 - Milestone: боевой `main` (TDC_4_1) работает через прослойку
   `R120M_BM2BF1X1_brd_ifm` с двумя TDC7201; LTDC-X3 отложена (чип не введён).
+  This section describes the preserved `R120M.BF2_TDC7201` line, not the
+  active LTDC-only `R120M.BF2` branch.
   ТБ: `src/main/R120M_BM2BF1X1_tdc_tb.sv` + `.do` (модели `class_TDC7201`,
   энкодер стоит -> автоподжиг ~20 кГц, LTDC_INTERRUPT неактивен, SPI2 молчит).
   PASS-факты: 2 валидных MSOP-кадра (маркеры FF FE/FF 9B, 500/246 точек,
@@ -1035,24 +1160,221 @@ lconf сам отключает шаг JmpBoot (`Runtime profile: JmpBoot step d
   (`MSBuild lconf.vcxproj /p:Configuration=Release /p:Platform=x64`), exe —
   `C:\workspace\lidar\lconf\bin\Release\lconf.exe`.
 
-## `front_detector` public port contract (verified 2026-07-29)
+## LTDC runtime intensity thresholds (verified 2026-07-29)
 
-- Treat `src/front_detector/front_detector.sv` as a shared module. Keep `clk`
-  as the clock-name exception; name its sampled signal input `in_raw_wire`.
-  The three event outputs are one-cycle strobes and are named
-  `out_change_detected_stb`, `out_front_detected_stb`, and
-  `out_backfront_detected_stb`.
-- Do not reintroduce the legacy public names `i_raw_wire`,
-  `needle_change_detected`, `needle_front_detected`, or
-  `needle_backfront_detected`, and do not add compatibility aliases. A shared
-  port rename must update all named maps and the focused self-checking TB in
-  the same change.
-- The focused TB must cover both `is_fast=1` and `is_fast=0`, a multibit bus,
-  rising edges, falling edges, simultaneous per-bit transitions, and a
-  no-change sample.
-- Commit `5adcd525` updated all repository consumers. Acceptance passed the
-  focused `front_detector_tb` and the full LTDC integration TB (two 2006-byte
-  packets, 509 fires, 509 interrupt falls). The post-change Gowin build kept
-  the captured pre-change implementation metrics: UserCode `0x00003DFA`,
-  setup/hold violated endpoints 0/0, Fmax 72.202 MHz at 50 MHz, logic
-  10716/20736, and registers 9757/16173.
+- Commit `7712b47e` replaced elaboration parameters
+  `MIN_INTENSITY`/`MAX_INTENSITY` with the runtime fields
+  `ltdc_min_intensity_ps`/`ltdc_max_intensity_ps`. The active fields live in
+  `interface_MCU_FPGA`; ordinary input ports carry them through
+  `ltdc_processing` and `ltdc_point_builder` into `intensity_to_color`.
+- The command address/write source is intentionally deferred. Defaults remain
+  `2500/4500 ps`. The standalone top has the same fields for both echoes, but
+  Gowin folds them to their defaults until a synthesizable writer is connected;
+  do not claim live-hardware reconfiguration from a hierarchical `force`.
+- Same-elaboration ModelSim evidence: `intensity_to_color_tb` changed thresholds
+  and produced `127 -> 0 -> 255`; `ltdc_point_builder_tb` produced `127 -> 0`;
+  standalone MSOP proved both echo intensities `0 -> 255`; the active full top
+  produced two 2006-byte frames, 509 fires/interrupt falls, distances
+  `44968/89937 mm`, and intensity `0` at `100000..200000`. The command-SPI and
+  legacy distance-width regressions also passed with zero errors.
+- Fresh Gowin outputs were generated without programming hardware.
+  `R120M_BM2BF1X1`: UserCode `0x0000F5D8`, setup/hold `0/0`, Fmax
+  `63.596 MHz` at `50 MHz`, logic `10805`, registers `9783`, BSRAM `56%`.
+  `R120M_LTDC_MSOP`: UserCode `0x00006C5A` (previous artifact
+  `0x0000C29F`), setup/hold `0/0`, Fmax `106.839 MHz`, logic `2905`,
+  registers `2084`, BSRAM `34%`.
+
+## LTDC direct QSPI integration (verified 2026-07-29)
+
+- Commit `d7fa85e4` removed the pass-through LTDC quad-read wrapper and its
+  wrapper-only TB. The active measurement engine and standalone MSOP top now
+  instantiate `qspi_1_4_4_sdr_read_master` directly with `COMMAND=8'h6B`.
+- The transport, handler, standalone MSOP, and full active ModelSim regressions
+  passed. The integrations proved both echoes and recovery after an injected
+  illegal transport state.
+- Fresh Gowin builds were bit-identical to their pre-removal baselines:
+  `R120M_BM2BF1X1` UserCode `0x0000F5D8`, Fmax `63.596 MHz`, logic `10805`,
+  registers `9783`; `R120M_LTDC_MSOP` UserCode `0x00006C5A`, Fmax
+  `106.839 MHz`, logic `2905`, registers `2084`; setup/hold `0/0` for both.
+  No hardware was programmed.
+
+## Active LTDC second-echo intensity (verified 2026-07-29)
+
+- Commit `564f4afc` completed the active 12-byte LTDC result contract:
+  bytes `0..2=TOF1`, `3..5=PW1`, `6..8=TOF2`, and `9..11=PW2`.
+  Both PW values now reach `ltdc_point_builder` and the existing MSOP
+  `intensity1/intensity2` payload fields. Mirror association is held in a
+  dedicated register; it is no longer hidden in the low bits of `intensity2`.
+- This is the existing 8-bit PW-to-intensity conversion, not a lossless export
+  of the raw 24-bit PW. A raw-PW protocol format remains a separate decision.
+- TB-first evidence reproduced the old defect with `PW1=5000 ps`,
+  `PW2=20000 ps`, runtime thresholds `6000..19000 ps`, and serialized
+  `intensity1/intensity2=0/0` instead of `0/255`. After the fix, the focused
+  point-builder and both MSOP pipeline regressions passed. The full active TB
+  produced two 2006-byte packets, distances `44968/89937 mm`, intensities
+  `0/255`, and 509 fires / 509 interrupt falls. The full command-SPI TB also
+  passed the active hierarchy and safe TDC7201 pin assertions; all reported
+  ModelSim errors were zero.
+- A direct second `intensity_to_color` instance was functionally correct but
+  cost `11227` logic cells, `10128` registers, and reduced Fmax to
+  `55.521 MHz`. Commit `4664450f` therefore time-multiplexes one existing
+  converter across both PWs, with latched PW2/runtime thresholds and an enum
+  state that associates each result with its echo. The focused TB additionally
+  changes the runtime thresholds while conversion is in flight and enforces a
+  200-cycle completion bound; the full-rate integration regression still
+  passed with the same 509/509 event counts.
+- Fresh active PnR for `4664450f`: UserCode `0x0000D9CB`, setup/hold violated
+  endpoints `0/0`, Fmax `74.810 MHz` at `50 MHz`, logic `10704/20736`,
+  registers `9920/16173`, BSRAM `56%`, PLL `1/4`, and all 101 ports
+  constrained. Against the parallel implementation this saves 523 logic cells
+  and 208 registers while adding 19.289 MHz Fmax. Against the pre-feature
+  baseline it uses 101 fewer logic cells, 137 more registers, and adds
+  11.214 MHz Fmax. No hardware was programmed.
+
+## R120M.BF2 sector handling hardware acceptance (verified 2026-07-29)
+
+- The user confirmed that the exact source state
+  `e6c310598a5b73f6be5a57b728ad35b6c447e726` was tested on the
+  `R120M.BM2BF1X1` board and that sector handling works correctly. Branch:
+  `R120M.BF2`; top: `R120M_BM2BF1X1_brd_ifm`. Status: `HWOK`; verdict:
+  `PASS`.
+- Evidence class: user-confirmed physical behavior on the target hardware.
+  This proves the reported sector behavior for the tested tree. Exact sector
+  bounds, angular resolution, LTDC register configuration, scene conditions,
+  sample count, and packet/UART/analyzer artifacts were not supplied, so no
+  additional quantitative or per-signal claims are made.
+- A reproducible clean Gowin build of that SHA has UserCode `0x0000D9CB`,
+  setup/hold violated endpoints `0/0`, Fmax `74.810 MHz` at `50 MHz`, and all
+  101 ports constrained. The documentation commit that records this result
+  was not the programmed source state; the tested SHA remains
+  `e6c310598a5b73f6be5a57b728ad35b6c447e726`.
+
+## Измерение углового сдвига тела кадра MSOP (инструменты)
+
+Связка трёх скриптов рядом с `msop_tcp_sniff.py`; ими найден и закрыт дефект
+сдвига тела кадра (раздел ниже). Работают по сырым кадрам, снятым сниффером.
+
+```powershell
+$S = "C:\workspaceerilog\.agents\skillspga-dev\scripts"
+# 1. поставить сектор (и/или формат пакета) сырой командой, минуя лимиты ПО
+python $S\lidar_cmd_client.py --host 192.168.2.206 --local-host 192.168.2.145 `
+  --sector 20000 160000
+# 2. снять кадры
+python $S\msop_tcp_sniff.py --host 192.168.2.206 --local-host 192.168.2.145 `
+  --frames 24 --timeout 20 --raw-dir refA --jsonl refA.jsonl --allow-partial
+# 3. профиль сцены по узлам сетки
+python $S\msop_angle_profile.py refA
+# 4. целочисленный сдвиг проверяемого захвата относительно эталона
+python $S\msop_body_shift_scan.py refA test50
+```
+
+- `lidar_cmd_client.py` — сырой клиент команд на порт `50101`: `VIEW_SECTOR`
+  (`0x53`) и формат пакета `ECHO` (`0x54`), запись и чтение. Нужен, чтобы
+  задавать границы в обход валидации ПО и читать фактически применённое.
+  Программный сброс — команда `0x31`, action `RESET=0`, поле `target_mac`.
+- `msop_angle_profile.py` — медиана дистанции/интенсивности на каждом узле
+  сетки по всем кадрам захвата (эталон сцены).
+- `msop_body_shift_scan.py` — SSD-скан целочисленного сдвига между двумя
+  захватами. Шумовой пол задаётся повтором одного и того же сектора (1-3 мм);
+  сдвиг тела кадра виден как устойчивый ненулевой минимум.
+
+Правило измерения: сцена должна быть неподвижна между эталоном и проверкой, а
+после программного сброса надо дождаться выхода `point_count` на расчётное
+значение сектора — иначе мотор ещё раскручивается и захват мусорный.
+
+## Сдвиг тела кадра MSOP — корень и фикс (2026-07-29)
+
+Дефект жил и в принятой `e6c31059` («сектора HWOK»), приёмка его не увидела.
+
+**Симптом.** Тело кадра MSOP циклически сдвинуто относительно угловых меток:
+картинка в ПО повёрнута при любом секторе, кроме одного «счастливого». Закон —
+**сдвиг = Δ mod point_count** при постоянном Δ, где Δ меняется от загрузки к
+загрузке. Замеры на 192.168.2.206 (профили d(метка) по 24 кадра, SSD-скан
+целочисленного сдвига, шумовой пол — повтор того же сектора):
+
+| Сектор | pc | Сдвиг | сходится с |
+|---|---|---|---|
+| 66–130 | 267 | +122 | 656 mod 267 |
+| 50–160 | 458 | +198 | 656 mod 458 |
+| 35–160 | 521 | +135 | 656 mod 521 |
+| 20–160 | 583 | +73  | 656 mod 583 |
+
+Другая сессия дала Δ=777 точек (777 mod 611 = 166, mod 694 = 83, mod 445 = 332,
+mod 444 = 333, mod 777 = 0). Ранняя формула `140°/res − pc` была СОВПАДЕНИЕМ:
+Δ=777 случайно равен pc юстировочного сектора 20–160 при res=180.
+
+**Как нашли.** Пользователь заметил, что дефект снимается переключением
+`Дист., байт` 2 → 3 → 2 в ПО. Это дёргает `pack_format_flush_stb` —
+ЕДИНСТВЕННОЕ место в `MSOP_TCP_sender`, сбрасывающее указатели body RAM.
+
+**Корень.** Дескриптор кадра публикуется как
+`out_desc_valid_stb = close_packet_stb && !in_desc_fifo_full`
+(`MSOP_TCP_frame_tracker`): при полной очереди (8 дескрипторов) кадр ТЕРЯЕТСЯ,
+а его тела уже записаны в body RAM. Читатель двигал собственный
+`body_read_base_addr` только по дескрипторам, поэтому осиротевшие байты уводили
+чтение НАВСЕГДА. `out_desc_overflow` никуда не подключён; накопительный
+`body_fifo_byte_count` осиротевшие байты тоже не вычитал. На старте (раскрутка
+мотора, stopped-пакеты ~20 кГц, ещё не читающий МК) очередь переполняется —
+отсюда разный Δ на каждой загрузке. Дефект воспроизводится программным сбросом
+(команда `0x31`, action `RESET=0`).
+
+Почему молчала симуляция: в ТБ очередь дескрипторов не переполняется.
+
+**Фикс** (этот коммит): адрес начала тела кадра защёлкивается на первом
+записанном байте и едет в дескрипторе (`frame_desc_t.body_start_addr`); база
+чтения берётся из дескриптора, а не накапливается; готовность тела считается по
+реально записанному расстоянию от старта кадра; занятость body RAM выводится из
+указателей. Новый `out_frame_closed_stb` (без гейта по переполнению) снимает
+захват адреса даже у потерянного кадра. Потерянный дескриптор теперь стоит
+ровно одного пропущенного кадра.
+
+**Приёмка на железе.** Сборка линии `15d6b4fc` с этим же фиксом: UserCode
+`0x0000B29E`, setup/hold violated `0/0`, Fmax `62.016 MHz` при `50 MHz`,
+logic `10942/20736`, registers `9911/16173`, BSRAM `58%`. После программного
+сброса — сценария, до фикса воспроизводимо дававшего Δ=656 — свип пяти секторов
+БЕЗ единого переключения формата: сдвиг **0** везде (остаток 1.0–1.5 мм),
+против +122 / +198 / +135 / +73 до фикса. Сим: `R120M_BM2BF1X1_ltdc_tb` PASS;
+`R120M_BM2BF1X1_sector_repro_tb` со сменой сектора через настоящий командный
+SPI — `frames=9 ok=8 bad=0 [OK]`. В `MSOP_TCP_frame_tracker_tb` единственный
+`[FAIL]` — устаревшая проверка зеркального якоря, удалённого в `3e13a234`; на
+базовом коммите красная идентично.
+
+**Правило.** `out_desc_overflow` и `out_body_overflow` в `MSOP_TCP_sender`
+по-прежнему не подключены никуда. Любой счётчик «посчитано против записано»
+обязан иметь наблюдаемый выход, иначе потеря снова станет невидимой.
+
+## R120M.BF2 с фиксом сдвига тела MSOP — HWOK (2026-07-29)
+
+- Проверенное состояние: `49825440` на ветке `R120M.BF2`, плата `R120M.BM2BF1X1`,
+  top `R120M_BM2BF1X1_brd_ifm`. Gowin UserCode `0x0000DF15`, setup/hold violated
+  endpoints `0/0`, logic `10739/20736 51%`, registers `9950/16173 61%`,
+  ошибок синтеза нет. Заливка `lconf --cli ... --port 50102`, 192.168.2.206.
+- Каноническое имя выпуска: `R120M.BF2MF6FP1X3` (`MF6` — контракт команд МК-ПЛИС
+  не менялся; `FP1` — формат пакета не менялся; новая итерация `X3`).
+- Приёмка: свип секторов БЕЗ переключения формата пакета, дважды — сразу после
+  заливки и повторно после программного сброса (`0x31`, action `RESET=0`),
+  который до фикса воспроизводимо создавал сдвиг:
+
+| Сектор | pc | после заливки | после сброса |
+|---|---|---|---|
+| 66–130 | 267 | 0 (2.0 мм) | 0 (1.5 мм) |
+| 50–160 | 458 | 0 (2.0 мм) | 0 (2.0 мм) |
+| 35–160 | 521 | 0 (2.0 мм) | 0 (2.0 мм) |
+| 20–160 | 583 | 0 (2.0 мм) | 0 (2.0 мм) |
+| 66–130 (возврат) | 267 | 0 (1.5 мм) | 0 (1.0 мм) |
+
+  Метод: агрегированные профили d(метка) по 24 кадра на сектор, SSD-скан
+  целочисленного сдвига; шумовой пол — повтор того же сектора (1–2 мм).
+  До фикса тот же тест давал +122 / +198 / +135 / +73.
+- Симуляция на этом же состоянии: `R120M_BM2BF1X1_ltdc_tb` **PASS**, Errors 0.
+- Класс доказательства: прямое измерение потока MSOP TCP сниффером; отдельные
+  UART/DSView-артефакты не снимались.
+- Серверный `.bin`: `\192.168.2.50\e\YandexDisk\#Projects\ToF Lidar\!Firmware\FPGA\Тестовые прошивки\R120M.BF2MF6FP1X3.git-49825440.img-73d374d90b54.uc-0000DF15.HWOK.bin`;
+  SHA-256 `73d374d90b54f8b3afbe0d4f9033ac12f955b3a4e68447d4338d5c74a1edb3c8`.
+- Серверный `.fs`: тот же каталог,
+  `R120M.BF2MF6FP1X3.git-49825440.img-bdc72e05e905.uc-0000DF15.HWOK.fs`;
+  SHA-256 `bdc72e05e905dff6104768af70ba3e259597ea7163bd33a263ddedef332ac13b`.
+  Оба файла после копирования сверены по SHA-256 непосредственно на сервере.
+- ВНИМАНИЕ по мотору: после программного сброса кадры несколько секунд идут
+  укороченными (pc=91 и т.п.) — мотор набирает обороты. Мерить только после
+  выхода pc на расчётное значение сектора, иначе захват мусорный.

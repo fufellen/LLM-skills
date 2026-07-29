@@ -4,6 +4,20 @@ Use this skill to make FPGA work reproducible: inspect the project first, identi
 
 For long-running or high-stakes FPGA tasks, create an active goal when goal tools are available and write a compact plan/checkpoint before substantive work starts. Record the objective, target branch, files in scope, user constraints, planned simulations/builds, baseline observations, and next steps so context compaction cannot erase task state. After compaction, interruption, or a long gap, read the active goal/plan and the checkpoint before continuing.
 
+## User Correction Loop
+
+- Treat every explicit user request to redo or correct the work as durable
+  feedback, not as a one-off chat instruction.
+- Before finishing the task, distill the correction into a concise,
+  testable rule in the most relevant project skill reference. Record both the
+  reusable workflow lesson and any verified project-specific fact needed to
+  prevent the same mistake.
+- Do not paste conversation history into the skill. State the resulting
+  guardrail, evidence requirement, branch/target distinction, command, or
+  hardware fact directly.
+- Validate the updated skill and mention the changed skill file in the task
+  handoff.
+
 ## Workflow
 
 1. Identify the active FPGA project before editing.
@@ -178,7 +192,11 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - For one-off dev-board checks, do not add new `m20k_dev_*` top, `.cst`, or `.sdc` files just to isolate a small test. Fold the test into an existing board wrapper/constraint flow, or explain why reusing the existing wrapper would be unsafe before adding files.
    - Do not create a new SystemVerilog interface or interface wrapper for every small bench task. Use plain ports for simple one-off firmware unless the surrounding design already expects an interface.
    - Before declaring a signal live, grep for where it is READ, not only where it is declared and port-mapped. A port can be wired through several levels and never consumed: `out_frame_started_stb` travelled `frame_detector` → `angle_sinc_frame` → `angle_calculator` → `encoder_processing` → `TDC_4_1` and was never read there, while MSOP frames were actually cut by a different signal. A dead path costs nothing at runtime but sends every reader of the code down the wrong causal chain, and a testbench may even `force` it to hide the confusion.
+   - Remove one-hop local aliases that only connect a child-module output to the same module's public output. Connect the child directly to the public output and read that signal locally when the contract is identical and there is exactly one driver. Keep a local signal only when it owns real behavior such as registering, CDC isolation, width/type conversion, arbitration, or a deliberate fanout/timing boundary; do not preserve an otherwise functionless `lcl_*` declaration plus `assign`.
+   - Treat temporary debug instrumentation as having an explicit end of life. Before finalizing a production refactor, search the active hierarchy, constraints, testbenches, and wave scripts for `dbg_`, `debug`, `для отладки`, temporary UART reporters, event counters, protocol sniffers, and functional signals mirrored onto service pins. Trace the readers of every hit: when it is diagnostic-only and the investigation is closed, remove its ports, interface fields, transitive propagation, state, counters, and stale TB references end-to-end instead of merely leaving the final output open. Preserve the functional guard, rejection branch, packet-format choice, or other product behavior that the diagnostic signal only observed. If a board/CST contract requires the physical port to remain, drive a defined safe idle value in the board wrapper and describe it as reserved/service in the constraint comments. Dedicated, explicitly named bring-up tops may retain isolated diagnostics. Prove the cleanup with focused behavioral TBs and, when it changes the synthesized hierarchy, with PnR resource, timing, bitstream-freshness, and pin-constraint checks.
    - Avoid broad rewrites of HDL that could perturb timing unless the user asked for refactoring.
+   - When the user asks to refactor a touched HDL module, treat the refactor as part of the requested change rather than optional cleanup. Bring the module contract and touched declarations into the active branch's HDL conventions: remove unused legacy ports, interfaces, and transitive include dependencies; separate coordination from functional pipelines at natural boundaries; normalize touched naming, instances, and declaration layout; and update every call site and affected testbench hierarchy in the same change. Preserve behavior unless the user explicitly requests a functional change, keep unrelated modules out of scope, capture a simulation baseline before editing, rerun focused testbenches afterward, and run synthesis/PnR when the structural change can affect timing or resources.
+   - Do not treat moving a large legacy block into another file as proof that the block belongs in the design. Before preserving or deleting it, trace each responsibility to a current consumer, board/protocol output, focused regression, or verified hardware behavior. Delete synthesis-dead state and inactive branch-specific code. If the behavior is active but obscures a coordination module, isolate it behind a named functional module and focused testbench; do not delete a proven product path merely because its implementation is difficult to read.
    - For CDC, async reset, generated clocks, PLLs, IO, and RAM/IP primitives, verify the intended vendor/tool behavior instead of assuming generic Verilog semantics.
 
 5. Отладка неожиданного поведения железа: СНАЧАЛА воспроизвести в симуляции.
@@ -211,6 +229,7 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - Give long simulations a realistic time budget before treating silence as a hang: check that `vsimk` is actually burning CPU (`Get-Process vsimk | Select CPU`). Scale from a known run — one `encoder_processing` instance covers ~3 ms of model time per 1.5 min, so a 40 ms two-instance sweep such as `encoder_processing_sector_tb` needs ~40-45 min and prints its verdict only at the very end.
    - Match evidence to the claim being made. Simulation can prove packet bytes, state-machine behavior, CRC/FCS, timing of internal handshakes, or other logic-level properties; tool evidence can prove build, pin placement, timing, bitstream generation, and programmer operations; hardware evidence can be Ethernet capture, UART output, LEDs, link state, oscilloscope/logic-analyzer/GAO capture, or user-confirmed physical behavior. Require Ethernet capture only when the claim is that packets actually traversed the network.
    - Before programming hardware, prefer a ModelSim Intel FPGA Edition 10.5b simulation or at least a ModelSim compile/elaboration check for the firmware top.
+   - ModelSim tool techniques (batch runs, robust .do error handling, WLF/dataset comparison, logging traps, error diagnosis) live in the shared `modelsim` skill (`.codex/skills/_base/skills/modelsim/` in the Obsidian vault; vault digest «Продуктивная работа в ModelSim»). Top wins for this repo: `vsim -batch -logfile` for regressions; `onerror {quit -code 1}` before `run` so PowerShell sees real exit codes; `add log -r /*` for post-mortem waves (memories are excluded from wildcards by default — WildcardFilter/WildcardSizeThreshold).
    - Run synthesis/implementation only when the change can affect hardware build, timing, pinout, or generated firmware.
    - If a GUI/CLI tool gives surprising or inconsistent hardware behavior, inspect the tool and firmware source that builds/parses the packet before changing HDL or firmware. Treat screenshots and GUI labels as symptoms; confirm the actual protocol bytes, offsets, ports, bind addresses, and parser expectations from source or packet capture.
    - For bench-board firmware tasks, do not stop at simulation and `.fs` generation. After a clean build, verify on the actual hardware unless the user explicitly asks for build-only work or the board/tool is unavailable.
@@ -291,6 +310,8 @@ Examples:
 - `docs: уточнить порядок сборки LDR_20K`
 
 Create a new commit after a completed task or a verified intermediate milestone. Verification means real hardware feedback, packet/UART/LED/capture evidence, or correct simulator/tool output for software/simulation stages. Do not commit unverified guesses or half-built code. Do not amend commits and do not push unless explicitly requested.
+
+Commit a verified slice immediately after its successful simulation or other acceptance check, before starting the next change or milestone; do not accumulate several already-green slices in one later commit. When several focused testbenches form one acceptance suite for the same edit, finish that suite and create one commit for the slice. Never create an empty commit when no tracked change exists, and never stage unrelated user changes merely to satisfy the checkpoint.
 
 ## Local Lidar Gowin Project
 

@@ -203,6 +203,63 @@ else {
     Write-Output "[ok] No LaTeX delimiters found inside Obsidian wikilink aliases"
 }
 
+# Mermaid parses label text as Markdown: a label fragment that starts with a
+# list marker ("1. ", "1) ", "- ", "* ", "+ ") makes Obsidian render the node
+# as "Unsupported markdown: list" instead of the text. A fragment is the label
+# start or the text right after each <br/>; edge labels ("--- \"...\" -->",
+# "|...|") break the same way. Use wording such as "Шаг 1 - ..." instead.
+$mermaidListViolations = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+$insideMermaid = $false
+$listMarkerRegex = [regex]'^\s*(?:\d+[\.\)]|[-*+])\s'
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    if ($line -match '^\s*(```|~~~)\s*(\S*)') {
+        if (-not $insideFence) {
+            $insideFence = $true
+            $insideMermaid = ($Matches[2] -ieq 'mermaid')
+        }
+        else {
+            $insideFence = $false
+            $insideMermaid = $false
+        }
+        continue
+    }
+    if (-not $insideMermaid) {
+        continue
+    }
+
+    $labelSegments = New-Object System.Collections.Generic.List[string]
+    foreach ($match in [regex]::Matches($line, '"([^"]*)"')) {
+        $labelSegments.Add($match.Groups[1].Value)
+    }
+    foreach ($match in [regex]::Matches($line, '\|([^|"\r\n]+)\|')) {
+        $labelSegments.Add($match.Groups[1].Value)
+    }
+    # Unquoted node labels: node id directly followed by an opening bracket.
+    foreach ($match in [regex]::Matches($line, '[A-Za-z0-9_][\[\({]{1,2}\s*([^"\[\]\(\)\{\}<]{1,60})')) {
+        $labelSegments.Add($match.Groups[1].Value)
+    }
+
+    foreach ($segment in $labelSegments) {
+        foreach ($fragment in [regex]::Split($segment, '(?i)<br\s*/?>')) {
+            if ($listMarkerRegex.IsMatch($fragment)) {
+                $mermaidListViolations.Add("line $($i + 1): '$($fragment.Trim())' starts like a Markdown list inside a Mermaid label")
+                break
+            }
+        }
+    }
+}
+
+if ($mermaidListViolations.Count -gt 0) {
+    Write-Warning "Mermaid label text must not start with a Markdown list marker (renders as 'Unsupported markdown: list' in Obsidian); use wording such as 'Step 1 - ' instead of '1. ':"
+    $mermaidListViolations | Sort-Object -Unique | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] No Markdown list markers at the start of Mermaid label text"
+}
+
 if ($Strict -and $styleViolationFound) {
     exit 5
 }

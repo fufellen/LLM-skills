@@ -10,6 +10,7 @@ Use this file for compact reusable lessons learned while using Obsidian Local RE
 - API write operations are good for creating or replacing a whole note, but they do not provide a visible diff by themselves. For larger edits, keep a before/after temp copy or use patch/diff control before writing back.
 - API access is a transport, not semantic search. Good recall still requires synonym queries, title checks, content checks, and targeted reads of candidate notes.
 - After creating or materially editing notes through the API, run `scripts/Test-Note.ps1 <path> -First 24 -CheckLinks` on the created/changed notes.
+- On Windows, Claudian's Codex provider needs a launchable standalone Codex CLI for `codex app-server`. A Microsoft Store binary found under `WindowsApps` may exist but fail with `Access is denied`; install the official standalone CLI and set Claudian's device-specific `CLI path` explicitly.
 
 ## Learning Triggers
 

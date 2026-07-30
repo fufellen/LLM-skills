@@ -80,6 +80,49 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ".\.codex\skills\_base\skill
 
 The healthy result is `tcp_port_open: True` and `authenticated_request: ok: HTTP 200` (plain `Invoke-WebRequest` or `curl.exe -k` fallback are both acceptable). If the port is closed, Obsidian is not running, the wrong vault is open, or the plugin is disabled. If authentication fails, copy the current plugin API key from Obsidian's Local REST API settings into `.codex/secrets/scientific-work/obsidian-local-rest-api.json`.
 
+## Claudian With Codex On Windows
+
+Claudian starts the Codex provider through `codex app-server`; installing Codex Desktop alone does not guarantee that Obsidian can launch a usable CLI. The Microsoft Store binary under `C:\Program Files\WindowsApps\OpenAI.Codex_...\app\resources\codex.exe` may be discoverable but fail when launched outside Codex Desktop with `Access is denied`. Treat `Codex model discovery failed: App-server process exited` as a CLI installation/path failure first.
+
+1. Check what resolves and whether it runs:
+
+```powershell
+Get-Command codex -All | Select-Object CommandType, Path
+codex --version
+codex app-server --help
+```
+
+2. If no standalone CLI exists, or the resolved path is inside `WindowsApps` and fails, install the official native Windows CLI:
+
+```powershell
+$env:CODEX_NON_INTERACTIVE = "1"
+irm https://chatgpt.com/codex/install.ps1 | iex
+```
+
+If `chatgpt.com` returns HTTP 403 in PowerShell, fetch the same installer from the official `openai/codex` repository, inspect it before execution, and then run it:
+
+```powershell
+$installerUri = "https://raw.githubusercontent.com/openai/codex/main/scripts/install/install.ps1"
+$installer = [string](Invoke-RestMethod -Uri $installerUri -Headers @{"User-Agent" = "Codex-Installer"})
+Invoke-Expression $installer
+```
+
+Do not use a third-party Codex binary or copy the packaged `WindowsApps` executable out of the Store package.
+
+3. Verify the standalone path directly:
+
+```powershell
+$codexCli = "$env:LOCALAPPDATA\Programs\OpenAI\Codex\bin\codex.exe"
+& $codexCli --version
+& $codexCli app-server --help
+& $codexCli login status
+```
+
+The standard installer keeps release packages under `%USERPROFILE%\.codex\packages\standalone\` and exposes the current executable at `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin\codex.exe`.
+
+4. In Claudian's Codex provider settings, set `CLI path` explicitly to the standalone executable above. Do not rely only on `PATH`, because an already-running Obsidian process retains its old environment and may resolve another `codex.exe`.
+5. Reload Claudian or restart Obsidian, refresh the Codex model list, and confirm that models appear. If `app-server --help` works but model discovery still fails, run the CLI once to complete ChatGPT sign-in, then retry.
+
 ## Helper Scripts
 
 - `scripts/Install-ObsidianLocalRestApi.ps1` installs or updates the plugin from GitHub release assets. Use `-Enable` to add it to `.obsidian/community-plugins.json`.

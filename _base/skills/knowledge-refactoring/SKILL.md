@@ -71,10 +71,16 @@ When reorganizing term notes, do not assume every term note already lives in a f
 
 Cleaning junk is destructive: identify candidates, verify, then delete, and report exactly what was removed. Respect any explicit user boundary (e.g. "keep and just list") over your own judgment.
 
-Deletion consent (explicit user rule): permanently delete a file only when it is evident from content-level comparison (diff of full text, not file size or timestamps) that the surviving copy genuinely supersedes it — and even then, first notify the user with the evidence and ask whether deletion is allowed. Moving verified-stale files to the vault `.trash/` is an acceptable autonomous holding step (user-approved practice), but always report exactly what was moved and why; emptying `.trash` or any irreversible removal requires the user's explicit go-ahead.
+Deletion consent depends on what the file is. Two regimes:
+
+- **Obviously temporary and useless artifacts — delete autonomously, then report** (explicit user rule, 2026-07-30: "если папка очевидно временная и бесполезная - удаляй"). This covers the junk classes listed below plus whole scratch directories left by tooling (`.tmp_*/`, `tmp_*/`, unpacked-`docx` working dirs, `*_raw.md`/`*_tmp.md` pandoc intermediates), including ones an earlier session or another agent created — "not mine" is not a reason to leave junk in the vault. Do not ask first; do verify first: confirm the real original still exists (hash it when the artifact is a copy), confirm nothing links to the artifact, then delete and state exactly what was removed and how it was verified.
+- **Content files where survivorship is a judgement call — ask first.** Permanently delete only when a content-level comparison (diff of full text, not file size or timestamps) shows the surviving copy genuinely supersedes it, and notify the user with that evidence before deleting. Moving verified-stale files to the vault `.trash/` is an acceptable autonomous holding step, but always report what was moved and why; emptying `.trash` or any other irreversible removal of content requires the user's explicit go-ahead.
+
+Respect any explicit user boundary ("keep and just list") over both regimes.
 
 Treat as junk and safe to delete:
-- temp extraction artifacts: `_tmp*`, `tmp_*`, `*.tmp` (including orphaned Word temp files `~WRL*.tmp`);
+- temp extraction artifacts: `_tmp*`, `tmp_*`, `.tmp_*`, `*.tmp` — files **and directories** (including orphaned Word temp files `~WRL*.tmp`, and unpacked-`docx` scratch dirs holding a zip copy of a document plus its `word/*.xml`);
+- conversion intermediates left beside a finished note: `*_raw.md`, `*_tmp.md`, `*-raw.md` — pandoc output superseded by the cleaned note; verify the final note contains their text, then delete;
 - editor/auto backups: `*~` (e.g. `.kra~`, `.psd~`, `.bmp~`), `*.bak`/`*.orig`/`*.old`/`*.swp` outside intentional backup folders — but verify the real original exists before deleting any `*~` backup;
 - OS junk: `.DS_Store`, `Thumbs.db`, `ehthumbs.db`.
 

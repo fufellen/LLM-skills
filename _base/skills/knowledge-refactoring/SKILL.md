@@ -129,6 +129,7 @@ Config conflict copies under `.obsidian/` (`app (conflict ...).json`, `core-plug
 - `Test-Note.ps1` bracket balancing does not strip fenced code blocks, so Tcl/shell code containing `]]` (e.g. `[file rootname [file tail $path]]`) false-positives as an unbalanced wiki link. Verify with a real `[[`/`]]` count outside code fences before "fixing" valid code (learned 2026-07-29 on ModelSim notes).
 - `Test-Note.ps1` link checking uses `\[\[([^\]]+)\]\]`, which cannot match a target containing `]`. Wikilinks to files whose names carry brackets (e.g. `[[2 labVIEW/[2].Алгоритм LabVIEW.pdf|…]]`) are therefore skipped **silently** — the run still prints "link targets resolved". Verify such targets on disk by hand; a green validator is not evidence they resolve (learned 2026-07-30).
 - Fixing a term note's folder vs. its filename are different-risk operations: Obsidian resolves `[[Note]]` by basename, so **moving** a note between folders keeps every inbound link working (verify the basename is unique first), while **renaming** breaks them all. Prefer a move when only placement is wrong; when a rename is genuinely needed, rewrite `[[old]]`, `[[old|`, and `[[old#` across the vault in one pass and re-scan for residual references before validating (learned 2026-07-30, relocating/renaming 6 freshly created term notes).
+- An aliased wikilink dropped into a Markdown table needs `\|` (see Obsidian Links); the validator reports it as resolved, so only visual inspection or a targeted grep catches it. When inserting the same link into several places in one pass, check whether each landing site is a table cell before writing it, rather than reusing one string everywhere (learned 2026-07-30).
 
 ## Obsidian Links
 
@@ -141,6 +142,10 @@ Use exact wiki links for local notes:
 ```
 
 Prefer the shortest resolvable wiki link. If the note title is unique in the vault, use `[[Note]]` or `[[Note|display text]]` instead of a vault-root path. Add only the minimal folder path needed to disambiguate duplicate filenames.
+
+**Aliased links inside Markdown tables must escape the pipe as `\|`.** In a table row, a bare `|` inside `[[Note|alias]]` is consumed as a cell separator, so the link is split across two cells and renders as literal `[[Note` / `alias]]` text — not a clickable link. Always write `[[Note\|alias]]` in table cells (`| [[Медиана абсолютных отклонений (MAD, Median Absolute Deviation)\|σ робастная (MAD)]] | 1.48 мм |`). Also never pad the separator with spaces (`[[Note | alias]]`); Obsidian treats the spaces as part of the target/alias. Outside tables the plain `[[Note|alias]]` form is correct — do not escape there.
+
+`Test-Note.ps1 -CheckLinks` does **not** catch this: the unescaped form still contains a balanced `[[...]]` pair, so the run prints "link targets resolved" while the note renders broken. After adding any aliased link to a table, grep the note for `\[\[[^]]*[^\\]\|` and confirm every table-cell hit is escaped (learned 2026-07-30, MAD term note linked from four report tables).
 
 Do not write meta-comments inside notes such as "removed duplication here". Make the note read naturally.
 

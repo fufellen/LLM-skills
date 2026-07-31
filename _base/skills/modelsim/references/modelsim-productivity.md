@@ -123,3 +123,4 @@ Command inventory distilled from the ModelSim 10.5b User's Manual (page numbers 
 - Bind statements in their own file live in `$unit` and silently never elaborate; compile with `vlog -cuname bind_pkg -mfcu bind.sv` and load `vsim tb bind_pkg` as an extra top (pp. 296-298). Multiple top units on the vsim line toggle checker wrappers per run (pp. 294-295).
 - `` `ifdef QUESTA `` is predefined in ModelSim — clean guard for sim-only code vs Gowin synthesis (p. 247).
 - Escaped identifiers in Tcl need careful quoting (pp. 227-228).
+- `force` on a value that references an `automatic` variable is rejected: `Automatic variable not allowed in force statement` (verified 10.5b, 2026-07-31). A `task automatic check(input ... value); force dut.sig = value; ...` fails to compile — drop `automatic` so the arguments become static, or force from a module-level variable. Bites when parameterizing a force-based testbench that otherwise never needs re-entrancy.

@@ -178,6 +178,28 @@ Cross-timezone gotcha: the sum is `timestamp` (without zone). If your app timezo
 
 Cleanest way to reset a schema before handing it to the real customer: list the tables you want empty, `RESTART IDENTITY` resets serial sequences to 1, `CASCADE` handles foreign-key referents. Keep `users` and any settings table out of the list — the customer still needs to log in. Take a `pg_dump -Fc` first so the wipe is one `pg_restore` away.
 
+### psycopg parameter binding: `IN` with a variable-length list
+
+Writing `WHERE login NOT IN %s` and passing `(("nikita",),)` **does not** get you SQL like `NOT IN ('nikita')`. psycopg (both v2 and v3) sees a plain scalar substitution — the raw tuple is dropped into `$1` and PostgreSQL parses `NOT IN $1` as a syntax error at runtime, not at import:
+
+```
+psycopg.errors.SyntaxError: syntax error at or near "$1"
+LINE 1: ... FROM users WHERE login NOT IN $1 ORDER BY ...
+```
+
+Two clean fixes:
+
+- **`= ANY(%s)` / `<> ALL(%s)`** — pass a Python `list`, psycopg maps it to a PostgreSQL array. Works with 0, 1, or many elements without special-casing:
+
+  ```python
+  conn.execute("SELECT ... WHERE login <> ALL(%s)", (list(SHADOW_LOGINS),))
+  # SHADOW_LOGINS may be a tuple; list() makes psycopg emit an array literal
+  ```
+
+- **`IN (SELECT unnest(%s::text[]))`** — same underlying trick, more explicit if the query is complex.
+
+Do NOT do the string-formatting workaround (`"IN (" + ",".join(...) + ")"` with values sql-quoted by hand) — you leak SQL-injection through the first field that comes from user input. Always parametrise.
+
 ## Deployment
 
 ### One-command deploy script that reads env

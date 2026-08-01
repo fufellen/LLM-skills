@@ -128,14 +128,17 @@ The script bakes in four non-obvious rules discovered on real texts — don't re
 
 ## Recipe: convert a PDF book of spiritual literature
 
-End-to-end pipeline. Combines `pdf-textbook-to-markdown` for extraction with this skill's resolver for citation cleanup.
+End-to-end pipeline. Combines `pdf-textbook-to-markdown` for extraction/polish with this skill's Bible resolver. **Do not stop at "raw extract + resolver"** — the raw extraction is a debugging artifact, not a readable book. A user seeing `## Page N` breaks, running headers repeated 100+ times, page-number footers, and mojibake `×èñëî` where `Число` should be will (correctly) call this a broken conversion.
 
-1. **Extract with the PDF skill.** Run its `extract_pdf_textbook.py extract` on the source PDF, writing Markdown next to the PDF and media into a sibling `<stem>_media/` folder. This gives you a page-anchored draft with `## Page N` / `<!-- source-page: N -->` markers and a `> Source: [[<name>.pdf]]` header. Do not modify the raw draft yet.
-2. **Back up the raw draft** to your scratchpad — the resolver rewrites in place and you want a safety copy for `diff` if something looks off.
-3. **Run the resolver:** `python scripts/resolve_bible_refs.py "<draft>.md" "<vault_root>"`. On a 300+ page book expect thousands of matches; a real ОЦХВЕ-style textbook resolved ~2900 refs cleanly. `<vault_root>` is the folder that contains `Церковь/`.
-4. **Read the JSON report** at `<draft>.md.bible-refs.json`. Everything unresolved is almost always a source defect, not a resolver bug — surface the list to the user in three named buckets (source typo, reversed range, PDF footer artifact) rather than a raw dump.
-5. **Structural cleanup is a separate pass.** The extracted draft still carries PDF junk: repeated running headers, hyphenated line breaks, per-page numbering in the body, un-OCR'd cover page. Do this only if the user asks — it doubles the work and blocks the Bible-linking win from landing quickly.
-6. **Keep the report file** next to the .md — it documents which citations the user still needs to verify against the original book.
+1. **Extract:** `python <pdf-skill>/scripts/extract_pdf_textbook.py extract "<src>.pdf" --output "<dst>.md" --media-dir "<dst>_media"`. Media stays in the media folder; the polisher drops the auto-emitted `![Page N image]` embeds so the user can add back only the figures that matter.
+2. **Back up the raw extract** to your scratchpad — subsequent passes rewrite in place; keep a safety copy for `diff`.
+3. **Resolve Bible references:** `python scripts/resolve_bible_refs.py "<dst>.md" "<vault_root>"`. Idempotent — safe to re-run. Report at `<dst>.md.bible-refs.json`; classify unresolved into three buckets (source typo, reversed range, PDF footer artifact) and surface to the user rather than a raw dump. Fix the ones the user confirms; remove refs for the ones they say to drop.
+4. **Polish:** `python <pdf-skill>/scripts/polish_pdf_extraction.py "<dst>.md" "<src>.pdf"`. Fixes mojibake, marks PUA glyphs, drops page images, marks broken tables (cells saved to `.table-NNN.txt` sidecars), strips running headers, inserts `## Chapter …` from the PDF outline (or from `ГЛАВА N` text fallback), drops page markers, and reflows wrapped paragraphs. Idempotent. Report at `<dst>.md.cleanup.json`.
+5. **Split by chapters:** `python <pdf-skill>/scripts/split_by_chapters.py "<dst>.md"`. Creates `<dst>/` folder with one `NN — <Title>.md` per chapter; the original .md becomes an index note.
+6. **Manual title fixup (if needed).** When the PDF has no outline and the chapter title *is* the running header (repeats on every page), the running-header stripper eats the title, leaving auto-inserted chapter headings as short labels like `## ГЛАВА 1` without the full name. In that case rename the chapter files by hand from the book's own TOC — 30 seconds; there is no clean automatic fix.
+7. **Keep reports** (`.bible-refs.json`, `.cleanup.json`, `.table-NNN.txt`) next to the index — they document what still needs a human eye.
+
+If the target folder already has a user note under the same name (existing conspект, personal reading notes), **do not overwrite** — [[feedback-confirm-before-delete]]. Rename the user note (`<Name> — конспект.md` is a common pattern) and place the full text under the original name, or place the full text under a variant name. Ask before renaming.
 
 ## Writing spiritual prose
 

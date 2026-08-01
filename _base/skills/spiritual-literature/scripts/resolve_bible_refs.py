@@ -15,13 +15,17 @@ A JSON report of resolved/unresolved refs is written next to the input as
 Usage:
     python resolve_bible_refs.py <input.md> <vault_root>
 
-Four non-obvious rules are baked in — see SKILL.md for the reasoning; short
+Five non-obvious rules are baked in — see SKILL.md for the reasoning; short
 version:
   1. Word-boundary on book names (avoid Russian dative endings like "-ам").
   2. Colon strictly required between chapter and verse (avoid "2.0" -> "2:0").
   3. Trim trailing ", <digit>" when followed by a letter (avoid stealing "1"
      from a following numbered book like "1Тим.").
   4. Skip text inside `[[...]]` wiki-links (idempotency — safe to re-run).
+  5. Pre-normalize Latin-lookalike capitals: `Mк` -> `Мк` (Latin M followed by
+     Cyrillic lower). Common PyMuPDF font-CID artifact. Narrow rule: only
+     when Latin cap is immediately followed by Cyrillic lowercase, so `Ave`
+     and `agape` stay Latin.
 
 The script does not repair source-text defects (reversed ranges, verses that
 don't exist, page numbers glued onto verse ranges). It reports them so a human
@@ -316,6 +320,31 @@ def make_link(canon: str, chapter: int, orig_display: str, chapter_word: str = "
     return f"[[{canon} {chapter_word} {chapter}|{orig_display}]]"
 
 
+# Latin capital -> visually identical Cyrillic capital. Applied only when a
+# Latin cap is immediately followed by a Cyrillic lowercase letter — a common
+# PDF-extraction artifact where the wrong CID gets mapped. `Mк` becomes `Мк`,
+# but Latin words after Cyrillic (`аgape`, `«Ave`) are left untouched.
+LATIN_TO_CYRILLIC_CAP = {
+    "A": "А", "B": "В", "C": "С", "E": "Е", "H": "Н",
+    "K": "К", "M": "М", "O": "О", "P": "Р", "T": "Т", "X": "Х", "Y": "У",
+}
+
+def normalize_latin_lookalikes(text: str) -> tuple[str, int]:
+    """Swap Latin capitals to Cyrillic lookalikes when followed by a Cyrillic
+    lowercase letter. Narrow rule to avoid false positives."""
+    fixed = 0
+    def sub(m: re.Match) -> str:
+        nonlocal fixed
+        lat = m.group(1)
+        cyr = LATIN_TO_CYRILLIC_CAP.get(lat)
+        if cyr is None:
+            return m.group(0)
+        fixed += 1
+        return cyr + m.group(2)
+    new_text = re.sub(r"([A-Z])([а-яё])", sub, text)
+    return new_text, fixed
+
+
 def find_and_resolve(text: str, index: VerseIndex) -> tuple[str, dict]:
     """Walk text left-to-right, find ref clusters, verify, and rewrite.
 
@@ -326,7 +355,9 @@ def find_and_resolve(text: str, index: VerseIndex) -> tuple[str, dict]:
 
     Idempotent: text inside `[[...]]` wiki-links is skipped verbatim, so a
     re-run on an already-linkified file does not nest links inside links.
+    Also runs a Latin-lookalike pre-normalization pass (fixes `Mк`→`Мк` etc).
     """
+    text, lookalikes_fixed = normalize_latin_lookalikes(text)
     # Precompute the set of positions that are inside `[[...]]` and must be skipped.
     # We only need to know the (start, end) spans; the walk consults them.
     wiki_spans: list[tuple[int, int]] = [
@@ -345,6 +376,7 @@ def find_and_resolve(text: str, index: VerseIndex) -> tuple[str, dict]:
         "chapter_missing": 0,
         "verse_missing": 0,
         "parse_failed": 0,
+        "latin_lookalikes_fixed": lookalikes_fixed,
     }
 
     while i < len(text):
@@ -481,6 +513,7 @@ def main() -> int:
         "chapter_missing_count": stats["chapter_missing"],
         "verse_missing_count": stats["verse_missing"],
         "parse_failed_count": stats["parse_failed"],
+        "latin_lookalikes_fixed": stats.get("latin_lookalikes_fixed", 0),
         "unresolved_sample": stats["unresolved"][:50],
         "unresolved_total": len(stats["unresolved"]),
     }

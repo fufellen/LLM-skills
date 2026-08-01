@@ -119,12 +119,13 @@ python scripts/resolve_bible_refs.py "<file.md>" "<vault_root>"
 
 It rewrites the file in place, replacing each recognised reference with an Obsidian wiki-link to the verse anchor, and writes a JSON report `<file.md>.bible-refs.json` listing unresolved cases. **Always back up the file first** — this is a large in-place edit. Unresolved refs typically fall into three classes: source typos (e.g. `Лев. 24:26` when Lev 24 has 23 verses), reversed ranges (`Отк. 13:11-8`), and PDF extraction artifacts where page numbers glue onto verse ranges (`2Кор. 4:1-\n36` — the `36` is a footer). Do not auto-fix these; report and let the user decide.
 
-The script bakes in four non-obvious rules discovered on real texts — don't remove them if you edit it:
+The script bakes in five non-obvious rules discovered on real texts — don't remove them if you edit it:
 
 1. **Word-boundary check on book names.** Match only when the preceding char is non-letter, otherwise short synonyms like `Ам` (Amos) fire mid-word on Russian dative-case endings (`программам`, `людям`) and produce phantom refs.
 2. **Colon strictly required between chapter and verse.** A bare `.` risks matching version numbers like `2.0` in prose as `Ин 2:0`.
 3. **Trim trailing `, <digit>` when followed by a Cyrillic letter.** The greedy verse-list regex will otherwise steal the `1` from a following numbered book: `5:1-3, 1Тим. 3:15` gets grabbed as `5:1-3, 1` + orphan `Тим. 3:15`.
 4. **Skip text inside `[[...]]` wiki-links.** Without this, a second run on an already-linkified file nests every match inside its own link (`[[Ин Глава 3#3:16|[[Ин Глава 3#3:16|Ин 3:16]]]]`). Idempotency is a hard requirement — safe re-runs after manual patch passes are the whole workflow.
+5. **Latin-lookalike normalization: `Mк` → `Мк`.** PyMuPDF sometimes decodes a Cyrillic letter as its visually identical Latin twin (`M`/`М`, `K`/`К`, `C`/`С`, `A`/`А`, `H`/`Н`, `T`/`Т`, `O`/`О`, `P`/`Р`, `B`/`В`, `E`/`Е`, `X`/`Х`, `Y`/`У`). Applied only when a Latin capital is immediately followed by a Cyrillic lowercase letter, so real Latin words after Cyrillic (`аgape`, `«Ave`) are untouched.
 
 ## Recipe: convert a PDF book of spiritual literature
 

@@ -15,12 +15,13 @@ A JSON report of resolved/unresolved refs is written next to the input as
 Usage:
     python resolve_bible_refs.py <input.md> <vault_root>
 
-Three non-obvious rules are baked in — see SKILL.md for the reasoning; short
+Four non-obvious rules are baked in — see SKILL.md for the reasoning; short
 version:
   1. Word-boundary on book names (avoid Russian dative endings like "-ам").
   2. Colon strictly required between chapter and verse (avoid "2.0" -> "2:0").
   3. Trim trailing ", <digit>" when followed by a letter (avoid stealing "1"
      from a following numbered book like "1Тим.").
+  4. Skip text inside `[[...]]` wiki-links (idempotency — safe to re-run).
 
 The script does not repair source-text defects (reversed ranges, verses that
 don't exist, page numbers glued onto verse ranges). It reports them so a human
@@ -322,7 +323,18 @@ def find_and_resolve(text: str, index: VerseIndex) -> tuple[str, dict]:
       - a chapter:verse spec, then optional [",", ";", " "] followed by either
         another spec (same book, new chapter or verse) or a new book token.
     We stop when the next token is not a spec or a known book.
+
+    Idempotent: text inside `[[...]]` wiki-links is skipped verbatim, so a
+    re-run on an already-linkified file does not nest links inside links.
     """
+    # Precompute the set of positions that are inside `[[...]]` and must be skipped.
+    # We only need to know the (start, end) spans; the walk consults them.
+    wiki_spans: list[tuple[int, int]] = [
+        (m.start(), m.end()) for m in re.finditer(r"\[\[[^\[\]]*\]\]", text)
+    ]
+    wiki_iter = iter(wiki_spans)
+    next_span = next(wiki_iter, None)
+
     out = []
     i = 0
     stats = {
@@ -336,6 +348,15 @@ def find_and_resolve(text: str, index: VerseIndex) -> tuple[str, dict]:
     }
 
     while i < len(text):
+        # Skip past any wiki-link that starts at or before i.
+        while next_span is not None and next_span[1] <= i:
+            next_span = next(wiki_iter, None)
+        if next_span is not None and next_span[0] <= i < next_span[1]:
+            # We're inside a [[...]] — copy the whole span verbatim.
+            out.append(text[i:next_span[1]])
+            i = next_span[1]
+            next_span = next(wiki_iter, None)
+            continue
         # try match a book at position i
         bm = match_book(text, i)
         if not bm:

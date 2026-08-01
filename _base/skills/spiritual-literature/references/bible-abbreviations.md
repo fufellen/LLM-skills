@@ -108,3 +108,9 @@ Every canonical name above belongs to exactly one testament folder — don't sea
 **New Testament (27):** Мф, Мк, Лк, Ин, Деян, Иак, 1 Пет, 2 Пет, 1 Ин, 2 Ин, 3 Ин, Иуд, Рим, 1 Кор, 2 Кор, Гал, Еф, Флп, Кол, 1 Фес, 2 Фес, 1 Тим, 2 Тим, Тит, Флм, Евр, Откр.
 
 **Old Testament + deuterocanonical:** everything else in the tables above.
+
+## Chapter-file naming
+
+Almost every book stores chapters as `<canon> Глава <N>.md`. The one exception in the current repo is **Псалтирь**, which uses `Пс Псалом <N>.md`. Wiki-links must match: `[[Пс Псалом 138#138:2|Пс 138:2]]`, not `[[Пс Глава 138…]]`.
+
+Chapter-file lookups must also be **case-insensitive** — a few files in the repo use lowercase `глава` (observed: `Иак глава 4.md`) even when siblings capitalise it.

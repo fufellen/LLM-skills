@@ -25,6 +25,10 @@ The user's local Synodal Bible is at `Церковь/Библия/Библия/`
 └── Новый завет/<abbr>/<abbr> Глава <N>.md
 ```
 
+**Filename gotchas** — check both when resolving:
+- **Псалтирь uses `Псалом` instead of `Глава`** in filenames: `Пс Псалом 138.md`. Every other book uses `Глава`.
+- **Case-insensitive filenames.** Some chapter files use lowercase "глава" (e.g. `Иак глава 4.md`) even when siblings use the capitalised form. Match filenames case-insensitively; do not assume `\bГлава\b` is exact.
+
 Each chapter file uses this exact structure — verses are `###### N:V` headings followed by the verse text:
 
 ```markdown
@@ -106,6 +110,14 @@ Verse numbers as superscript unicode (`¹²³⁴⁵⁶⁷⁸⁹⁰`) or plain `(
 - refs written in an unusual abbreviation that should be normalised to the folder-name canon for consistency.
 
 Do not silently rewrite the note during an audit — return a list first.
+
+**Bulk-linkify an existing document** (e.g. a converted PDF, imported study). Use `scripts/resolve_bible_refs.py`:
+
+```powershell
+python scripts/resolve_bible_refs.py "<file.md>" "<vault_root>"
+```
+
+It rewrites the file in place, replacing each recognised reference with an Obsidian wiki-link to the verse anchor, and writes a JSON report `<file.md>.bible-refs.json` listing unresolved cases. **Always back up the file first** — this is a large in-place edit. Unresolved refs typically fall into three classes: source typos (e.g. `Лев. 24:26` when Lev 24 has 23 verses), reversed ranges (`Отк. 13:11-8`), and PDF extraction artifacts where page numbers glue onto verse ranges (`2Кор. 4:1-\n36` — the `36` is a footer). Do not auto-fix these; report and let the user decide.
 
 ## Writing spiritual prose
 

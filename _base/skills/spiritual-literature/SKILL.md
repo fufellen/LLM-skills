@@ -119,6 +119,23 @@ python scripts/resolve_bible_refs.py "<file.md>" "<vault_root>"
 
 It rewrites the file in place, replacing each recognised reference with an Obsidian wiki-link to the verse anchor, and writes a JSON report `<file.md>.bible-refs.json` listing unresolved cases. **Always back up the file first** — this is a large in-place edit. Unresolved refs typically fall into three classes: source typos (e.g. `Лев. 24:26` when Lev 24 has 23 verses), reversed ranges (`Отк. 13:11-8`), and PDF extraction artifacts where page numbers glue onto verse ranges (`2Кор. 4:1-\n36` — the `36` is a footer). Do not auto-fix these; report and let the user decide.
 
+The script bakes in three non-obvious rules discovered on real texts — don't remove them if you edit it:
+
+1. **Word-boundary check on book names.** Match only when the preceding char is non-letter, otherwise short synonyms like `Ам` (Amos) fire mid-word on Russian dative-case endings (`программам`, `людям`) and produce phantom refs.
+2. **Colon strictly required between chapter and verse.** A bare `.` risks matching version numbers like `2.0` in prose as `Ин 2:0`.
+3. **Trim trailing `, <digit>` when followed by a Cyrillic letter.** The greedy verse-list regex will otherwise steal the `1` from a following numbered book: `5:1-3, 1Тим. 3:15` gets grabbed as `5:1-3, 1` + orphan `Тим. 3:15`.
+
+## Recipe: convert a PDF book of spiritual literature
+
+End-to-end pipeline. Combines `pdf-textbook-to-markdown` for extraction with this skill's resolver for citation cleanup.
+
+1. **Extract with the PDF skill.** Run its `extract_pdf_textbook.py extract` on the source PDF, writing Markdown next to the PDF and media into a sibling `<stem>_media/` folder. This gives you a page-anchored draft with `## Page N` / `<!-- source-page: N -->` markers and a `> Source: [[<name>.pdf]]` header. Do not modify the raw draft yet.
+2. **Back up the raw draft** to your scratchpad — the resolver rewrites in place and you want a safety copy for `diff` if something looks off.
+3. **Run the resolver:** `python scripts/resolve_bible_refs.py "<draft>.md" "<vault_root>"`. On a 300+ page book expect thousands of matches; a real ОЦХВЕ-style textbook resolved ~2900 refs cleanly. `<vault_root>` is the folder that contains `Церковь/`.
+4. **Read the JSON report** at `<draft>.md.bible-refs.json`. Everything unresolved is almost always a source defect, not a resolver bug — surface the list to the user in three named buckets (source typo, reversed range, PDF footer artifact) rather than a raw dump.
+5. **Structural cleanup is a separate pass.** The extracted draft still carries PDF junk: repeated running headers, hyphenated line breaks, per-page numbering in the body, un-OCR'd cover page. Do this only if the user asks — it doubles the work and blocks the Bible-linking win from landing quickly.
+6. **Keep the report file** next to the .md — it documents which citations the user still needs to verify against the original book.
+
 ## Writing spiritual prose
 
 - **Quote vs. paraphrase.** If a sentence says what God, Christ, an angel, prophet, apostle, or biblical narrator said, use a direct quote in quotation marks with the verse reference. If simplifying (children's lesson, application), keep it clearly as your own words — do not put a paraphrase inside quotation marks.

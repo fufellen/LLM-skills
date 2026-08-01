@@ -3,8 +3,9 @@
 
 Reads <input.md>, finds every reference matching the Synodal book abbreviations
 (including common synonyms), verifies each chapter/verse against the vault at
-`<VAULT>/Церковь/Библия/Библия/<testament>/<canon>/<canon> Глава <N>.md`, and
-rewrites the file in place, replacing each match with an Obsidian wiki-link:
+`<VAULT>/Церковь/Библия/Библия/<testament>/<canon>/<canon> Глава <N>.md` (or
+`<canon> Псалом <N>.md` for Псалтирь), and rewrites the file in place,
+replacing each match with an Obsidian wiki-link:
 
     (2Тим. 2:2)  ->  ([[2 Тим Глава 2#2:2|2 Тим 2:2]])
 
@@ -13,6 +14,18 @@ A JSON report of resolved/unresolved refs is written next to the input as
 
 Usage:
     python resolve_bible_refs.py <input.md> <vault_root>
+
+Three non-obvious rules are baked in — see SKILL.md for the reasoning; short
+version:
+  1. Word-boundary on book names (avoid Russian dative endings like "-ам").
+  2. Colon strictly required between chapter and verse (avoid "2.0" -> "2:0").
+  3. Trim trailing ", <digit>" when followed by a letter (avoid stealing "1"
+     from a following numbered book like "1Тим.").
+
+The script does not repair source-text defects (reversed ranges, verses that
+don't exist, page numbers glued onto verse ranges). It reports them so a human
+can decide. Chapter file lookups are case-insensitive because a few files in
+the repo use lowercase "глава".
 """
 from __future__ import annotations
 

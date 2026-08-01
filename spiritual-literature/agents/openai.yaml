@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spiritual Literature"
+  short_description: "Sermons, theology, and Bible-accurate quoting"
+  default_prompt: "Use $spiritual-literature to work on this spiritual/theological note and resolve any Bible references from the local Synodal Bible."

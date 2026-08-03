@@ -361,3 +361,19 @@ Before letting a real user touch the app for the first time, run all three passe
 When a bug shows up in pass 2 or 3, fix it and rerun the pass — the bug you find is usually the entry point to a family of related ones.
 
 After all three pass, wipe test data (`TRUNCATE ... RESTART IDENTITY CASCADE` + `DELETE FROM users WHERE login IN ('test%')`) before handing over.
+
+### After handover: NEVER run a data-creating E2E on the live database
+
+Once the client has started entering real data, the pre-handoff QA loop is no longer available on prod. Re-running it there is worse than not testing:
+
+- A `curl -X POST /students/... -d 'enrollment_id=1'` will land on **whatever enrollment id=1 exists in the client's data now**, not the one your test script imagined. Real symptom: my POST created a lesson under Uch2 (my test) using the teacher/subject taken from the client's Kozlov enrollment, mixing my test participant into the client's real professional's schedule. Ten seconds to write, thirty to clean up, an hour to realise something was off.
+- Even shell mishaps compound: `GID=$(psql -tAc "SELECT id FROM groups WHERE name='TestGroup'")` returns an empty string when the group doesn't exist, then the next `curl .../groups/$GID/...` hits `.../groups//...` which some routes silently normalise to `/groups/` (list page) and others 404 — but the *creation* endpoint on the previous line already ran with whatever leaked through.
+
+Rules for QA after handover:
+
+- **Read-only diagnostics only against prod.** Sweep pass (GET) is fine — no rows changed. Role check is fine — no rows changed. E2E creation flow is **forbidden** against prod once the client is entering data.
+- **For end-to-end verification, use one of:**
+  1. **`pg_restore` last night's dump into a scratch database** (`CREATE DATABASE tutor_test OWNER ...` + `pg_restore -d tutor_test <dump>`), run a *second* uvicorn against that DB with `DATABASE_URL=postgresql://.../tutor_test`, hit it with your curl script, `DROP DATABASE tutor_test` when done. The prod service and prod DB are untouched.
+  2. **Parallel dev deployment** — a second systemd unit (`tutor-center-dev.service`) on port 8001 that already exists in the project's dev setup, backed by its own `tutor_center_dev` DB. Same code, same schema, no real client data.
+- **Always cross-check the DB before and after any prod write from a script:** `SELECT COUNT(*) FROM students, lessons, salary_adjustments` before → after; if anything changed that you didn't intend, roll it back **immediately** in a transaction before the client sees it. Real example: `DELETE FROM lesson_participants WHERE lesson_id=1; DELETE FROM lessons WHERE id=1; DELETE FROM enrollments WHERE id=2; DELETE FROM students WHERE id IN (3,4);` — restored the client's state in one transaction because I noticed within a minute.
+- **API endpoints should enforce cross-field referential checks even if the UI already does.** `POST /students/{sid}/lessons` MUST verify `enrollment.student_id == sid`, not just `enrollment.id == enrollment_id`. A script with a wrong id in one field should get 404, not create hybrid data. Server can't assume the caller is a well-behaved browser form.

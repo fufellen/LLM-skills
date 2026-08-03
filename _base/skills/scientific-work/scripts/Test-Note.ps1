@@ -319,17 +319,19 @@ if ($CheckLinks -and $linkMatches.Count -gt 0) {
             }
             if (-not $found) {
                 $leaf = Split-Path -Leaf $rel
-                if ($leaf -match "\.[A-Za-z0-9]+$") {
-                    $found = $fullNameSet.ContainsKey($leaf)
-                }
-                else {
-                    $found = $baseNameSet.ContainsKey($leaf) -or $fullNameSet.ContainsKey($leaf + ".md")
-                }
+                $found = $fullNameSet.ContainsKey($leaf) -or
+                         $baseNameSet.ContainsKey($leaf) -or
+                         $fullNameSet.ContainsKey($leaf + ".md")
             }
         }
         elseif ($hasExt) {
             # Bare attachment filename (e.g. .pdf, .png): match the full name anywhere.
-            $found = $fullNameSet.ContainsKey($target)
+            # A note title can also END with something that only looks like an
+            # extension - a date such as "отчёт 30.07.2026" - so fall back to note
+            # resolution instead of reporting a false missing target.
+            $found = $fullNameSet.ContainsKey($target) -or
+                     $baseNameSet.ContainsKey($target) -or
+                     $fullNameSet.ContainsKey($target + ".md")
         }
         else {
             # Bare note name: resolves to <name>.md (or any file with that base name).

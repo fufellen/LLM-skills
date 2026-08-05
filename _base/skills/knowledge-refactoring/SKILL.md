@@ -37,6 +37,18 @@ The result should be two coordinated but non-identical layers: a compact
 submission manuscript and a linked explanatory knowledge base that makes the
 science understandable and reusable.
 
+The same reading applies to notes produced by PDF→Markdown conversion
+(textbooks, papers, datasheets — see `pdf-textbook-to-markdown`): when the
+user asks to refactor them («отрефакторить»), they primarily mean this
+scientific refactoring, not merely vault heading style (user clarification,
+2026-08-06). For a converted note that means: remove conversion artifacts
+(running headers/footers, watermarks such as `ptg...`, broken hyphenation,
+duplicated TOC noise), restructure into readable sections, convert formulas
+to `$...$`/`$$...$$` where checkable against the source, extract reusable
+concepts into canonical term notes, and wiki-link the note into the vault
+term web while keeping the note itself the source-backed home of the
+document's own content.
+
 ## Self-Improvement And Publishing
 
 When knowledge-refactoring work reveals a durable, reusable lesson, use the `skill-learning` policy. Save compact canonicalization rules, anti-duplication heuristics, validation checks, or reusable search/refactor workflows in this skill or a focused reference file. Do not store private note content, customer material, credentials, generated logs, or one-off project facts in the skill.

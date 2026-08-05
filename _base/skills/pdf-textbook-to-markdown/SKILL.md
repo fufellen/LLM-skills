@@ -23,6 +23,7 @@ python ".\scripts\extract_pdf_textbook.py" inspect "input.pdf"
 ```
 
 3. Choose the extraction route:
+   - Fast triage / bulk conversion of born-digital PDFs (datasheets, papers, batch runs): `pip install pdf-inspector` (firecrawl, Rust; no OCR, no LLM). `pdf_inspector.process_pdf(path)` returns `.pdf_type` (`text_based`/`scanned`/`image_based`/`mixed`) and `.markdown` with headings and Markdown tables; Cyrillic survives. Verified 2026-08-06 on a 185-PDF vault batch (170 OK). Known limits: vector-only schematic PDFs fail with `invalid content stream`; a broken ToUnicode CMap yields `text_based` with empty markdown (pdftotext outputs garbage too — treat as needs-OCR). No page anchors — for page-level traceability use the bundled script instead.
    - Born-digital text: use the bundled script for a page-anchored draft and extracted images.
    - Scanned or low-text PDF: create a separate OCR copy first, then extract from the OCR PDF.
    - Layout-, formula-, or figure-heavy born-digital PDF: compare the default PyMuPDF draft with `--engine pymupdf4llm`. Use the better structure from PyMuPDF4LLM and the complete text/embedded images from PyMuPDF as a hybrid when neither route is sufficient alone.
@@ -42,6 +43,7 @@ python ".\scripts\extract_pdf_textbook.py" extract "input.pdf" --engine pymupdf4
 5. Restructure the draft into textbook notes. Use the PDF table of contents, bookmarks, or visible headings to create stable chapter/section boundaries. Keep page markers such as `<!-- source-page: 42 -->` near converted content.
 6. Clean the Markdown: remove repeated running headers, page numbers, broken line wraps, OCR artifacts, bad hyphenation, and duplicate boilerplate. Convert formulas to KaTeX only when the result can be checked against the PDF.
 7. Verify against the source. Compare representative pages, check image links, inspect headings, and keep a short source note with the PDF filename, page ranges, extraction/OCR method, and remaining manual-review items.
+8. Refactor, not just restyle. When the user asks to refactor converted notes («отрефакторить»), they primarily mean scientific refactoring per the `knowledge-refactoring` skill (its "Scientific Refactoring Scope"), not merely vault heading style: clean conversion artifacts, restructure into readable sections, extract reusable concepts into canonical term notes, and wiki-link the note into the vault term web. Vault style (`####` headings, no H1, no blank line after a heading) is the cosmetic baseline, not the deliverable (user clarification, 2026-08-06).
 
 ## Obsidian Conventions
 

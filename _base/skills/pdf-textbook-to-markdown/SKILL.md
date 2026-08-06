@@ -65,6 +65,8 @@ Read `references/pdf-tooling.md` when OCR is needed, formulas/tables are importa
 
 Read `references/pdf-textbook-lessons.md` before converting Word-printed PDFs (theses, NTO reports), formula-heavy documents, or 200+ page books — it holds verified artifact patterns (broken REF fields, per-glyph formula scatter) and the parallel per-chapter subagent workflow.
 
+**Read it also before dispatching any multi-agent conversion or refactoring sweep**, not only before converting a single book: it carries the fan-out lessons that cost the most to relearn — the shared-rules-file pattern that keeps each agent's reading phase short, the mandatory completeness-audit script (a hand-written fan-out silently dropped 8 of 170 notes and no agent reported it), the protocol that forbids parallel agents from creating term notes, the revision pass over blocks agents stamped "unrecoverable", and what does and does not survive when a session quota kills a fan-out mid-run.
+
 ## Extraction Script
 
 Use `scripts/extract_pdf_textbook.py` for repeatable local work:

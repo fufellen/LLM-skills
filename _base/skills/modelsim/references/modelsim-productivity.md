@@ -124,6 +124,7 @@ Consequences worth knowing before reaching for `+incdir`:
 
 ## Known Traps
 
+- ASE license boundary (measured 10.5b, 2026-08-07): `vlog -sv` silently compiles `rand`/`constraint` classes and covergroups (soft vlog-2186 warning only), but `vsim` refuses — `covergroup` kills design load ("only supported with QuestaSim"), `randomize()` dies Fatal even without covergroups. Classes as such, `$urandom_range`, associative arrays, and queues DO work. So no UVM and no constrained-random/covergroup benches on ASE; substitute `$urandom_range` + value tables for stimulus and associative-array "seen" sets for coverage, or move to cocotb+iverilog.
 - Stale `_lock` file in a library after a killed compile → next compile hangs "waiting for lock". Verify no vlog/vsim process uses the dir, then delete `_lock` (p. 778). More likely on Drive-synced folders; per-run uniquely-named work libraries (existing convention in `C:\workspace\verilog\docs\modelsim.md`) avoid it entirely.
 - `project compileall` in a `.do` is redundant when the `vlog` line already compiles the bench and its includes (existing user finding — keep scripts library-based, not project-based).
 - Tcl 4-state comparisons need quotes: `== "001Z"`, `== "X"`; `'X'` single quotes are illegal; multi-line `if` needs `{` at end of line (pp. 559-560).

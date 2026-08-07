@@ -112,6 +112,16 @@ Command inventory distilled from the ModelSim 10.5b User's Manual (page numbers 
 - Reset-time false violations / X-pollution control: `+no_tchk_msg` (silence messages), `+no_notifier` (no X flips from violations), `+notimingchecks` (off entirely), `+nospecify` (also kills path delays — fastest functional gate sim), `+no_neg_tchk` (pp. 214-224, 526-527).
 - Delay modes for Verilog-XL-style cells: `+delay_mode_zero|unit|path|distributed` (pp. 230-233).
 
+## Include Resolution
+
+A relative `` `include `` resolves against the **directory of the including file**, not against the current working directory (measured 10.5b, 2026-08-07, on a purpose-built two-hop chain compiled from a third directory: absolute path to the TB, no `+incdir`, `Errors: 0`, both hops resolved).
+
+Consequences worth knowing before reaching for `+incdir`:
+
+- `Cannot open \`include file` means the FILE moved away from its dependency, not that the shell is in the wrong place. Copying a testbench into a scratch directory while keeping its original `../../../` prefix is the usual cause; the same file compiled in place works from any CWD.
+- Adding `+incdir` to make a copied file compile hides a wrong path and moves the dependency from the source into the command line — the file then builds under one invocation and fails under another. Use `+incdir` only for a genuinely shared search root.
+- The design rule this supports: every file includes what it references, by a path relative to itself, and never waits for a dependency to arrive because another file was compiled earlier. Combined with `` `ifndef `` guards, being explicit costs nothing — a repeated include is free, a missing one is a latent file-order dependency that surfaces far from its cause.
+
 ## Known Traps
 
 - Stale `_lock` file in a library after a killed compile → next compile hangs "waiting for lock". Verify no vlog/vsim process uses the dir, then delete `_lock` (p. 778). More likely on Drive-synced folders; per-run uniquely-named work libraries (existing convention in `C:\workspace\verilog\docs\modelsim.md`) avoid it entirely.

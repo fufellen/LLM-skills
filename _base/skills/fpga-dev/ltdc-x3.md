@@ -108,10 +108,11 @@ HIGHRES=1 (стоп меряется x2) — 25/37; HIGHRES=2 (x4) — 20/30. HI
 выходы (UART/MSOP/LED/DBG/QSPI SCK) — 4мА SLOW (минимум SSN, даёт −2..−5 пс);
 QSPI SCK 25 МГц на 4мА SLOW читается стабильно. НЕ ставить всем одинаково.
 
-Для `intensity_to_color` значения 2500/4500 пс пока являются только дефолтами
-LTDC-параметров `MIN_INTENSITY`/`MAX_INTENSITY`, а не зашитыми порогами.
-Источник этих порогов будет определён отдельно. Со шкалой TDC7201 (MIN=5000)
-интенсивность LTDC была бы всегда 0.
+Для `intensity_to_color` значения 2500/4500 пс являются стартовыми значениями
+runtime-полей `ltdc_min_intensity_ps`/`ltdc_max_intensity_ps`, а не HDL-
+параметрами. Конвертер принимает их обычными входами
+`in_min_intensity`/`in_max_intensity`. Источник командной записи будет определён
+отдельно. Со шкалой TDC7201 (MIN=5000) интенсивность LTDC была бы всегда 0.
 
 Burst-телеметрия (r120m_point_uart_stream, DECIM=1000): копим 1000 НЕПРЕРЫВНЫХ
 выстрелов в BRAM на ~285 кГц (~3.5 мс), затем сливаем в UART (кадр 11 байт,
@@ -231,7 +232,7 @@ TR_MODE: 0 = 3+3 байта, 1 = 2+2 (без младших байт), 2 = то�
     БАЙТ-В-БАЙТ кадр: `FF FE` head (point_count=0x5A=90, angle_res=0x00C8=200,
     dist_byte=2, intensity_flag=1, echo=first), 90 точек `dist(LE 2Б) + int(1Б)`
     = `XX 2E FF` (dst≈0x2E1X≈11.8м на кабеле ~78.7нс, int=FF), tail `FF 9B`, 1 CS/
-    кадр, SCK 25 МГц. Боевой TDC7201-MSOP (TDC_4_1) при этом не трогали.
+    кадр, SCK 25 МГц. Боевой TDC7201-MSOP (lidar_measurement_pipeline) при этом не трогали.
     Ключ: MSOP-цепочка generic — свой фронт-энд (LTDC->dst/color) вместо
     tdc_processing, дальше pack_filler+sender без изменений.
   - 2 ЭХА (мульти-хит) 2026-07-08: контроллер параметризован `HITS_PER_CHANNEL`
@@ -257,6 +258,27 @@ TR_MODE: 0 = 3+3 байта, 1 = 2+2 (без младших байт), 2 = то�
     дистанции. Эталон 2026-07-29: handler TB — `660000/800000 ps`; полный
     `R120M_BM2BF1X1_ltdc_tb` — `44968/89937 mm`, два пакета по 2006 байт,
     509 поджигов / 509 прерываний.
+  - Каждый логический echo имеет собственную пару `TOF/PW`. Для
+    `HITS_PER_CHANNEL=1` активная 12-байтная карта результата:
+    `0..2=TOF1`, `3..5=PW1`, `6..8=TOF2`, `9..11=PW2`.
+    `ltdc_measurement_engine` обязан декодировать и защёлкивать все четыре
+    значения. Текущий `ltdc_point_builder` кодирует PW1 непосредственно в
+    `intensity1` с шагом 128 пс, а PW2 преобразует в `intensity2` через
+    runtime-окно порогов. Номер зеркала хранится отдельным состоянием ассоциации
+    точки и не занимает биты `intensity2`.
+  - Регрессия этого контракта должна задавать различающиеся PW обоих эх и менять
+    номер зеркала независимо. До исправления декодирования двух PW полный TB при
+    `PW1=5000 ps`, `PW2=20000 ps` и окне `6000..19000 ps` воспроизводил
+    `intensity1=0, intensity2=0` вместо ожидаемого на тот момент `0/255`.
+    Коммит `564f4afc` исправил потерю PW2; текущий контракт `39/255` для тех же
+    входов проверяется отдельно по правилам раздела про кодирование PW1 ниже.
+  - Коммит `4664450f` исторически разделял один `intensity_to_color` между
+    обоими эхами. Его PnR: UserCode `0x0000D9CB`, setup/hold `0/0`, Fmax
+    `74.810 MHz` при `50 MHz`, logic `10704`, registers `9920`, BSRAM `56%`,
+    все 101 pin constraints. Против прямого дублирования конвертера это
+    `-523` logic, `-208` registers и `+19.289 MHz` Fmax. После перехода PW1
+    на прямой 128-пс код этот конвертер обслуживает только эхо-2. Железо
+    историческим образом не прошивалось.
 
 ## План bring-up на R120M (ПЛИС-мастер)
 
@@ -303,7 +325,7 @@ N-канальной системы модель другая: FIRE свобод
 
 `src/TDC_LTDC_X3/ltdc_processing/ltdc_processing.sv` — замена `tdc_processing`
 (2×TDC7201) с тем же контрактом наружу: `dst`/`dst_cmp`/`color`/`pulse_width`
-плюс `if_ldr_cdtr.tdc_data_ready`. Всё остальное в `TDC_4_1` (энкодер, углы,
+плюс `if_ldr_cdtr.tdc_data_ready`. Всё остальное в `lidar_measurement_pipeline` (энкодер, углы,
 зеркала, кадры, команды МК, MSOP по SPI2) от типа ВЦП не зависит — шов чистый.
 
 Отличие от стендового топа `R120M_ltdc_msop_brd_ifm`: выстрелами управляет
@@ -320,7 +342,7 @@ N-канальной системы модель другая: FIRE свобод
 Соглашение боевого тракта: «нет эха» отдаётся дистанцией **0** (как в тракте
 TDC7201, где TOF=0 даёт dst=0), НЕ 0xFFFFFF — ПО такую точку не рисует.
 
-Выбор источника — параметр `USE_LTDC` в `TDC_4_1`/`main`/прослойке платы
+Выбор источника — параметр `USE_LTDC` в `lidar_measurement_pipeline`/`main`/прослойке платы
 (1 = LTDC, линия `R120M.BF2`; 0 = прежний тракт 2×TDC7201). При `USE_LTDC=1`
 интерфейсы TDC7201 держатся в покое (`TDC_EN=0`), а шина LTDC уходит на пины.
 
@@ -332,21 +354,62 @@ TDC7201, где TOF=0 даёт dst=0), НЕ 0xFFFFFF — ПО такую точ�
 шине, эхо 300 нс после поджига → 44968 мм при расчётных 44969, 2 валидных
 MSOP-кадра, сниффер прослойки сошёлся с независимым декодером ТБ.
 
-## Параметры порогов интенсивности (рефакторинг 2026-07-29)
+## Runtime-поля порогов интенсивности (рефакторинг 2026-07-29)
 
-- Пороги называются `MIN_INTENSITY` и `MAX_INTENSITY`; дефолты `2500/4500 пс`
-  сохраняют прежнее поведение, но источник значений пока намеренно не реализован.
-- В боевом тракте параметры проходят без локальных констант по всей цепочке:
-  `R120M_BM2BF1X1_brd_ifm` → `main` → `TDC_4_1` → `ltdc_processing` →
-  `ltdc_point_builder` → `intensity_to_color`.
-- В standalone-топе `R120M_ltdc_msop_brd_ifm` те же параметры передаются обоим
-  экземплярам `intensity_to_color`, для эхо-1 и эхо-2.
-- Приёмочный TB обязан задавать недефолтное окно и проверять цвет, а не только
-  наличие параметра. Проверено: `ltdc_point_builder_tb` с окном `4000..6000`
-  получает `color=127` при `PW=5000`; боевой и standalone MSOP TB с окном
-  `100000..200000` получают `color=0`, тогда как старые локальные пороги дали бы
-  ненулевой цвет. Оба PnR завершены с setup/hold `0/0`; дефолтная синтезированная
-  логика и частоты не изменились.
+- Пороги называются `ltdc_min_intensity_ps` и `ltdc_max_intensity_ps`; стартовые
+  значения `2500/4500 пс` сохраняют прежнее поведение. Источник командной записи
+  пока намеренно не реализован: не выдумывать для него адрес до отдельного
+  решения по карте команд.
+- В активном тракте поля принадлежат `interface_MCU_FPGA`, и `MCU_FPGA` задаёт
+  их стартовые значения. Далее обычные сигналы проходят по цепочке
+  `lidar_measurement_pipeline` → `ltdc_processing` → `ltdc_point_builder` →
+  `intensity_to_color` для эхо-2; `intensity1` от runtime-порогов не зависит.
+  В `R120M_BM2BF1X1_brd_ifm` и `main` пороговых параметров больше нет.
+- В standalone-топе `R120M_ltdc_msop_brd_ifm` локальные runtime-поля поданы
+  обоим экземплярам `intensity_to_color`, для эхо-1 и эхо-2. Пока реальный
+  источник записи не подключён, Gowin закономерно сворачивает их в стартовые
+  константы; такой bitstream ещё не доказывает изменение порогов на железе.
+- `intensity_to_color` фиксирует интенсивность и оба порога одной транзакции
+  перед интерполяцией, поэтому смена поля во время вычисления не смешивает два
+  разных окна. В активном тракте это относится к эхо-2; standalone-топ
+  продолжает применять окно к обоим эхо.
+- Приёмочный TB обязан менять поля в одном уже элаборированном DUT и проверять
+  функциональный результат. Проверено: `intensity_to_color_tb` меняет окно
+  `4000..6000` → `100000..200000` → `0..1` и получает для `PW=5000`
+  соответственно `127` → `0` → `255`; standalone MSOP TB после опустошения
+  переходной очереди подтверждает для обоих эхо `0` → `255`.
+  `ltdc_point_builder_tb` в активном тракте обязан одновременно доказывать,
+  что при смене окна меняется только `intensity2`, а код PW1 в `intensity1`
+  остаётся неизменным.
+- PnR после коммита `7712b47e` завершён с setup/hold `0/0`. Активный
+  `R120M_BM2BF1X1`: UserCode `0x0000F5D8`, Fmax `63.596 MHz` при `50 MHz`,
+  logic `10805`, registers `9783`. Standalone `R120M_LTDC_MSOP`: UserCode
+  `0x00006C5A`, Fmax `106.839 MHz`, logic `2905`, registers `2084`.
+
+## PW первого эха в intensity1 MSOP (проверено 2026-07-29)
+
+- В активном `R120M.BF2` байт `intensity1` несёт сырую ширину первого эха
+  LTDC с фиксированным шагом **128 пс**, ближайшим удобным к требуемым 100 пс.
+  Формула: `intensity1 = min(floor(PW1_ps / 128), 255)`.
+- Границы кодирования: `0..127 пс → 0`, `128..255 пс → 1`,
+  `32639 пс → 254`, начиная с `32640 пс → 255`. Код 255 является насыщением,
+  поэтому точное значение ширины выше 32.64 нс из одного байта не восстановить.
+  Для no-hit `ltdc_point_builder` принудительно выдаёт `intensity1=0`.
+- Не возвращать делитель или интерполяцию для PW1: степень двойки реализуется
+  выборкой битов и насыщением в общем модуле
+  `src/lidar/pulse_width_to_msop_intensity/pulse_width_to_msop_intensity.sv`.
+  `intensity2` остаётся результатом `intensity_to_color(PW2, runtime-пороги)`.
+- Изменение выполнено TB-first: старый RTL дал шесть ожидаемых ошибок на
+  новых проверках. После коммита `9f3b5228` focused helper TB и
+  `ltdc_point_builder_tb` прошли с `Errors=0`; полный
+  `R120M_BM2BF1X1_ltdc_tb` принял два MSOP-пакета по 2006 байт,
+  `44968/89937 mm`, `intensity1=39` для `PW1=5000 пс`, `intensity2=255`,
+  509 поджигов / 509 спадов INT. Command-SPI TB также прошёл.
+- Production PnR после whitespace-only коммита `c966f400`: UserCode
+  `0x00003469`, Fmax `71.381 MHz` при `50 MHz`, худший setup slack
+  `+5.991 ns`, hold slack `+0.077 ns`, нарушений `0/0`; logic
+  `10730/20736 (51%)`, registers `9880/16173 (61%)`, BSRAM `56%`,
+  все 101 порта constrained. Bitstream сгенерирован, но в железо не загружался.
 
 ## Ширина эха: признак ложного отклика (осциллограф 22.07.2026)
 
@@ -365,7 +428,7 @@ MSOP-кадра, сниффер прослойки сошёлся с незав�
 
 Спад `LTDC_INTERRUPT` в боевом `ltdc_measurement_engine` и в standalone-топах
 `R120M_ltdc_bringup_brd_ifm` / `R120M_ltdc_msop_brd_ifm` детектируется общим
-`src/front_detector/front_detector.sv` с `is_fast=1`, а не локальной конструкцией
+`src/edge_detector/edge_detector.sv` с `is_fast=1`, а не локальной конструкцией
 `int_q && !interrupt`. Не возвращать частную копию: перед созданием небольшого
 helper-блока сначала искать и проверять готовые модули проекта. При замене
 учитывать дополнительное синхронное семплирование и задержку выбранного режима.
@@ -397,34 +460,23 @@ registers `2031` при рабочей частоте 50 MHz. Первый MSOP 
 устаревшие constraints удалённого порта `FPGA_TX2`; они удалены из
 `R120M_ltdc_msop.cst`, после чего physical constraints и PnR прошли.
 
-## LTDC quad-reader (рефакторинг 2026-07-29)
+## LTDC QSPI master internals (verified 2026-07-29)
 
-`ltdc_x3_quad_read` использует направленные имена публичных сигналов
-`in_*`/`out_*`, локальные связи `lcl_*`, экземпляры `obj_*` и типизированную
-`state_t` FSM. Ширина фазового счётчика должна учитывать максимум длительностей
-opcode, address, dummy и data при любых допустимых значениях параметров
-`OPCODE`, `DUMMY_CYCLE_COUNT`, `CLOCK_DIVIDER` и `BYTE_COUNT`. Ветка
-восстановления из недопустимого состояния обязана одновременно вернуть FSM в
-idle и безопасно отпустить QSPI: снять `busy`, деактивировать `SS_n`, остановить
-SCK и убрать output-enable.
+`qspi_1_4_4_sdr_read_master` uses directional public signal names
+`in_*`/`out_*`, local connections `lcl_*`, instances `obj_*`, and a typed
+`state_t` FSM. Size its phase counter for the longest opcode, address, dummy,
+or data phase across every legal value of `COMMAND`, `DUMMY_CYCLE_COUNT`,
+`CLOCK_DIVIDER`, and `BYTE_COUNT`. Illegal-state recovery must return the FSM
+to idle and release QSPI ownership in the same branch: clear `busy`, deactivate
+`SS_n`, stop SCK, and clear output-enable.
 
-Focused TB:
-`src/TDC_LTDC_X3/ltdc_x3_spi_hdlr/ltdc_x3_quad_read_tb.do`. Он проверяет
-1-битный opcode `0x6B` MSB-first, quad-address по старшей/младшей тетраде,
-освобождение шины на dummy/data, порядок возвращаемых байтов, точное число
-тактов SCK, одноклоковый `valid`, reset посреди транзакции и восстановление
-из illegal state. В ModelSim 10.5 hierarchical enum нельзя надёжно форсировать
-через cast типа из TB: форсировать нужно отдельные биты `lcl_state[N]`, а
-освобождать весь `lcl_state`.
-
-Приёмка коммита `70383056`: focused TB — `PASS`, standalone MSOP TB — `PASS`
-(38 корректных кадров, восстановление после 1301 измерения), полный
-`R120M_BM2BF1X1_ltdc_tb` — `PASS` (509 fires/509 interrupt falls, два пакета по
-2006 байт). Gowin PnR завершил bitstream с setup/hold `0/0`: активная
-`R120M_BM2BF1X1` — Fmax `64.767 MHz`, logic `10643`, registers `9757`
-(baseline: `62.242 MHz`, `10829`, `9756`); standalone `R120M_LTDC_MSOP` —
-Fmax `113.041 MHz`, logic `2843`, registers `2032` (baseline: `110.274 MHz`,
-`2891`, `2031`) при рабочей частоте 50 MHz.
+The focused
+`src/SPI/QSPI/qspi_1_4_4_sdr_read_master/qspi_1_4_4_sdr_read_master_tb.do`
+checks command `0x6B` MSB-first on one lane, quad address order, DQ release
+during dummy/data, returned byte order, exact SCK cycle/divider behavior,
+one-cycle `valid`, reset during a transaction, and illegal-state recovery.
+ModelSim 10.5 cannot reliably force a hierarchical enum through a TB type cast;
+force the individual `lcl_state[N]` bits and release the complete `lcl_state`.
 
 Упаковка `lcl_data_bytes[0:BYTE_COUNT-1]` в `out_read_data`, где байт `k`
 занимает `[k*8 +: 8]`, выполняется как `{<<8{lcl_data_bytes}}`: направление
@@ -447,24 +499,29 @@ The reusable wire engine is
 It owns SCK/SS, DQ output-enable, the typed FSM, byte capture, reset, and safe
 illegal-state recovery. Its deliberately narrow public contract has a
 parameterized fixed `COMMAND`, an 8-bit address, dummy count, clock divider, and
-byte count. `src/TDC_LTDC_X3/ltdc_x3_spi_hdlr/ltdc_x3_quad_read.sv` is only the
-device adapter that binds command `0x6B`. Do not add runtime command selection
-or wider addresses until an active consumer and its protocol TB require them.
+byte count. Bind `COMMAND=8'h6B` directly in `ltdc_measurement_engine` and
+`R120M_ltdc_msop_brd_ifm`; both use register address `8'h15`. Do not restore a
+pass-through LTDC wrapper only to bind these constants or rename ports. Do not
+add runtime command selection or wider addresses until an active consumer and
+its protocol TB require them.
 
-Two focused tests are required:
-
-- `qspi_1_4_4_sdr_read_master_tb.do` proves the reusable wire contract,
-  address latching, DQ ownership, exact cycles/divider, byte order, reset, and
-  illegal-state recovery.
-- `ltdc_x3_quad_read_tb.do` proves the LTDC binding and `0x6B` transaction.
+The transport TB proves the reusable wire contract. The standalone MSOP and
+full active integration TBs prove the LTDC command/address binding and both
+returned echoes. Do not retain a wrapper-only TB after deleting a wrapper that
+has no independent behavior.
 
 The first generalized draft passed simulation but cost 52 LUT instead of the
 original 48 LUT; a shift-register address experiment also raised the full
 design to 10839 logic / 9760 registers. The accepted narrow core synthesizes to
-exactly 48 LUT / 14 DFF, while the LTDC wrapper adds 0 LUT / 0 DFF. Final
-acceptance at commit `41a6bfd8`: both focused TBs pass with 0 errors; standalone
-MSOP passes with 38 good two-echo frames and recovery after 1301 shots; full
-`R120M_BM2BF1X1_ltdc_tb` passes with 509 fires / 509 interrupt falls and two
-2006-byte packets (`44968/89937 mm`). PnR exactly matches the pre-split build:
-UserCode `0x0000F3C3`, logic `10643`, registers `9757`, Fmax `64.767 MHz` at
-50 MHz, and setup/hold violations `0/0`.
+exactly 48 LUT / 14 DFF.
+
+Commit `d7fa85e4` removed the zero-behavior LTDC wrapper and its wrapper-only
+TB. Acceptance: transport TB and `ltdc_x3_spi_hdlr_tb` passed with zero errors;
+standalone MSOP passed with 38 good two-echo frames and illegal-state recovery;
+full `R120M_BM2BF1X1_ltdc_tb` passed with 509 fires / 509 interrupt falls, two
+2006-byte packets, and distances `44968/89937 mm`. Fresh Gowin PnR was
+bit-identical to the pre-removal build. `R120M_BM2BF1X1`: UserCode
+`0x0000F5D8`, Fmax `63.596 MHz` at 50 MHz, logic `10805`, registers `9783`,
+BSRAM `56%`, setup/hold `0/0`. `R120M_LTDC_MSOP`: UserCode `0x00006C5A`,
+Fmax `106.839 MHz`, logic `2905`, registers `2084`, BSRAM `34%`, setup/hold
+`0/0`. No hardware was programmed.

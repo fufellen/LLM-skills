@@ -66,6 +66,11 @@ Follow `database-development` for the app's data model and default stack. On the
 - Nightly `pg_dump` to a dated file, plus a copy **off the server** (object storage or a synced drive). A backup that only lives on the same VPS is not a backup.
 - Automate with a `cron` job or systemd timer; keep the script in the repo.
 - **Test a restore** before declaring backups done.
+- **`chmod +x` the scripts in the deploy step, not just once by hand.** Git does not reliably carry the exec bit from a Windows client to a Linux server; a later `git pull`/`reset --hard` can leave `backup.sh` as `-rw-r--r--`. systemd then fails the unit with `status=203/EXEC` and **backups silently stop** — the app keeps working, nobody notices. Real case: two weeks with no backup while the client entered 63 records. Put `chmod +x deploy/*.sh` inside `update.sh`, and also mark them executable in the index: `git update-index --chmod=+x deploy/*.sh`.
+- **Check timer health whenever you touch the server**, it costs one command:
+  `systemctl list-timers --no-pager | grep <name>` (is it scheduled?) and
+  `systemctl status <name>.service --no-pager | head -5` (did the last run succeed?).
+  A failed oneshot service leaves no trace in the app — only in `systemctl status`.
 
 ## Learning
 

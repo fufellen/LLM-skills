@@ -21,6 +21,9 @@ log, and commit handling.
 - `gowin-analyzer-cli.md` — Gowin Analyzer Oscilloscope / GAO captures from the CLI.
 - `ltdc-x3.md` — LTDC-X3 measurement chip: QSPI access, config, combine mode, bring-up.
 - `w5500.md` — W5500 Ethernet over SPI.
+- `agent-tooling.md` — measured cost of the direct-query tooling on this project,
+  the compatibility flags this RTL needs, and static findings in it. Tool usage
+  itself lives in the separate `rtl-agent-tools` skill.
 - `scripts/parse_diptrace_asc.py` — parse DipTrace `.asc` schematics to trace board nets.
 
 ## Origin And Sync

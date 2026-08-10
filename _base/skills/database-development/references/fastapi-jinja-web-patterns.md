@@ -362,6 +362,20 @@ When a bug shows up in pass 2 or 3, fix it and rerun the pass — the bug you fi
 
 After all three pass, wipe test data (`TRUNCATE ... RESTART IDENTITY CASCADE` + `DELETE FROM users WHERE login IN ('test%')`) before handing over.
 
+### Every feature you ship, YOU verify — end to end, before saying it's done
+
+Non-negotiable. «Страницы отдают 200» is not verification, it's a smoke test. Reporting a feature as working when you only checked that the template renders is how you hand the user a broken button and find out three days later.
+
+For each new feature, before telling the user it's ready:
+
+1. **Exercise the actual code path** the user will take — the POST endpoint, not just the GET that shows the form. If it's JS-driven, call the API the JS calls, with the same payload shape.
+2. **Read back the resulting state from the database**, not from the HTTP response. `{"ok": true}` proves the handler didn't crash; `SELECT attendance, price, charge_source FROM ...` proves it did the right thing.
+3. **Test the branches that matter.** A three-way attendance status needs all three checked: does `no_show` actually charge, does `excused` actually not, does `present` charge the discounted price. Testing only the happy path hides exactly the bugs that cost money.
+4. **Check the numbers against hand-arithmetic.** 1800 ₽ with 17 % discount must land as 1494.00 — compute it yourself and compare, don't accept whatever the DB shows.
+5. **If a result looks wrong, find out why before reporting.** In one case a `no_show` came back `price=0, free` — that turned out to be a test artefact (lesson created with a teacher who had no enrollment for that student), not a bug. Re-running with correct fixtures gave the right 1494.00. Reporting either «works» or «broken» without that second step would have been wrong.
+
+Where to run it: never on prod after handover (see next section). Spin the scratch DB + second uvicorn on another port, run the full flow there, drop it after.
+
 ### After handover: NEVER run a data-creating E2E on the live database
 
 Once the client has started entering real data, the pre-handoff QA loop is no longer available on prod. Re-running it there is worse than not testing:

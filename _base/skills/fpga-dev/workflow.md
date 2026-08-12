@@ -150,6 +150,21 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
        is a latent order dependency. Without guards GowinSynthesis reports
        `ERROR (EX3794): Overwriting previous definition of module` where
        ModelSim stays silent.
+     - Самодостаточность режет в ОБЕ стороны: включать надо СВОИ прямые
+       зависимости и ТОЛЬКО их. Если файл включает `X.sv`, но сам ничего из `X`
+       не инстанцирует и не использует, а `X` нужен лишь тому, кого этот файл
+       тоже включает, — такой include лишний и должен быть удалён. Зависимости
+       чужого модуля — забота чужого модуля.
+     - У лишнего транзитного include есть измеримая цена, а не только
+       эстетическая. Gowin склеивает относительные пути НЕ нормализуя их, и
+       цепочка включений даёт строки вида
+       `src/main/../TDC/lidar_measurement_pipeline/../encoder_processing/../..`.
+       Измерено 12.08.2026: сборка того же дерева из каталога с длинным
+       префиксом пути упала пачкой `ERROR (EX1985) Cannot open include file`
+       именно на таких склейках, тогда как из `C:\workspace\verilog` собиралась.
+       Каждый лишний ярус включения приближает проект к MAX_PATH и делает
+       сборку зависящей от того, где лежит рабочая копия. Держать воркри в
+       коротком пути — обход, а не лечение; лечение — короткие честные цепочки.
      - `+incdir` is for locating a genuinely shared search root, NOT for
        repairing a wrong relative path. If a file compiles only because
        `+incdir` found its dependency by bare name, fix the path in the file.
@@ -215,6 +230,25 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      change the association metadata independently, and check the final
      serialized payload bytes across a packet boundary.
    - Do not encode product, calibration, or conversion thresholds as elaboration-time parameters when they must change while the FPGA is running. Parameters are for immutable structural choices and, at most, reset/default values; the consuming datapath must receive a `logic` or interface field through ordinary ports. Put the field at the owning configuration boundary and thread it through every intermediate module to the consumer. Until the real write source is defined, keep the current value only as a documented startup default; do not invent a command address, runtime detector, or calibration algorithm ahead of that decision. Acceptance must change the field at least once in the same elaborated DUT and assert the changed functional result. A parameter override, default-only check, hierarchical constant, or `force` by itself does not prove a synthesizable runtime write source; when that source is deferred, distinguish verified RTL plumbing from live-hardware writability.
+   - Поле интерфейса не знает, чем оно является для модуля. Роль задаёт имя
+     ПОРТА потребителя, а не имя поля.
+
+     Одно и то же `if_mcu_fpga.msop_tcp_echo_mode` для `MCU_FPGA` — то, что он
+     только что ЗАПИСАЛ по команде, а для цепочки MSOP — псевдостатическая
+     настройка, которую она ЧИТАЕТ и обязана защёлкнуть. Ярус (`_req`, `_lat`,
+     `_act`), направление и признак настройки — свойства не величины, а её
+     употребления в конкретном модуле.
+
+     Отсюда разделение: имя поля интерфейса описывает СУЩНОСТЬ (что это за
+     величина и чья она), имя порта — РОЛЬ в модуле. Ролевые квалификаторы
+     (`in_`, `out_`, `cfg`, `_req`/`_act`/`_lat`, `_stb`) в имена полей
+     интерфейса не тащить: поле, названное `in_cfg_...`, соврёт первому же
+     модулю, который его пишет, а не читает.
+
+     Практическое следствие: введение конвенции для портов НЕ требует
+     переименования полей интерфейса, и разнобой между `msop_tcp_echo_mode` в
+     интерфейсе и `in_cfg_echo_mode` на порту — не рассогласование, а разные
+     уровни описания.
    - Псевдостатическое поле (runtime-настройка) именуется квалификатором `cfg`.
 
      Это значение, которое задаёт пользователь/МК и которое само по себе не

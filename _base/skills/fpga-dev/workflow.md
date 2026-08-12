@@ -385,6 +385,30 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - Before programming hardware, prefer a ModelSim Intel FPGA Edition 10.5b simulation or at least a ModelSim compile/elaboration check for the firmware top.
    - ModelSim tool techniques (batch runs, robust .do error handling, WLF/dataset comparison, logging traps, error diagnosis) live in the shared `modelsim` skill (`.codex/skills/_base/skills/modelsim/` in the Obsidian vault; vault digest «Продуктивная работа в ModelSim»). Top wins for this repo: `vsim -batch -logfile` for regressions; `onerror {quit -code 1}` before `run` so PowerShell sees real exit codes; `add log -r /*` for post-mortem waves (memories are excluded from wildcards by default — WildcardFilter/WildcardSizeThreshold).
    - Before re-running a simulation just to add one more `$display`, or starting a long grep chain for "where does this signal go", use the direct-query tooling in the `rtl-agent-tools` skill (`docs/skills/rtl-agent-tools/workflow.md`): wavepeek over a VCD/FST dump, slang / slang-netlist connectivity queries, yosys+eqy equivalence proof after a lint fix. Project-specific numbers, the compatibility flags this RTL needs, and static findings in it are in `agent-tooling.md`.
+   - Совпавший битовый образ ЗАКРЫВАЕТ вопрос проверки на железе. Это самое
+     сильное доказательство, доступное для рефакторинга, и оно дешевле любого
+     стенда.
+
+     Правило: собрать образ из отрефакторенного дерева и сравнить SHA-256 с
+     образом, уже проверенным на железе.
+     - Совпал — рефакторинг доказанно ничего не изменил, конфигурационный поток
+       тот же самый бит в бит. Проверять на железе НЕ нужно: это буквально та
+       же прошивка, а её статус (`HWOK`) наследуется. Перепрошивка ничего не
+       добавит к доказательству.
+     - Не совпал — разница реальная, даже если правка выглядит косметической.
+       Нужна проверка на железе; «должно быть эквивалентно» не аргумент.
+
+     Сравнивать **`.bin`, а не `.fs`**. Измерено 12.08.2026 (Gowin V1.9.8.07,
+     GW2A-LV18PG256C8/I7, пересборка того же дерева): `.bin` совпал по SHA-256
+     полностью, а `.fs` отличался — ровно одной строкой заголовка
+     `//Created Time`, при идентичных `//CheckSum` и `UserCode` и одинаковом
+     числе строк. То есть несовпадение SHA у `.fs` само по себе НЕ означает
+     разницы в дизайне; payload несёт `.bin`.
+
+     Чего это НЕ доказывает: совпадение `UserCode`/`CheckSum` без SHA-256 —
+     `CheckSum` 16-битная, коллизия возможна. И одинаковый `.bin` говорит
+     только о конфигурации ПЛИС: прошивка МК, содержимое FLASH и рантайм-
+     настройки в него не входят.
    - Run synthesis/implementation only when the change can affect hardware build, timing, pinout, or generated firmware.
    - If a GUI/CLI tool gives surprising or inconsistent hardware behavior, inspect the tool and firmware source that builds/parses the packet before changing HDL or firmware. Treat screenshots and GUI labels as symptoms; confirm the actual protocol bytes, offsets, ports, bind addresses, and parser expectations from source or packet capture.
    - For bench-board firmware tasks, do not stop at simulation and `.fs` generation. After a clean build, verify on the actual hardware unless the user explicitly asks for build-only work or the board/tool is unavailable.

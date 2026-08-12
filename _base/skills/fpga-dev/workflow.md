@@ -465,6 +465,29 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      `CheckSum` 16-битная, коллизия возможна. И одинаковый `.bin` говорит
      только о конфигурации ПЛИС: прошивка МК, содержимое FLASH и рантайм-
      настройки в него не входят.
+
+     **Ловушка сравнения: сверять `.bin` ТОЛЬКО после успешной сборки.** При
+     падении сборки на диске остаётся `.bin` от прошлого удачного прогона, и
+     сравнение радостно скажет «побитово тот же». Поймано 12.08.2026: сборка
+     упала на `ERROR (EX3937) Instantiating unknown module`, а проверка дала
+     «совпало». Порядок: удалить артефакт перед пересборкой, проверить код
+     возврата и наличие `Bitstream generation completed`, и только потом
+     сравнивать.
+   - Порядок внесения изменений: **навык первым, код по месту, критерий —
+     `.bin`.**
+     - Правило или конвенция сначала записывается в навык, и уже из него
+       применяется к коду. Навык — источник, состояние кода — следствие; иначе
+       договорённость живёт только в переписке и теряется к следующей задаче.
+     - Переносить изменение между ветками правкой ПО МЕСТУ, а не слиянием,
+       когда слияние тащит лишнее. Ветки проекта несут разное (стенд, продукт,
+       варианты платы), и merge ради одной конвенции затягивает в боевую линию
+       чужую незрелую работу. Аккуратная точечная правка в целевой ветке
+       честнее и проверяется тем же критерием.
+     - Критерий валидности переноса — ПОБИТОВОЕ совпадение `.bin` с эталоном
+       ТОЙ ЖЕ ветки. Совпал — правка внесена верно. Не совпал — она изменила
+       дизайн, и разбираться надо до того, как двигаться дальше.
+     - Отсюда порядок действий: снять эталонный `.bin` ДО правки, внести
+       правку, удалить артефакт, пересобрать, сверить.
    - Run synthesis/implementation only when the change can affect hardware build, timing, pinout, or generated firmware.
    - If a GUI/CLI tool gives surprising or inconsistent hardware behavior, inspect the tool and firmware source that builds/parses the packet before changing HDL or firmware. Treat screenshots and GUI labels as symptoms; confirm the actual protocol bytes, offsets, ports, bind addresses, and parser expectations from source or packet capture.
    - For bench-board firmware tasks, do not stop at simulation and `.fs` generation. After a clean build, verify on the actual hardware unless the user explicitly asks for build-only work or the board/tool is unavailable.

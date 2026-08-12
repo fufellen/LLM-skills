@@ -46,7 +46,10 @@ Read this reference for tasks about `dark_risc`, soft-MCU firmware, LwIP, UDP pa
   gitlink SHA. This restores local reproducibility, but the remote reachability
   gate should still fail until the submodule commit is published or the gitlink
   is moved to a remote-backed SHA.
-- Local STM32 F4 + LwIP reference: `C:\workspace\stm32_f401ccu6_platformio`.
+- Local STM32 F4 + LwIP reference: `C:\workspace\ToF-LIDAR-MCU-F401`, a clone of the
+  corporate repo `github.com/ak-tech-electronics/ToF-LIDAR-MCU-F401`. The former local
+  path `C:\workspace\stm32_f401ccu6_platformio` and its personal GitLab remote are gone
+  (2026-08-10); the bench firmware lives on branch `gpx`.
 - Repo LwIP source submodule: `C:\workspace\verilog\third_party\lwip`.
 - Minimal LwIP raw UDP example: `C:\workspace\verilog\third_party\lwip\contrib\apps\udpecho_raw\udpecho_raw.c`.
 

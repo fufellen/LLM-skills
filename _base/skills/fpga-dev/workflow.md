@@ -215,6 +215,48 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
      change the association metadata independently, and check the final
      serialized payload bytes across a packet boundary.
    - Do not encode product, calibration, or conversion thresholds as elaboration-time parameters when they must change while the FPGA is running. Parameters are for immutable structural choices and, at most, reset/default values; the consuming datapath must receive a `logic` or interface field through ordinary ports. Put the field at the owning configuration boundary and thread it through every intermediate module to the consumer. Until the real write source is defined, keep the current value only as a documented startup default; do not invent a command address, runtime detector, or calibration algorithm ahead of that decision. Acceptance must change the field at least once in the same elaborated DUT and assert the changed functional result. A parameter override, default-only check, hierarchical constant, or `force` by itself does not prove a synthesizable runtime write source; when that source is deferred, distinguish verified RTL plumbing from live-hardware writability.
+   - Псевдостатическое поле (runtime-настройка) именуется квалификатором `cfg`.
+
+     Это значение, которое задаёт пользователь/МК и которое само по себе не
+     меняется: формат пакета, разрешение сетки, пороги, смещения. По сути это
+     `parameter`, который разрешено писать на работающей ПЛИС, поэтому его
+     нельзя ни объявлять параметром (см. правило выше), ни путать с обычными
+     данными и состоянием тракта.
+
+     **Контракт `cfg`:** источник вправе изменить значение в ЛЮБОЙ такт, без
+     синхронизации с кадром или транзакцией, и не ждёт подтверждения. Решение о
+     том, КОГДА применить изменение, принадлежит модулю-потребителю: он
+     выбирает свою точку применения (граница кадра, конец транзакции, флаш
+     конвейера) и до неё обязан работать по защёлкнутому значению.
+
+     | Роль | Имя | Природа |
+     |---|---|---|
+     | пришло снаружи | `in_cfg_<имя>` | порт; может уехать посреди кадра |
+     | нормализовано (мусор → дефолт) | `lcl_cfg_<имя>_req` | провод, следует за входом |
+     | действует в текущей транзакции | `lcl_cfg_<имя>_act` | регистр, меняется только в точке применения |
+     | заявка ≠ действующего | `lcl_cfg_mismatch` | СОСТОЯНИЕ, живёт сколь угодно долго — суффикса `_stb` не несёт |
+     | момент применения | `lcl_cfg_apply_stb` | строб, ровно один такт |
+
+     Правила, которые это даёт:
+     - `in_cfg_*` НЕ использовать напрямую в датапате запущенной транзакции —
+       под ним значение может смениться на середине кадра. В датапат идёт
+       только `_act`.
+     - Нормализация обязана стоять ДО сравнения. Если сравнивать `_act` с сырым
+       входом, разные нелегальные значения, дающие один и тот же легальный
+       результат, поднимут ложное расхождение и приведут к сбросу конвейера на
+       ровном месте.
+     - Пока политика применения «немедленно», `mismatch` и `apply_stb`
+       совпадают, и держать оба сигнала не нужно — оставить `lcl_cfg_apply_stb`
+       и описать политику комментарием. Разделять их обязательно в тот момент,
+       когда применение становится отложенным: тогда расхождение живёт много
+       тактов, и имя с `_stb` станет ложью.
+     - Модуль без собственной транзакции (чисто комбинационный форматтер)
+       защёлкивать нечего: он принимает `in_cfg_*` и ничего не хранит.
+
+     Эталон в этом репозитории — цепочка MSOP:
+     `msop_tcp_pipeline` (владеет точкой применения — граница пакета) →
+     `MSOP_TCP_SPI_sender` → `MSOP_TCP_sender` (своя точка применения — сброс
+     конвейера) → `MSOP_TCP_body_builder` (комбинационный, только `in_cfg_*`).
    - Keep FPGA board firmware split into a strict file-layer hierarchy when creating or substantially changing a target:
      1. CST/XDC/QSF constraints are the first and lowest physical layer: package pins, IO standards, pullups, and raw package/connector names only.
      2. The board-interface wrapper translates constraint-level port names into meaningful hardware interfaces, `wire`, and `logic` signals; keep pin directions, tri-state behavior, straps, and board-role comments here.
@@ -232,6 +274,84 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - When the user asks to refactor a touched HDL module, treat the refactor as part of the requested change rather than optional cleanup. Bring the module contract and touched declarations into the active branch's HDL conventions: remove unused legacy ports, interfaces, and transitive include dependencies; separate coordination from functional pipelines at natural boundaries; normalize touched naming, instances, and declaration layout; and update every call site and affected testbench hierarchy in the same change. Preserve behavior unless the user explicitly requests a functional change, keep unrelated modules out of scope, capture a simulation baseline before editing, rerun focused testbenches afterward, and run synthesis/PnR when the structural change can affect timing or resources.
    - Do not treat moving a large legacy block into another file as proof that the block belongs in the design. Before preserving or deleting it, trace each responsibility to a current consumer, board/protocol output, focused regression, or verified hardware behavior. Delete synthesis-dead state and inactive branch-specific code. If the behavior is active but obscures a coordination module, isolate it behind a named functional module and focused testbench; do not delete a proven product path merely because its implementation is difficult to read.
    - For CDC, async reset, generated clocks, PLLs, IO, and RAM/IP primitives, verify the intended vendor/tool behavior instead of assuming generic Verilog semantics.
+
+5. ПРОВЕРЕНО 11.08.2026: ping в сети 192.168.2.x НЕ доказывает, что стенд жив.
+
+   Измерено прямо: `ping 192.168.2.207` и `ping 192.168.2.199` — заведомо
+   несуществующие адреса — отвечают 2 из 2 без потерь. В сети есть устройство,
+   отвечающее за всех. При этом `arp -a` на тот же адрес показывает, что записи
+   нет, то есть отвечает не хост по этому IP.
+
+   Следствие: успешный ping нельзя приводить как доказательство работы тракта.
+   Я пользовался им весь день как основной проверкой, и часть выводов вида
+   «стенд восстановлен» на нём и держалась.
+
+   Чем проверять на самом деле, в порядке надёжности:
+   - счётчики прошивки, прочитанные из ОЗУ через SWD (адреса брать из
+     `arm-none-eabi-nm firmware.elf`, читать `openocd ... mdw <адрес> <N>`) —
+     работает даже когда консоль по USB отключена;
+   - вывод в консоль USB CDC, если она подключена;
+   - снимок анализатора.
+
+   Ключевой признак живого приёма — счётчик принятых кадров РАСТЁТ. Ноль в нём
+   при «проходящем» ping означает, что тракт мёртв, а отвечает кто-то другой.
+
+5. Кадровый канал стенда 20K: незавершённое чтение УНИЧТОЖАЕТ кадр.
+
+   Контракт `RMII_to_SPI_slave` — «одна транзакция равна одному пакету»: при
+   подъёме CS с недочитанным пакетом остаток выбрасывается из очереди (drain до
+   кода границы `10`). Значит опрос, прочитавший только два байта длины и
+   отпустивший линию, теряет кадр целиком, и наружу это никак не считается.
+
+   Воспроизведено в `m20k_dev_brd_eth_tb` 10.08.2026: первый опрос вернул длину
+   60, второй сразу следом — ноль, прерывание упало. На железе тот же механизм
+   выглядел как 2750 холостых опросов подряд с интервалом 30.5 мкс, каждый читал
+   `00 00`, а линия прерывания оставалась поднятой.
+
+   Следствие для прошивки МК: **прочитав ненулевую длину, обязан дочитать кадр
+   до конца**. Любой ранний выход из чтения — потеря данных, а не безобидный
+   пропуск. Это же ограничение делает опасным полнодуплексный обмен, где число
+   тактов тела считается как максимум из двух длин: если своя длина больше
+   чужой, чужой кадр дочитывается, а если меньше — теряется.
+
+5. После неудачного опыта ПЛИС надо ПЕРЕЗАЛИТЬ, прежде чем судить о правке.
+
+   Автоматы остаются в состоянии, в которое их загнал предыдущий опыт, и
+   перепрошивка одного микроконтроллера его не снимает. Возврат исходного кода
+   и заливка только МК дают картину «правка сломала», хотя код уже прежний.
+
+   Измерено 10.08.2026 дважды подряд на стенде 20K: после отката кадрового
+   канала ping не проходил и FLASH молчала, а после переконфигурации ПЛИС тем
+   же самым образом всё заработало. Первый раз это стоило неверного вывода
+   «регрессию вызвала защита от пустого кадра» — защита оказалась невиновна.
+
+   Правило: цикл проверки — залить ПЛИС, залить МК, только потом мерить. Если
+   результат отличается от ожидаемого, повторить заливку ПЛИС до того, как
+   объяснять результат кодом.
+
+5. Обвинение конкретному модулю — это гипотеза, а не вывод. Проверять ДО того,
+   как назвать её пользователю.
+
+   Разбор кода даёт правдоподобное объяснение почти всегда, и оно почти всегда
+   звучит убедительно: «модуль реализует режим наполовину», «глубина буфера
+   мала», «параметр не проброшен». Но пока гипотеза не воспроизведена фокусным
+   тестом, она остаётся гипотезой, а сформулированная как факт — уводит и
+   пользователя, и следующего агента в сторону и портит доверие к остальным
+   выводам в том же ответе.
+
+   Правило: прежде чем написать «модуль X написан неверно», собрать фокусный ТБ
+   на этот модуль, который проверяет именно спорное свойство, и приложить его
+   вердикт. Нет ТБ — формулировать как «подозрение, не проверено», явным словом.
+
+   Урок 10.08.2026, стоил двух неверных диагнозов подряд. Перевод кадрового
+   канала стенда в SPI mode 0 сломал приём на железе. Я дважды заявил, что
+   виноват `SPI_Slave`: якобы выдача MISO осталась по спаду и первый бит не
+   выставляется до первого фронта. Фокусный ТБ `SPI_Slave_modes_tb` показал
+   PASS в обе стороны: модуль корректен, править нечего. Первый прогон того же
+   ТБ, к слову, дал FAIL — но из-за дефекта в самом ТБ (два драйвера на
+   `ndl_Byte_to_master`, из `initial` и из `always`, отсюда `X` на линии).
+   То есть проверять надо и собственный тест: `X` на сигнале — это почти всегда
+   ошибка стенда, а не находка.
 
 5. Отладка неожиданного поведения железа: СНАЧАЛА воспроизвести в симуляции.
 
@@ -371,7 +491,7 @@ For soft-MCU Ethernet work, treat firmware and HDL as one system.
 - Before working on `dark_risc`, LwIP, soft-MCU firmware, memory maps, or FPGA/MCU Ethernet boundaries, read `soft-mcu-dark-risc-lwip.md`.
 - Treat the soft-MCU reference as a self-learning project notebook: when a command, gotcha, register map, build constraint, toolchain quirk, memory-size limit, simulation result, or hardware observation becomes a reusable confirmed fact, update that reference in the same task. Keep transient task checklists in Obsidian and stable procedures in the skill reference.
 - Local soft-MCU repo: `C:\workspace\dark_risc`; in the `verilog` repo it should be used as the `soft_mcu/dark_risc` submodule.
-- Local STM32 F4 + LwIP reference: `C:\workspace\stm32_f401ccu6_platformio`. It uses LwIP with `NO_SYS=1`, IPv4, ARP, UDP, raw API, and no sockets/netconn.
+- Local STM32 F4 + LwIP reference: `C:\workspace\ToF-LIDAR-MCU-F401`, cloned from the corporate repo `github.com/ak-tech-electronics/ToF-LIDAR-MCU-F401` (bench firmware on branch `gpx`). It uses LwIP with `NO_SYS=1`, IPv4, ARP, UDP, raw API, and no sockets/netconn. The old path `C:\workspace\stm32_f401ccu6_platformio` was removed on 2026-08-10 — do not look for it.
 - Repo LwIP source submodule: `C:\workspace\verilog\third_party\lwip`; `contrib\apps\udpecho_raw\udpecho_raw.c` is a minimal raw UDP callback example.
 - Prefer moving L3/L4 parsing such as IP/UDP handling into soft-MCU firmware through LwIP. Keep HDL focused on RMII/MAC filtering, frame buffering, CRC/FCS handling, runtime config registers, and the frame transport boundary.
 - For the LwIP netif boundary, pass full Ethernet frames without preamble/SFD/FCS into `ethernet_input`; implement TX through `netif->linkoutput` back to the FPGA Ethernet TX path.
@@ -388,6 +508,15 @@ When testing Ethernet on the 20K dev board:
 - For packet capture on Windows, prefer the adapter name with `tshark -i "Ethernet 5"` instead of a numeric interface id. Npcap interface numbers can change after the link comes up. Confirm with `Get-NetAdapter` and capture fields such as `eth.src`, `eth.dst`, `ip.src`, `ip.dst`, `udp.srcport`, `udp.dstport`, and payload.
 - For RX destination-MAC filtering, validate the usual hardware classes explicitly: local unicast, broadcast, multicast, and a rejected unrelated unicast. When Windows cannot add static neighbor entries without elevation, Scapy/Npcap `sendp` to `Ethernet 5` can send raw Ethernet frames; accept/reject is proven by the FPGA UART output, not by local packet capture alone.
 - For new Ethernet RX filtering and later protocol fields, prefer runtime configuration over hardcoded constants. MAC addresses, EtherType, IP addresses, UDP ports, multicast enables/groups, and similar fields should be driven by an existing control path or a small reusable register/config block; HDL parameters are acceptable only as reset defaults, testbench defaults, or temporary bring-up fallbacks.
+- Кадр длиннее буфера моста молча не проходит. `rmii_tx_w_buf` и `eth_strm_frmr`
+  имеют `FIFO_DEPTH = 10`, то есть 2^10 = 1024 байта на кадр, и до 10.08.2026
+  глубина не была проброшена наружу из `SPI_RMII_bridge`. Симптом на железе
+  крайне обманчив: `tcp_write` проходит, счётчик отправленных кадров растёт,
+  ARP и ping работают, а клиент получает ноль байт и буфер TCP не освобождается
+  — выглядит как «TCP молчит» или «клиент не читает». Отличать по размеру: 758
+  байт шли, 1118 уже нет. Полноразмерный Ethernet-кадр 1518 байт требует
+  `TX_FIFO_DEPTH` и `RX_FIFO_DEPTH` не меньше 11. Проверять размером кадра
+  прежде, чем искать причину в стеке или в клиенте.
 - The user's networks can contain real working lidars in addition to the FPGA dev board. Broadcast discovery is allowed, but treat it as a multi-device operation: prefer an explicit adapter, collect all responses, filter the FPGA board by MAC/model/IP, and never treat the first discovery response as the target. For reproducible bench tests, send `NET_CONFIG`/write commands directly to the intended FPGA board MAC after confirming the current board config.
 
 ## Logic Analyzer And DSView

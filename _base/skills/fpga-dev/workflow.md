@@ -488,6 +488,37 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
        дизайн, и разбираться надо до того, как двигаться дальше.
      - Отсюда порядок действий: снять эталонный `.bin` ДО правки, внести
        правку, удалить артефакт, пересобрать, сверить.
+     - **`.bin` покрывает ТОЛЬКО синтез. Путь ModelSim он не проверяет вовсе.**
+       У Gowin корень включений объявлен своим `-include_path`, у ModelSim —
+       своим `+incdir`; сломанный `+incdir` даёт побитово совпавший `.bin` при
+       полностью мёртвой симуляции. Измерено 12.08.2026 на `R120M.BF2_TDC7201`:
+       `.bin` совпал с образом `HWOK`, а `vlog` падал на каждом корневом
+       include. Поэтому после правок сборочной обвязки прогонять на КАЖДОЙ
+       ветке хотя бы один ТБ, а не только сборку.
+     - Снимать эталон НЕ только для `.bin`, но и для ТБ. Без базового прогона
+       нельзя отличить свою регрессию от дефекта, который на ветке уже был. В
+       том же заходе два ТБ упали вместе: базовый прогон на исходном коммите
+       показал, что один падал и раньше (дефект ветки), а второй сломал я.
+   - Скрипт, отчитавшийся об успехе, — не доказательство. Проверять РЕЗУЛЬТАТ.
+
+     Массовая правка по якорю молча не срабатывает, если якорь не совпал: замена
+     с `\n` в файле с CRLF ничего не находит, а скрипт печатает «готово».
+     Поймано 12.08.2026 — обёртка `vlog` не встала, при этом соседняя вставка в
+     тот же файл прошла, и `grep` по ней подтвердил ложный успех. Проверять
+     надо то, что реально нужно (`assert 'rename vlog' in текст`), и сверять
+     число заменённых мест с ожидаемым: два одинаковых блока с разным
+     окружением дают одно совпадение вместо двух.
+   - Падающий ТБ на боевой ветке — сперва проверить, не устарел ли ОН САМ.
+
+     Когда фикс RTL портируется между ветками в одну сторону, ТБ под него может
+     остаться старым, и падение выглядит как дефект продукта. Порядок: сравнить
+     файл ТБ и файл модуля с соседней веткой (`git show <branch>:<path>`) и
+     только потом лезть в RTL. Пример 12.08.2026:
+     `msop_tcp_pipeline_echo_count_tb` падал на `R120M.BF2_TDC7201`
+     (`distance_byte_count got=2 expected=3`), при этом `msop_tcp_pipeline.sv`
+     побитово совпадал с `R120M.BF2`, где тот же ТБ проходил. Причина — ТБ ждал
+     строб фиксированные два такта, а рукопожатие занятости сериализатора X17
+     сделало строб отложенным; правка ТБ доехала только до `R120M.BF2`.
    - Run synthesis/implementation only when the change can affect hardware build, timing, pinout, or generated firmware.
    - If a GUI/CLI tool gives surprising or inconsistent hardware behavior, inspect the tool and firmware source that builds/parses the packet before changing HDL or firmware. Treat screenshots and GUI labels as symptoms; confirm the actual protocol bytes, offsets, ports, bind addresses, and parser expectations from source or packet capture.
    - For bench-board firmware tasks, do not stop at simulation and `.fs` generation. After a clean build, verify on the actual hardware unless the user explicitly asks for build-only work or the board/tool is unavailable.

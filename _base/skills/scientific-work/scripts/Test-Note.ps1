@@ -260,6 +260,59 @@ else {
     Write-Output "[ok] No Markdown list markers at the start of Mermaid label text"
 }
 
+# GFM tables cannot interrupt a paragraph. A table glued to a lead-in line
+# (typically one ending with ":") is absorbed into that paragraph and renders as
+# literal text full of "|" characters, while the source still looks correct. A
+# table must be preceded by a blank line, or start directly under an ATX
+# heading, a closing fence, or a closing $$ - those already close the block.
+$tableBlockViolations = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+$delimiterRegex = [regex]'^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*$'
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if ($insideFence -or $i -eq 0) {
+        continue
+    }
+
+    # A table starts where a header row is followed by a delimiter row.
+    if ($line -notmatch '^\s*\|') {
+        continue
+    }
+    $nextLine = if ($i + 1 -lt $lines.Count) { $lines[$i + 1] } else { '' }
+    if ($nextLine -notmatch '-' -or -not $delimiterRegex.IsMatch($nextLine)) {
+        continue
+    }
+
+    $prevLine = $lines[$i - 1]
+    if ($prevLine.Trim() -eq '') {
+        continue
+    }
+    if ($prevLine -match '^#{1,6}[ \t]+') {
+        continue
+    }
+    if ($prevLine -match '^\s*(```|~~~)' -or $prevLine.Trim() -eq '$$') {
+        continue
+    }
+    if ($prevLine -match '^\s*\|') {
+        continue
+    }
+
+    $tableBlockViolations.Add("line $($i + 1): table header is glued to line $($i): '$($prevLine.Trim())'")
+}
+
+if ($tableBlockViolations.Count -gt 0) {
+    Write-Warning "A Markdown table must be preceded by a blank line (or start directly under a #### heading); otherwise GFM folds it into the previous paragraph and Obsidian renders raw '|' text:"
+    $tableBlockViolations | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] Every Markdown table starts its own block"
+}
+
 if ($Strict -and $styleViolationFound) {
     exit 5
 }

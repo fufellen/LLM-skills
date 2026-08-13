@@ -317,9 +317,26 @@ if ($Strict -and $styleViolationFound) {
     exit 5
 }
 
-$openCount = ([regex]::Matches($text, "\[\[")).Count
-$closeCount = ([regex]::Matches($text, "\]\]")).Count
-$linkMatches = [regex]::Matches($text, "\[\[([^\]]+)\]\]")
+# Obsidian does not linkify inside fenced code blocks or inline code spans, so
+# neither should the link checks. Config samples legitimately contain [[...]] -
+# TOML arrays of tables such as [[proxies]] - and reporting them as missing
+# notes trains the reader to ignore this validator's output.
+$proseLines = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+foreach ($line in $lines) {
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if (-not $insideFence) {
+        $proseLines.Add($line)
+    }
+}
+$proseText = ($proseLines -join "`n") -replace '`[^`\r\n]*`', ''
+
+$openCount = ([regex]::Matches($proseText, "\[\[")).Count
+$closeCount = ([regex]::Matches($proseText, "\]\]")).Count
+$linkMatches = [regex]::Matches($proseText, "\[\[([^\]]+)\]\]")
 Write-Output "Obsidian links: $($linkMatches.Count)"
 
 if ($openCount -ne $closeCount) {

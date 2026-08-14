@@ -250,6 +250,42 @@ defect. Forbidden list to grep for, with replacements:
 | pump-probe | «накачка-зондирование» (pump-probe) при первом упоминании |
 | decoupled (approximation) | без самосогласования (НЕ «расцепленное (screening)» - скобка поясняет не то слово) |
 
+## Class 5 - invented Cyrillic spellings of established Latin abbreviations
+
+The mirror of Class 4. Class 4 catches raw English left where Russian is
+required; this class catches the opposite overcorrection - an established
+Latin abbreviation rewritten in Cyrillic letters by ear. The result looks
+like a Russian term but exists in no source, so the reader cannot search
+for it and cannot map it back to the datasheet, register name, or code
+identifier it came from.
+
+Rule: an abbreviation that the field writes in Latin stays in Latin inside
+Russian prose (BLDC, PWM, ADC, DAC, SPI, UART, DMA, CRC, FPGA, USB, TCP,
+MSOP, EEPROM). Decline the surrounding Russian words instead of the
+abbreviation: «драйвер BLDC», «управление по BLDC», «BLDC-двигатель».
+
+| Wrong (transliterated by ear) | Correct | Note |
+| --- | --- | --- |
+| БЛДЦ, БЛДС | BLDC | русское соответствие есть, но иное: бесколлекторный (бесщёточный) двигатель постоянного тока, БДПТ |
+| ЮАРТ | UART | |
+| СПИ | SPI | «СПИ» уже занято другими расшифровками |
+| ДМА | DMA | «ПДП» (прямой доступ к памяти) существует, но в прошивочных текстах ведёт к путанице с именами регистров |
+| ЦРЦ | CRC | |
+| ФПГА | FPGA | по-русски — ПЛИС, и это установленный термин |
+| ЮСБ | USB | |
+
+Do NOT over-correct in the other direction: ШИМ, АЦП, ЦАП, ПЛИС, ВЧ, СВЧ,
+ППП, ЭДП are genuine Russian abbreviations - use them, and give the Latin
+equivalent in parentheses at first use when the audience needs it.
+
+Existence test before writing any Cyrillic abbreviation: it must appear in
+Russian-language sources or in the project's own term notes. If its only
+justification is the Latin abbreviation read aloud, it is invented - keep
+the Latin form, or write the full Russian phrase. Caught 2026-08-13: a
+firmware report used «БЛДЦ» for BLDC while the vault's own term note is
+titled «Двигатель BLDC»; the same section already wrote PWM/ADC/DAC in
+Latin, so the coined form was inconsistent inside one paragraph.
+
 ## Deliberate keeps (do not over-correct)
 
 - «метрики» - kept: «характеристика» collides with ФЧХ (frequency
@@ -310,6 +346,9 @@ defect. Forbidden list to grep for, with replacements:
    `(вблизи|около)\s+отсечк` (при первом упоминании пояснить, что речь о
    близости параметров к границе исчезновения связанной моды),
    `Z-scan`, `pump-probe` (сырые - раскрыть по-русски со скобкой);
+   `БЛДЦ|БЛДС|ЮАРТ|ЦРЦ|ФПГА|ЮСБ|ЭсПи|ПиВиЭм` и вообще кириллические
+   «аббревиатуры», читающиеся как латинские по буквам (Class 5) - каждую
+   проверить на существование в русских источниках;
    согласование аббревиатур: `(ой|ая|ую|ого|ому)\s+(ПНЧ|ЭДП|ППП)`
    при множественной расшифровке (strategic rule 6).
 3. Просмотри предложения длиной от 25–30 слов, с точкой с запятой или

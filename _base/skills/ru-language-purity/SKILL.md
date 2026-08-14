@@ -28,6 +28,11 @@ without judgment calls.
   a translation of an English draft.
 - When producing or reviewing an English version written from a Russian
   working draft (the mirror check below).
+- Also over Russian technical notes and firmware/hardware reports, not only
+  manuscripts. That register mixes Russian prose with Latin identifiers
+  (register names, signals, code symbols) on every line, which is exactly
+  where abbreviations get cyrillized by ear (Class 5) and where raw English
+  slips in unnoticed (Class 4).
 
 ## RU Direction - De-Calque
 
@@ -78,6 +83,13 @@ English is allowed ONLY: (a) in parentheses when first defining a term or
 abbreviation, (b) in established abbreviations (PCM, FEM, SPP, PML, COMSOL,
 TM), (c) inside reference titles. Everything else is a defect. Register:
 научный стиль уровня опытного ученого.
+
+The mirror defect is equally forbidden: do NOT rewrite an established Latin
+abbreviation in Cyrillic letters by ear (BLDC -> «БЛДЦ», UART -> «ЮАРТ»).
+Keep the Latin form and decline the surrounding Russian words, or use the
+genuine Russian abbreviation where one exists (FPGA -> ПЛИС, PWM -> ШИМ,
+ADC -> АЦП). Class 5 in `references/decalque-ru-en.md` holds the table and
+the existence test.
 
 ## Self-Improvement And Publishing
 

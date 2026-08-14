@@ -313,6 +313,42 @@ else {
     Write-Output "[ok] Every Markdown table starts its own block"
 }
 
+# A wikilink with "|" inside a Markdown table cell breaks the table: the "|"
+# of "[[Note|alias]]" (or "![[img|width]]") is parsed as a column separator,
+# the row gains a phantom column, and Obsidian's table editor then reflows the
+# whole table around the split link. In table rows use plain cell text and put
+# the link in nearby prose, or use an aliasless [[Note title]] link.
+$tableLinkViolations = New-Object System.Collections.Generic.List[string]
+$insideFence = $false
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    $line = $lines[$i]
+    if ($line -match '^\s*(```|~~~)') {
+        $insideFence = -not $insideFence
+        continue
+    }
+    if ($insideFence -or $line -notmatch '^\s*\|') {
+        continue
+    }
+
+    # Drop inline code spans, then remove aliasless wikilinks/embeds; any "[["
+    # still left is either an aliased link with "|" or a link already torn
+    # apart by the column separator.
+    $stripped = [regex]::Replace($line, '`[^`]*`', '')
+    $stripped = [regex]::Replace($stripped, '!?\[\[[^\[\]\|]+\]\]', '')
+    if ($stripped -match '\[\[') {
+        $tableLinkViolations.Add("line $($i + 1): '$($line.Trim())'")
+    }
+}
+
+if ($tableLinkViolations.Count -gt 0) {
+    Write-Warning "A wikilink containing '|' ([[Note|alias]] or ![[img|width]]) inside a Markdown table row breaks the table into extra columns. Use plain cell text plus the link in nearby prose, or an aliasless [[Note title]]:"
+    $tableLinkViolations | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] No aliased wikilinks inside Markdown table rows"
+}
+
 if ($Strict -and $styleViolationFound) {
     exit 5
 }

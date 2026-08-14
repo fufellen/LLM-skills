@@ -51,6 +51,7 @@ Use this reference before creating or editing Obsidian notes.
 
 ## Term Notes
 
+- Never put a colon in a note filename. This vault lives on Windows, where `:` is reserved, so `Write` fails with `EINVAL: invalid argument, rename ...` and the note is silently not created; the same applies to `\ / * ? " < > |`. Use an em dash instead: `Фиктивный параллелизм — несколько задач за одним мьютексом.md`, not `Фиктивный параллелизм: ...`. Decide this before writing, because the failure surfaces only at write time and any wikilink already authored to the colon title then has to be fixed too (hit 2026-08-13).
 - Name new standalone term notes for searchability as `Primary Russian term (Russian synonym, English term).md` when an established synonym and English equivalent exist. For example, use `Промежуточная таблица (связующая таблица, junction table).md` instead of `Промежуточная таблица.md`. Include only useful established forms that the user is likely to search; if a term has no meaningful synonym or English equivalent, keep the shorter title (explicit user requirement, 2026-07-21).
 - Start with a short definition.
 - Add physical or engineering meaning.

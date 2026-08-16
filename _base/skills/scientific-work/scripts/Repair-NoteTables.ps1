@@ -50,9 +50,11 @@ begin {
     $delimiterRegex = [regex]'^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*$'
     $totalFiles = 0
     $totalFixes = 0
+    $processRan = $false
 }
 
 process {
+    $processRan = $true
     foreach ($p in $Path) {
         $full = if ([System.IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $VaultRoot $p }
         if (-not (Test-Path -LiteralPath $full -PathType Leaf)) {
@@ -146,6 +148,14 @@ process {
 }
 
 end {
+    # `powershell -File script.ps1 -Path x` with stdin on the null device hands
+    # the script an EMPTY pipeline, so PowerShell skips process{} even though
+    # -Path is bound: the run then silently reports zero finds. Turn that into a
+    # loud message instead of a false all-clear (found 2026-08-16).
+    if (-not $processRan -and $PSBoundParameters.ContainsKey('Path')) {
+        Write-Warning "The process block never ran, so nothing was inspected. Invoke through the pipeline (Get-ChildItem ... | .\Repair-NoteTables.ps1) or with -Command '& script args', not with -File."
+    }
+
     Write-Output ""
     $verb = if ($Apply) { "repaired" } else { "repairable" }
     Write-Output ("{0} tables {1} across {2} files" -f $totalFixes, $verb, $totalFiles)

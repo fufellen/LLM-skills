@@ -81,6 +81,51 @@ else {
     Write-Output "[ok] No common mojibake markers found"
 }
 
+# Invisible characters arrive by copy-paste from rendered web pages (MathJax
+# output is the usual source) and are destructive precisely because nothing
+# shows them. A zero-width space inside $...$ makes the formula stop matching
+# any search; one after a #### marker breaks the [[#Heading]] anchors this vault
+# relies on. Measured 2026-08-16: 70 such characters across 8 notes, including
+# both of those cases. Exotic spaces are reported separately without failing,
+# because a non-breaking space can be deliberate in Russian typography.
+$invisibleNames = @{
+    [char]0x200B = 'ZERO WIDTH SPACE'; [char]0x200C = 'ZWNJ'; [char]0x200D = 'ZWJ'
+    [char]0x200E = 'LEFT-TO-RIGHT MARK'; [char]0x200F = 'RIGHT-TO-LEFT MARK'
+    [char]0x2060 = 'WORD JOINER'; [char]0xFEFF = 'ZERO WIDTH NO-BREAK SPACE'
+    [char]0x00AD = 'SOFT HYPHEN'; [char]0x2028 = 'LINE SEPARATOR'
+    [char]0x2029 = 'PARAGRAPH SEPARATOR'
+}
+$exoticSpaceNames = @{
+    [char]0x00A0 = 'NO-BREAK SPACE'; [char]0x2009 = 'THIN SPACE'
+    [char]0x202F = 'NARROW NO-BREAK SPACE'; [char]0x2007 = 'FIGURE SPACE'
+}
+$invisibleFound = New-Object System.Collections.Generic.List[string]
+$exoticFound = New-Object System.Collections.Generic.List[string]
+for ($i = 0; $i -lt $lines.Count; $i++) {
+    foreach ($ch in $lines[$i].ToCharArray()) {
+        if ($invisibleNames.ContainsKey($ch)) {
+            $invisibleFound.Add("line $($i + 1): $($invisibleNames[$ch]) (U+{0:X4})" -f [int]$ch)
+        }
+        elseif ($exoticSpaceNames.ContainsKey($ch)) {
+            $exoticFound.Add($exoticSpaceNames[$ch])
+        }
+    }
+}
+
+if ($invisibleFound.Count -gt 0) {
+    Write-Warning "Invisible characters found. They survive copy-paste, show nothing to the reader, and silently break formula matching and [[#Heading]] anchors:"
+    $invisibleFound | Sort-Object -Unique | Select-Object -First 12 | ForEach-Object { Write-Warning "  $_" }
+    $styleViolationFound = $true
+}
+else {
+    Write-Output "[ok] No invisible characters found"
+}
+
+if ($exoticFound.Count -gt 0) {
+    $summary = ($exoticFound | Group-Object | ForEach-Object { "$($_.Name) x$($_.Count)" }) -join ', '
+    Write-Output "[info] Exotic spaces present (deliberate use is legitimate, paste artifacts are not): $summary"
+}
+
 # Scientific and technical notes in this vault use the filename as the visible
 # title and reserve #### for topical sections. Ignore fenced code examples so a
 # Markdown snippet does not trigger a false positive.

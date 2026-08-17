@@ -258,6 +258,8 @@ C:\Users\User\РњРѕР№ РґРёСЃРє\Obsidian\.codex\skills\scientific-w
 
 - `engineering-simulator-development` (source-faithful engineering simulators and digital twins; physical models, FPGA/firmware arithmetic, protocol/client reconstruction, calibration tables, engineering GUI, and Windows EXE delivery) lives in the personal skills repository: shared base `_base/skills/engineering-simulator-development/`, Codex adapter `.codex/skills/engineering-simulator-development`, Claude adapter `.claude/skills/engineering-simulator-development`.
 
+- `diptrace-ascii` (structure-aware inspection, electrical audit, encoding-safe editing, and validation of DipTrace Schematic ASCII `.asc` files) lives in the personal skills repository: shared base `_base/skills/diptrace-ascii/`, Codex adapter `diptrace-ascii/`, Claude adapter `.claude/skills/diptrace-ascii/`.
+
 - `jlink-mcp-runtime` is the Google Drive safety mirror of the complete portable J-Link Codex plugin from `C:\workspace\ToF-LIDAR-R\.codex\jlink-mcp-runtime`. Its thin Codex adapter lives at `.codex/skills/jlink-mcp-runtime`, while the shared workflow and full runnable plugin snapshot live at `_base/skills/jlink-mcp-runtime/`.
 
 ## Creating New Skills
@@ -314,6 +316,7 @@ Use this skill for general rules about skill storage and synchronization. Use do
 - database design, ТЗ, SQL schemas, server deployment, and client apps over a database: `database-development`;
 - renting, securing, configuring, and operating Linux VPS servers, and deploying apps onto them (SSH, ufw, swap, HTTPS, systemd, backups): `vps-server-management`;
 - source-faithful engineering simulators and digital twins that must reproduce mechanics, FPGA/firmware arithmetic, device protocols, production-client reconstruction, calibration tables, GUI behavior, and Windows EXE releases: `engineering-simulator-development`;
+- DipTrace Schematic ASCII inspection, net/pin/pad reconstruction, datasheet-backed electrical and component-height audits, Cyrillic normalization, and encoding-safe `.asc` edits: `diptrace-ascii`;
 - journal-article formatting and submission packaging for «Оптика и спектроскопия» / Ioffe journals: `optics-spectroscopy-article`;
 - general slide deck creation, review, regeneration, and `.pptx` handling: `presentation-creation`;
 - compact conference-proceedings manuscript formatting based on the user's stored two-column example: `conference-paper-formatting`;

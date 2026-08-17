@@ -1,0 +1,4 @@
+interface:
+  display_name: "DipTrace ASCII"
+  short_description: "Audit and safely edit DipTrace ASCII schematics"
+  default_prompt: "Use $diptrace-ascii to audit this DipTrace ASCII schematic and make validated, encoding-safe edits."

@@ -129,6 +129,7 @@ Do not store secrets, credentials, private raw datasets, unpublished full measur
 - Read `references/paper-analysis.md` when summarizing, translating, reviewing, extracting ideas from, or comparing papers.
 - Read `references/publisher-site-lessons.md` when downloading papers through publisher, DOI, repository, or institutional-access sites, and update it after learning reusable site-specific behavior.
 - Read `references/comsol-workflow.md` for COMSOL, CST, FEM, mode-analysis, `.mph`, Java automation, or numerical-validation tasks.
+- Read `references/open-source-em-solvers.md` before reaching for an open-source EM solver, when COMSOL is unavailable, or when a second independent solver is needed to check a result. It records which packages were actually validated on this machine and which were evaluated and rejected, with the reproducible failure reason for each.
 - Read `references/obsidian-ai-integration.md` when connecting Codex or another AI assistant to the vault through Obsidian Local REST API, MCP, semantic search, or Obsidian-native indexing tools. For nontrivial API/MCP work, also read `references/obsidian-ai-integration-lessons.md` and update it when the task reveals a reusable API lesson.
 - Read `references/presentation-workflow.md` when preparing scientific, technical, or popular-science talks, slide plans, speaker scripts, or presentation source notes.
 

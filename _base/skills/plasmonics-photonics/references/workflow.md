@@ -159,6 +159,17 @@ Three ways this check is easy to get wrong, all seen in practice:
 Add one independent scale check that does not involve derivatives at all, for
 example the ratio of field components in a cladding against its closed form.
 
+**An orthogonality test on a mirror-symmetric structure proves nothing.** In a
+symmetric stack the coupled modes have opposite parity, the integrand is odd, and
+the conjugated and unconjugated overlaps both vanish - by symmetry, not because
+either form is the right one. A wrong choice of form passes such a test and
+survives until the first asymmetric problem. Test on a structure that is both
+lossy and free of mirror symmetry; breaking the cladding indices apart is enough.
+For a 14 nm gold film a cladding asymmetry of 2e-3 separates the two forms by
+five orders of magnitude, while both stay at 1e-11 in the symmetric case. Note
+that a long-range mode unbinds quickly with asymmetry, so check that the modes
+are still bound at the asymmetry used.
+
 ## Literature And Article Claim Control
 
 For article drafts and literature reviews, maintain a reviewed-works register with:

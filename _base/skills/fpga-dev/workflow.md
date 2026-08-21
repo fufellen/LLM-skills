@@ -537,7 +537,31 @@ For long-running or high-stakes FPGA tasks, create an active goal when goal tool
    - Treat DSView and other logic-analyzer screenshots or exported captures as hardware evidence. If an image or capture file is available, inspect it directly instead of asking the user to transcribe bytes. Record the probe-to-signal mapping, sample rate, decoder settings, and which lines are expected to be active for the selected protocol mode.
    - Summarize errors by root cause and cite the log/report file paths.
 
-7. Report hardware outputs clearly.
+7. Проверить расстановку выводов ДО заливки. ОБЯЗАТЕЛЬНО, каждая сборка.
+   - Открыть `impl/pnr/<имя>.pin.html` и сверить с файлом ограничений хотя бы
+     цепи, без которых прибор немой: командный канал МК-ПЛИС, проброс к
+     конфигурационной флеши, шину потока измерений.
+   - Сосчитать в журнале сборки строки `Reading constraint file` и сверить с
+     числом добавленных `.cst`. **Файл ограничений у Gowin ОДИН: `gw_sh` читает
+     последний добавленный, а прежние отбрасывает МОЛЧА.** Разделение на
+     «основной плюс вариантный» не складывается. Склеивать в один файл перед
+     добавлением.
+   - Зачем это отдельным пунктом: 21.08.2026 такой пропуск стоил ПОЛДНЯ. Вынос
+     четырёх выводов SPI2 в отдельный `.cst` отбросил основной файл целиком,
+     синтезатор расставил все прочие выводы сам — командный канал вместо
+     C10/T10/M8/N9 встал на H5/T11/J6/N10, проброс к флеши вместо
+     P10/R10/M9/L10 на K3/H4/R1/K6. Сборка прошла БЕЗ ЕДИНОГО ЗАМЕЧАНИЯ, образ
+     залился и сошёлся при обратном чтении, а на приборе выглядел как «ПЛИС не
+     поднялась»: обмен по SPI3 давал сплошные единицы, опознание 0x00FFFFFF.
+     Разбор ушёл искать негодный битстрим, порчу флеши и цепочку многозагрузки.
+   - Сопутствующее правило разбора: **признак «проброс мёртв» НЕ означает «образ
+     не загрузился».** Проброс живёт ВНУТРИ образа и молчит в двух разных
+     случаях: образа нет, и образ есть, но в нём сломан командный канал.
+     Различать их до того, как строить объяснение.
+   - Чтение отчёта занимает секунду. Цена пропуска — цикл заливки, отказ и
+     разбор по ложному следу.
+
+8. Report hardware outputs clearly.
    - Name generated files such as `.fs`, `.bin`, `.bit`, `.sof`, `.pof`, or reports.
    - Include target device, top module, build command, result path, and whether timing/build passed.
    - State when programming or hardware verification was not performed, and do not present a hardware-targeted task as complete if only simulation/build passed.

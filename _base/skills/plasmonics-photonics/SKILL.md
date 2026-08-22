@@ -114,7 +114,7 @@ For literature and article claims:
 - frame EIM/ЭДП work as a failure-aware screening workflow when loss metrics diverge from FEM;
 - distinguish EIM/effective-index waveguide reduction from EMA/effective-medium approximation only when partial crystallization, intermediate PCM states, or an EMA material model is actually in scope; do not introduce an EMA disclaimer into a paper that compares only amorphous and crystalline states;
 - cite primary papers or official solver documentation for claims about device performance, solver behavior, or method limitations.
-- before finalizing a plasmonics/photonics article or conference paper, follow the `scientific-work` final GPT/ChatGPT review rule; a final manuscript should not be treated as ready after Codex-only review.
+- before finalizing a plasmonics/photonics article or conference paper, follow the `scientific-work` final GPT/ChatGPT review rule when running as Codex. In Claude Code that rule does not apply: run the independent source-backed verification pass described in the same section instead, and do not flag the missing GPT review as a blocker.
 
 ## Detailed Reference
 
